@@ -1,0 +1,194 @@
+```{r include=FALSE}
+library(tidyverse)
+```
+
+## Predictive Distribution
+
+In Bayesian statistics, a popular tool for model evaluation is the posterior predictive distribution. But we might use an analogous approach for models fit with maximum likelihood. 
+
+The predictive distribution is just the distribution given the ML estimates. Using our notation above, the predictive distribution is $f(y; \hat{\theta})$. 
+
+When you perform a parametric bootstrap, you are resampling from this predictive distribution. Here, we're going to use it for a different purpose: to understand and evaluate our model.
+
+In my view, the predictive distribution is the best way to (1) understand, (2) evaluate, and then (3) improve models.
+
+You can use the predictive distribution as follows:
+
+1. Fit your model with maximum likelihood.
+1. Simulate a new outcome variable using the estimated model parameters (i.e., $f(y; \hat{theta})$). Perhaps simulate a handful for comparison.
+1. Compare the simulated outcome variable(s) to the observed outcome variables.
+
+### Example: Poisson Distribution
+
+Earlier, we fit a Poisson distribution to a sample of data from Hultman, Kathman, and Shannon (2013).
+
+```{r include=FALSE}
+civilian_casualties <- c(0, 0, 0, 0, 0, 13, 0, 0, 61, 0, 0, 0, 0, 0, 0, 0, 0,
+                          0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 19, 0, 0, 12, 0, 0, 4, 147, 0, 934, 0, 0,
+                          42, 0, 24, 124, 0, 1, 0, 0, 0, 145844, 0, 0, 44, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                          0, 0, 2, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                          7971, 0, 0, 0, 0, 72, 0, 40, 0, 0, 444, 0, 0, 0, 0, 48, 109, 33, 0, 0, 0, 0,
+                          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 41, 0, 0, 0, 0, 84, 0, 34, 0, 0, 0,
+                          0, 0, 0, 0, 1, 0, 15, 0, 0, 15, 0, 104, 0, 24, 0, 0, 104, 0, 0, 4, 0, 0, 0, 0,
+                          0, 12, 41, 0, 0, 37, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                          0, 0, 12, 0, 4, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 8, 21, 0, 0, 0, 0, 25, 0, 0, 0,
+                          3, 0, 0, 27, 0, 0, 576, 3, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 32, 0, 0, 0, 0,
+                          0, 0, 0, 94, 42, 0, 30, 0, 2, 12, 0, 0, 5, 5 ) 
+```
+
+```{r}
+ml_est <- mean(civilian_casualties)
+print(ml_est, digits = 3)
+
+n <- length(civilian_casualties)
+y_pred <- rpois(n, lambda = ml_est)
+print(y_pred[1:30])
+print(civilian_casualties[1:30])
+```
+Simply printing a few results, we can immediately see a problem with data, when compared with the raw data
+
+To see it even more clearly, we can create a histogram of the observed and simulated data.
+
+```{r fig.height=3, fig.width=6, message=FALSE, warning=FALSE}
+library(patchwork)
+
+p1 <- qplot(civilian_casualties)
+p2 <- qplot(y_pred)
+
+p1 + p2
+```
+These data sets are so different that the plots are difficult to read, so we might put the x-axes on the log scale. Note, though, that the two plots have very different ranges on the axes.
+
+```{r fig.height=3, fig.width=6, message=FALSE, warning=FALSE}
+p1 <- qplot(civilian_casualties) + scale_x_log10()
+p2 <- qplot(y_pred) + scale_x_log10()
+
+p1 + p2
+```
+
+For a more accurate and complete comparison, let's simulate five fake data sets and use common axes
+
+```{r message=FALSE, warning=FALSE}
+observed_data <- tibble(civilian_casualties, type = "observed")
+
+sim_list <- list()
+for (i in 1:5) {
+  y_pred <- rpois(n, lambda = ml_est)
+  sim_list[[i]] <- tibble(civilian_casualties = y_pred, 
+                          type = paste0("simulated #", i))
+}
+gg_data <- bind_rows(sim_list) %>%
+  bind_rows(observed_data) %>%
+  glimpse()
+
+ggplot(gg_data, aes(x = civilian_casualties)) + 
+  geom_histogram() + 
+  facet_wrap(vars(type)) + 
+  scale_x_log10()
+```
+The fit of this model is almost absurd.
+
+### Example: Beta Distribution
+
+Now let's return to our beta model of states' opinions toward the ACA in the `br` data frame we loaded earlier.
+
+```{r include=FALSE}
+# load data
+br <- tibble::tribble(
+  ~state_abbr, ~prop_favorable_aca,
+         "AL",   0.382711108911823,
+         "AK",   0.374428493677838,
+         "AZ",   0.396721609154912,
+         "AR",   0.361623814680961,
+         "CA",   0.560999240847165,
+         "CO",   0.450011650633043,
+         "CT",   0.522239143634457,
+         "DE",   0.524637037667977,
+         "DC",   0.853595690161985,
+         "FL",    0.47022917052716,
+         "GA",   0.460216990024346,
+         "HI",    0.61965456264517,
+         "ID",   0.282992730179373,
+         "IL",   0.550517975187469,
+         "IN",   0.421854785281297,
+         "IA",   0.454007062646206,
+         "KS",   0.394817640911206,
+         "KY",   0.336156662764729,
+         "LA",   0.425588396620569,
+         "ME",   0.472319257331465,
+         "MD",   0.583719023711148,
+         "MA",   0.531871146279692,
+         "MI",   0.509096426714406,
+         "MN",   0.497981331879903,
+         "MS",   0.468038078521612,
+         "MO",   0.420161837905426,
+         "MT",   0.351773944902139,
+         "NE",   0.365225584190989,
+         "NV",   0.459026605256376,
+         "NH",    0.43886275738451,
+         "NJ",   0.531656835425683,
+         "NM",   0.528461049175538,
+         "NY",     0.6010574821094,
+         "NC",   0.452240849305449,
+         "ND",   0.367690453757597,
+         "OH",   0.456298880813516,
+         "OK",   0.309578750918355,
+         "OR",   0.455832591683007,
+         "PA",    0.45819440292365,
+         "RI",   0.536978574569609,
+         "SC",   0.444870259057071,
+         "SD",   0.377170366708612,
+         "TN",   0.368615233253355,
+         "TX",   0.428407014559672,
+         "UT",   0.248496577141183,
+         "VT",   0.553042362822573,
+         "VA",   0.470739058046787,
+         "WA",   0.496133477680592,
+         "WV",   0.295062675817918,
+         "WI",   0.489912969415965,
+         "WY",   0.263567780036879
+  )
+```
+
+```{r}
+# obtain ml estimates
+log_lik_fn <- function(par = c(2, 2), y) {
+  a <- par[1]  # pulling these out makes the code a bit easier to follow
+  b <- par[2]
+  log_lik_i <- dbeta(y, shape1 = a, shape2 = b, log = TRUE)
+  log_lik <- sum(log_lik_i)
+  return(log_lik)
+}
+opt <- optim(par = c(2, 2), fn = log_lik_fn, y = br$prop_favorable_aca,
+             control = list(fnscale = -1))
+ml_est <- opt$par
+```
+
+Now let's simulate some fake data from the predictive distribution and compare that to the observed data
+
+```{r message=FALSE, warning=FALSE}
+
+observed_data <- br %>%
+  mutate(type = "observed")
+
+n <- nrow(br)
+sim_list <- list()
+for (i in 1:5) {
+  y_pred <- rbeta(n, shape1 = ml_est[1], shape2 = ml_est[2])
+  sim_list[[i]] <- tibble(prop_favorable_aca = y_pred, 
+                          type = paste0("simulated #", i))
+}
+gg_data <- bind_rows(sim_list) %>%
+  bind_rows(observed_data) 
+
+ggplot(gg_data, aes(x = prop_favorable_aca)) + 
+  geom_histogram() + 
+  facet_wrap(vars(type)) + 
+  scale_x_log10()
+```
+
+On the whole, we see hear a fairly close correspondence between the observed and simulated data. That suggests that our model is a good description of the data.
+
+
+
+

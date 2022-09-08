@@ -1,0 +1,125 @@
+
+```{r include=FALSE}
+library(tidyverse)
+```
+
+## Poisson Model
+
+We've now got two models:
+
+$$
+y_i \sim N(\mu_i, \sigma^2)\text{, where } \mu_i = X_i\beta
+$$ 
+
+and
+$$
+y_i \sim \text{Bernoulli}(\pi_i)\text{, where } \pi_i = \text{logit}^{-1}(X_i\beta).
+$$
+We can extend this in many ways by modifying the distribution $f$ and the inverse-link function $g^{-1}$ appropriately.
+
+$$
+y_i \sim f(\theta_i)\text{, where } \theta_i = g^{-1}(X_i\beta).
+$$
+
+In the case of the normal model, $f$ and $g^{-1}$ are the normal distribution and the identity function. In the case of the logit model, they are the Bernoulli distribution and the inverse logit function. 
+
+To build a Poisson regression model, we can use the Poisson distribution for $f$. We just need to identify an appropriate inverse-link function.
+
+The Poisson distribution has a mean parameter $\lambda$ that must be positive. Therefore, we need a function that maps the real line to the positive (or non-negative) reals. The exponential function $g^{-1}(x) = e^x$ does this.
+
+$$
+y_i \sim \text{Poisson}(\lambda_i)\text{, where } \lambda_i = e^{X_i\beta}.
+$$
+
+We can program the log-likelihood function into R for use in `optim()`.
+
+```{r}
+# create log-likelihood
+poisson_ll <- function(beta, y, X) {
+  lambda <- exp(X%*%beta)
+  ll <- sum(dpois(y, lambda = lambda, log = TRUE))
+  return(ll)
+}
+
+# load hks data
+hks <- read_csv("data/hks.csv") %>%
+  na.omit()
+
+# create X and y
+f <- osvAll ~ troopLag + policeLag + militaryobserversLag + 
+  brv_AllLag + osvAllLagDum + incomp + epduration + 
+  lntpop
+mf <- model.frame(f, data = hks)  # model frame
+X <- model.matrix(f, mf)          # model matrix X
+y <- model.response(mf)           # outcome variable y
+
+par_start <- rep(0, ncol(X))
+# this poisson model is so bad that optim has a bit of trouble 
+# intutitively, there's a single outlier that basically makes
+# all poissons nearly impossible.
+opt <- optim(par_start, fn = poisson_ll, y = y, X = X, 
+             control = list(fnscale = -1))
+
+opt$par
+```
+
+Or we can use the `glm()` function.
+
+```{r}
+fit <- glm(f, data = hks, family = poisson)
+coef(fit)
+```
+
+We could also use `stan_glm()` to obtain simulations from the posterior distribution.
+
+### Predictive Distribution
+
+```{r}
+observed_data <- hks %>%
+  mutate(type = "observed", 
+         linpred_hat = predict(fit, type = "link"))
+
+sim_list <- list()
+for (i in 1:5) {
+  sim_list[[i]] <- observed_data %>%
+    mutate(osvAll = rpois(nrow(observed_data), 
+                          lambda = exp(observed_data$linpred_hat)),
+           type = paste0("simulated #", i))
+}
+gg_data <- bind_rows(sim_list) %>%
+  bind_rows(observed_data) %>%
+  glimpse()
+
+ggplot(gg_data, aes(x = linpred_hat, y = osvAll + 1)) + 
+  geom_point(alpha = 0.1, shape = 21, size = 0.3) + 
+  facet_wrap(vars(type)) + 
+  scale_y_log10()
+
+ggplot(gg_data, aes(x = troopLag, y = osvAll + 1)) + 
+  geom_point(alpha = 0.3, shape = 21, size = 0.3) + 
+  facet_wrap(vars(type)) + 
+  scale_y_log10() + 
+  geom_smooth(se = FALSE)
+```
+
+### Posterior Predictive Distribution 
+
+```{r, cache = TRUE}
+library(rstanarm); options(mc.cores = parallel::detectCores())
+stan_fit <- stan_glm(f, data = hks, family = "poisson")
+
+library(tidybayes)
+ppd <- hks %>%
+  add_predicted_draws(stan_fit, ndraws = 8) %>% 
+  mutate(.draw = paste0("Draw #", .draw)) %>% 
+  pivot_wider(names_from = .draw, values_from = .prediction) %>%
+  mutate(`Observed` = osvAll) %>% 
+  pivot_longer(`Draw #1`:`Observed`, names_to = "type", values_to = "osvAll2") %>%
+  glimpse()
+
+ggplot(ppd, aes(x = troopLag, y = osvAll2 + 1)) + 
+  geom_point(alpha = 0.2, shape = 21, size = 0.3) + 
+  facet_wrap(vars(type)) + 
+  geom_smooth(se = FALSE) + 
+  scale_y_log10()
+```
