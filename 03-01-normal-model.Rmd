@@ -1,0 +1,210 @@
+
+# Week 3: Adding Predictors
+
+```{r include=FALSE}
+library(tidyverse)
+```
+
+So far, we have discussed several major ideas:
+
+1. **Maximum likelihood** to obtain point estimates of model parameters and the **invariance property** to transform those estimates into quantities of interest. In this framework, we can use the **parametric bootstrap** to create confidence intervals and the **predictive distribution** to understand fitted models.
+1. **Bayesian inference** to obtain posterior beliefs (i.e., distributions) of model parameters. In most applied cases, we will **simulate from the posterior**. We can **transform** those simulations to obtain posterior distributions of the quantities of interest. We can use the **posterior predictive distribution** to understand the fit.
+1. We've discussed the tools above in the context of the **Bernoulli**, **Poisson**, and **exponential** models. Using the toothpaste cap, binary survey responses, civilian casualties, and government survival data.
+
+Today, we're going to focus on two narrow parts of **models** and explore how two current tools generalize to the regression context.
+
+1. The linear predictor $X\beta$.
+1. The inverse link function.
+1. How the [posterior] predictive distribution generalizes to regression.
+1. How quantities of interest generalize to regression.
+
+For this week, we'll need the following packages:
+
+- rstan/rstanarm
+- tidybayes
+- Zelig; `devtools::install_github('IQSS/Zelig')`
+
+## Review: The Normal Model
+
+To fix ideas, we are going to re-develop the linear model from POS 5746.
+
+We imagine a continuous outcome $y = \{y_1, y_1,..., y_n\}$ and a set of predictors or "explanatory variables" $x_1 = \{x_{11}, x_{21}, ..., x_{n1}\}, x_2 = \{x_{12}, x_{22}, ..., x_{n2}\}, ..., x_k = \{x_{1k}, x_{2k}, ..., x_{nk}\}$.
+
+The notation $y_i$ refers to the $i$th observation of the outcome variable.
+
+The notation $x_{ij}$ refers to the $i$th observation of the $j$th control variable.
+
+The we write the linear regression model as
+
+$$
+y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_k x_{ik} + r_i.
+$$
+
+We might then assume that the $r_i$s follow a normal distribution, so that $r_i \sim N(0, \sigma^2)$ for all $i$.
+
+The we can define $\mu_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_k x_{ik}$ and see that
+
+$$
+y_i \sim N(\mu_i, \sigma^2).
+$$
+Taking the expectation, we have $E(y_i \mid x_1, x_2, ... , x_n) = \mu_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_k x_{ik}$. This is just a *conditional average* (the average of the outcome conditional on the explanatory variables). Sometimes we refer to this quantity as $\hat{y}_i$. 
+
+There are two important features of this model that I want to explore: the **distribution** or "stochastic component" and the **linear predictor** of the model.
+
+### Distribution
+
+This model uses the normal distribution to describe the unexplained variation in $y_i - \hat{y}_i$. POS 5746 focuses (mostly) on models that assume a normal distribution for the outcome. King (1998) calls this the "stochastic" component of the model.
+
+For now, simply note that we are not restricted to a normal model, we could easily adapt the model to use a Bernoulli, exponential, or Poisson distribution, for example.
+
+### Linear Predictor
+
+The linear predictor $\beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_k x_{ik}$ is **critically** important. So we should spend some time to get familiar with it.
+
+For the sake of this exercise, the values of the $\beta$s and the $x_{ij}$s are arbitrary, 
+
+```{r}
+# devtools::install_github('IQSS/Zelig')
+data(macro, package = "Zelig")
+
+set.seed(1234)
+small_macro <- macro %>%
+  select(unem, gdp, capmob, trade) %>%
+  sample_n(5) %>%
+  mutate(across(.fns = signif, digits = 2)) 
+kableExtra::kable(small_macro, format = "markdown")
+
+fit <- lm(unem ~ gdp + capmob + trade, data = small_macro)
+signif(coef(fit), digits = 2)
+```
+
+**In-Class Exercise** For the $\beta$s and the $x_{ij}$s above, compute each $\mu_i$ and $r_i = y_i - \mu_i$. 
+
+Now, let's bind the explanatory variables into a matrix, so that 
+
+$$
+X = [x_1, x_2, ..., x_k] = \begin{bmatrix} 
+    x_{11} & x_{12} &\dots  & x_{1k}\\
+    x_{21} & x_{22} &\dots  & x_{2k}\\
+    \vdots & \vdots &\ddots & \vdots\\
+    x_{n1} & x_{n2} & \dots  & x_{nk} 
+    \end{bmatrix}.
+$$
+And let's bind the $\beta$s into a column-vector, so that 
+
+$$
+\beta = \begin{bmatrix} 
+    \beta_{1} \\
+    \beta_{2} \\
+    \vdots\\
+    \beta_{k}  
+    \end{bmatrix}.
+$$
+
+$\beta = [\beta_0, \beta_1, \beta_2, ..., \beta_k]$.
+
+Notice that we have a $n \times (k + 1)$ matrix $X$ and a $(k + 1) x 1$ matrix $\beta$. I content that the matrix multiplication $\mu = X\beta$ is identical to $\mu_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_k x_{ik}$.
+
+**In-Class Exercise** For the $\beta$s and the $x_{ij}$s above, compute each $\mu = X\beta$ and $r = y - \mu$.
+
+We can confirm with R.
+
+```{r}
+y <- small_macro$unem
+
+X <- cbind(1, 
+           small_macro$gdp, 
+           small_macro$capmob,
+           small_macro$trade)
+print(X)
+
+beta <- matrix(signif(coef(fit), digits = 2), ncol = 1)
+print(beta)
+
+mu <- X%*%beta; mu
+r <- small_macro$unem - mu; r
+```
+
+From now on, we can just write...
+
+- $X_i\beta$ rather than $\beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_k x_{ik}$ (returns a *scalar* $\mu_i$)
+- $X\beta$ rather than $\beta_0 + \beta_1 x_{1} + \beta_2 x_{2} + \beta_k x_{k}$ (returns a *vector* $\mu$)
+
+### Fitting the Normal-Linear Model
+
+
+#### Maximum Likelihood
+
+It turns out that the usual least-squares solution from POS 5746 is the maximum likelihood estimate of $\beta$. And the RMS of the residuals is the ML estimator of $\sigma$. 
+
+```{r}
+beta_hat <- solve(t(X)%*%X)%*%t(X)%*%y
+print(beta_hat, digits = 2)
+
+sigma_hat <- sqrt(sum((y - X%*%beta_hat)^2))
+print(sigma_hat, digits = 2)
+```
+
+```{r}
+fit <- lm(unem ~ gdp + capmob + trade, data = small_macro)
+arm::display(fit)
+```
+
+We can get confidence intervals with the parametric bootstrap.
+
+```{r}
+# get ml estimates
+fit <- lm(unem ~ gdp + capmob + trade, data = small_macro)
+mu_hat <- predict(fit)  # same as X%*%beta_hat
+sigma_hat <- sqrt(sum(residuals(fit)^2))
+
+# do parametric bootstrap
+n_bs <- 100
+bs_est <- matrix(NA, ncol = length(coef(fit)), nrow = n_bs)
+for (i in 1:n_bs) {
+  bs_y <- rnorm(nrow(small_macro), mean = mu_hat, sd = sigma_hat)
+  bs_fit <- update(fit, bs_y ~ .)
+  bs_est[i, ] <- coef(bs_fit)
+}
+
+# compute the quantiles for each coef
+apply(bs_est, 2, quantile, probs = c(0.05, 0.95))
+```
+
+#### Bayesian
+
+The `stan_glm()` function allows us to easily get posterior simulations for the coefficients (and $\sigma$) for the normal linear model.
+
+```{r message=FALSE, warning=FALSE, results="hide", cache = TRUE}
+library(rstanarm); options(mc.cores = parallel::detectCores())
+stan_fit <- stan_glm(unem ~ gdp + capmob + trade, data = small_macro, 
+                     family = "gaussian", 
+                     chains = 1, 
+                     prior = NULL,
+                     prior_intercept = NULL)
+```
+```{r}
+print(stan_fit)
+```
+
+### Applied Example
+
+```{r message=FALSE, warning=FALSE}
+# load data
+cg <- read_csv("data/parties.csv") %>%
+  glimpse()
+
+# fitting model with ls/ml
+f <- enep ~ eneg*log(average_magnitude) + eneg*upper_tier + en_pres*proximity
+fit <- lm(f, data = cg)
+arm::display(fit, detail = TRUE)
+```
+
+```{r, results="hide", cache = TRUE}
+# fitting model with Stan
+fit <- stan_glm(f, data = cg, chains = 1)
+```
+
+```{r}
+print(fit)
+```

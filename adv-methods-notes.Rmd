@@ -1,0 +1,2258 @@
+--- 
+title: 'Statistical Modeling: A Tools Approach'
+author: "Carlisle Rainey"
+date: "`r Sys.Date()`"
+output: pdf_document
+geometry: margin=2cm
+documentclass: book
+bibliography:
+- book.bib
+- packages.bib
+biblio-style: apalike
+link-citations: yes
+description: Lecture notes covering the key tools of regression modeling in political
+  science.
+site: bookdown::bookdown_site
+---
+
+# Week 1: Maximum Likelihood
+
+## Class agenda
+
+**Goal of the class** Make you competent users and consumers (applied and methods papers) of methods beyond least-squares. I'm deliberately avoiding causal-inference methods (matching, DID, etc) because we have a class that covers those specifically that we're offering regularly. I want you to learn a lot about specific tools, but also develop the skills to go and learn more on your own.
+
+We can deviate into any particular topic you'd find helpful.
+
+**Structure of the class** 
+
+We have three sources of information that we'll learn from:
+
+1. *My lectures* I have a set of tools that I want to introduce you to throughout the semester. I think of the lecture as offering "an overview" as well as "my take" on the tool. I will not supply all the details--we don't have enough time and a lecture isn't the ideal medium for deep and subtle ideas. In the past, I have supplied all of my lecture notes to students. However, the research seems clear that student note-taking boosts learning. 
+1. *Required readings* For each topic, I have a few readings selected to supply further details or offer a different perspective. I want you to carefully read the required readings, even if they seem familiar. 
+1. *Suggested and other readings* I encourage you to engage readings beyond the required set. These might be "easier" readings (e.g., FPP) or more difficult readings (e.g., Greene). In this category, I want you to use judgement. If the required readings are easy, then I recommend moving on *after* seriously engaging the required readings. If the required readings are too difficult, then seek out gentler introductions. You should NOT pursue the suggested or other readings at the expense of the required readings.
+
+**Assessments**
+
+This semester, we have a large set of tools that you must demonstrate that you (1) understand and (2) can implement.
+
+1. Exams: We will have regular exams that require you to implement and explain particular tools. I'm open to suggestions on frequency, but I suggest a *weekly*, open-book, take-home exam with about a one hour time limit. I will grade these as pass/fail. You can re-take a (slightly modified) exam up to three times if you fail.
+1. Journal: I want to you to journal throughout the semester. I want you to spend *at least* three hours (hopefully more most weeks) outside of class working on your journal. This journal should have several parts:
+   a. Class Notes
+   a. Review Exercises
+   a. Notes from the required readings, including summaries, reactions, and (especially) questions or flags for ideas you didn't understand. This latter is very important--it will make us all better.
+   a. Notes from other readings. I want to give you a bit of space to explore things on your own. You could do a deeper dive on ideas covered carefully in the lectures or readings. Or you could pursue a tangential topic (but keep it somewhat related to class). Again, summaries, reactions, and questions are appropriate. I suggest engaging with reading from substantive course with this class in mind, and record your thoughts in your journal.
+   a. Connections throughout the semester.
+   a. Explorations of ideas for future projects. 
+
+
+
+<!--chapter:end:index.Rmd-->
+
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r include=FALSE}
+library(tidyverse)
+```
+
+As I see it, "regression modeling" in political science is a several-step process:
+
+You begin with a substantive understanding of the way the world works.
+
+1. Choose a regression model. I introduce many.
+1. Fit a regression model. Maximum likelihood and Markov chain Monte Carlo methods are powerful and general.
+1. Evaluate the fit. What are the properties of the procedure? How well does the model match the data?
+1. Interpret the model. I emphasize quantities of interest and confidence intervals, but also discuss hypothesis tests.
+
+You then update your understanding of the world.
+
+This week, I introduce our first "engine": maximum likelihood. As a starting point, we use ML to estimate the parameters of Bernoulli, Poisson, and beta distributions (without covariates). I introduce the parametric bootstrap as a tool to obtain confidence intervals. I introduce the invariance property and show how we can use the invariance property to transform the estimated parameters into other quantities of interest. To evaluate the models, we use the predictive distribution.
+
+## Maximum Likelihood
+
+Suppose we have a random sample from a distribution $f(x; \theta)$. We find the maximum likelihood (ML) estimator $\hat{\theta}$ of $\theta$ by maximizing the likelihood of the observed data with respect to $\theta$.
+
+In short, we take the likelihood of the data (given the model and a particular $\theta$) and find the parameter $\theta$ that maximizes it. 
+
+In practice, to make the math and/or computation a bit easier, we manipulate the likelihood function in two ways:
+
+1. Relabel the likelihood function $f(x; \theta) = L(\theta)$, since it's weird to maximize with respect to a "conditioning variable"fixed" variable. (The notation $f(x; \theta)$ suggests $x$ varies for a particular $\theta$.)
+1. Work with $\log L(\theta)$ rather than $L(\theta)$. Because $\log()$ is a monotonically increasing function, the $\theta$ that maximizes $L(\theta)$ also maximizes $\log L(\theta)$. 
+
+Suppose we have samples $x_1, x_2, ..., x_N$ from $f(x; \theta)$. Then the joint density/probability is $f(x; \theta) = \prod_{n = 1}^N f(x_n; \theta)$ and $\log L(\theta) = \sum_{n = 1}^N \log \left[ f(x_n; \theta) \right]$. The ML estimator $\hat{\theta}$ of $\theta$ is $\arg \max \log L(\theta)$.
+
+In applied problems, we might be able to simplify $\log L$ substantially. Occasionally, we can find a nice analytical maximum. In many cases, we have a computer find the parameter that maximizes $\log L$.
+
+### Example: Bernoulli Distribution
+
+As a running example, we use the **toothpaste cap problem**:
+
+> We have a toothpaste cap--one with a wide bottom and a narrow top. We're going to toss the toothpaste cap. It can either end up lying on its side, its (wide) bottom, or its (narrow) top. 
+
+> We want to estimate the probability of the toothpaste cap landing on its top.
+
+> We can model each toss as a Bernoulli trial, thinking of each toss as a random variable $X$ where $X \sim \text{Bernoulli}(\pi)$. If the cap lands on its top, we think of the outcome as 1. If not, as 0. 
+
+Suppose we toss the cap $N$ times and observe $k$ tops. What is the ML estimate $\hat{\pi}$ of $\pi$?
+
+According to the model $f(x_i; \pi) = \pi^{x_i} (1 - \pi)^{(1 - x_i)}$. Because the samples are iid, we can find the *joint* distribution $f(x) = f(x_1) \times ... \times f(x_N) = \prod_{i = 1}^N f(x_i)$. We're just multiplying $k$ $\pi$s (i.e., each of the $k$ ones has probability $\pi$) and $(N - k)$ $(1 - \pi)$s (i.e., each of the $N - k$ zeros has probability $1 - \pi$), so that the $f(x; \pi) = \pi^{k} (1 - \pi)^{(N - k)}$.
+$$
+\text{the likelihood:  } f(x; \pi) =  \pi^{k} (1 - \pi)^{(N - k)}, \text{where } k = \sum_{n = 1}^N x_n \\
+$$
+Then, we relabel. 
+$$
+\text{the likelihood:  } L(\pi) = \pi^{k} (1 - \pi)^{(N - k)}\\
+$$
+Then, we take the log and simplify. 
+$$
+\text{the log-likelihood:  } \log L(\pi) = k \log (\pi) + (N - k) \log(1 - \pi)\\
+$$
+To find the ML estimator, we find $\hat{\pi}$ that maximizes $\log L$. 
+
+The code below plots the log-likelihood function using the 8/150 data.
+
+```{r fig.height=3, fig.width=4}
+pi <- seq(0.01, 0.99, length.out = 1000)
+data <- tibble(pi = pi) %>%
+  mutate(log_lik = 18*log(pi) + (150 - 8)*log(1 - pi))
+ggplot(data, aes(x = pi, y = log_lik)) + 
+  geom_vline(xintercept = 8/150, color = "green") + 
+  geom_line() + 
+  theme_minimal()
+```
+
+In this case, the analytical optimum is easy.
+
+$$
+\begin{aligned}
+\frac{d \log L}{d\hat{\pi}} = k \left( \frac{1}{\hat{\pi}}\right) + (N - k) \left( \frac{1}{1 - \hat{\pi}}\right)(-1) &= 0\\
+\frac{k}{\hat{\pi}} - \frac{N - y}{1 - \hat{\pi}} &= 0 \\
+\frac{k}{\hat{\pi}} &= \frac{N - y}{1 - \hat{\pi}} \\
+k(1 - \hat{\pi}) &= (N - y)\hat{\pi} \\
+k - y\hat{\pi} &= N\hat{\pi} - y\hat{\pi} \\
+k  &= N\hat{\pi} \\
+\hat{\pi} &= \frac{k}{N} = \text{avg}(x)\\
+\end{aligned}
+$$
+The ML estimator of $\pi$ is the average of the $N$ Bernoulli trials, or, equivalently, the fraction of successes. 
+
+The collected data consist of 150 trials and 8 successes, so the ML estimate of $\pi$ is $\frac{8}{150} \approx 0.053$.
+
+### Example: Poisson Distribution
+
+Suppose we collect $N$ random samples $x = \{x_1, x_2, ..., x_N\}$ and model each draw as a random variable $X \sim \text{Poisson}(\lambda)$. Find the ML estimator of $\lambda$.
+
+$$
+\begin{aligned}
+\text{Poisson likelihood: } f(x; \lambda) &= \prod_{n = 1}^N \frac{\lambda^{x_n} e^{-\lambda}}{x_n!} \\
+L(\lambda) &= \prod_{n = 1}^N \frac{\lambda^{x_n} e^{-\lambda}}{x_n!} \\
+\log L(\lambda) &= \sum_{n = 1}^N \log \left[ \frac{\lambda^{x_n} e^{-\lambda}}{x_n!} \right]\\
+&= \sum_{n = 1}^N \left[ x_n \log \lambda + (-\lambda) \log e - \log x_n! \right]\\
+&= \log \lambda \left[ \sum_{n = 1}^N x_n \right]  -N\lambda + \sum_{n = 1}^N \log (x_n!) \\
+\end{aligned}
+$$
+
+To find the ML estimator, we find $\hat{\lambda}$ that maximizes $\log L$. In this case, the analytical optimum is easy.
+
+$$
+\begin{aligned}
+\frac{d \log L}{d\hat{\lambda}} = \frac{1}{\hat{\lambda}} \left[ \sum_{n = 1}^N x_n \right] - N &= 0\\
+\frac{1}{\hat{\lambda}} \left[ \sum_{n = 1}^N x_n \right] &= N \\
+\left[ \sum_{n = 1}^N x_n \right] &= N \hat{\lambda} \\
+\hat{\lambda} &= \frac{ \sum_{n = 1}^N x_n }{N} = \text{avg}(x)  \\
+\end{aligned}
+$$
+The ML estimator for the Poisson distribution is just the average of the samples. 
+
+### Remarks
+
+The ML estimator is extremely common in political science because they are general, fast, and work extremely well. Lots of models that you've heard of, such as logistic regression, are estimated with ML.
+
+We can even obtain ML estimates for the linear regression model. We assume that the observed data are samples from a normal distribution with mean $\mu_n = \alpha + \beta x_n$ and variance $\sigma^2$. For this model, the least-squares estimate that we learned earlier is also the ML estimate. 
+
+### Example: Beta Distribution
+
+Questions:
+
+1.  What is the \textit{support} of the beta distribution? $[0, 1]$
+1. Is $y$ a discrete random variable or a continuous random variable? Continuous.
+1. What is the pdf/pmf? $f(y_i; \alpha, \beta) = \dfrac{y_i^{\alpha - 1}(1 - y_i)^{\beta - 1}}{B(\alpha, \beta)}$, where $B(\alpha, \beta) = \displaystyle \int_0^1 t^{\alpha - 1}(1 - t)^{\beta - 1}dt$.
+
+With the beta distribution, we add two complications that typically occur when using ML.
+
+1. multiple parameters
+1. an intractable log-likelihood
+
+Start with the probability model $Y_i \sim f(y_i; \theta)$. In the case of the beta model, we have $Y_i \sim \text{beta}(y_i; \alpha, \beta)$. The $\alpha$ and $\beta$ here don't have a convenient interpretation. They are "shape" parameters. You can think of $\alpha$ as pushing the distribution to the right and $\beta$ as pushing the distribution to the left.
+
+```{r}
+alphas <- c(0.8, 1, 2, 5, 25)
+betas <- c(0.8, 1, 2, 5, 25)
+
+x <- seq(0, 1, length.out = 100)
+
+pdfs <- crossing(alpha = alphas, 
+                 beta = betas, 
+                 x = x) %>%
+  mutate(pdf = dbeta(x, alpha, beta)) %>%
+  mutate(alpha_lbl = paste0("alpha == ", alpha),
+         beta_lbl = paste0("beta == ", beta)) 
+
+ggplot(pdfs, aes(x = x, y = pdf)) + 
+  facet_grid(rows = vars(beta_lbl), cols = vars(alpha_lbl), 
+             labeller = "label_parsed", scales = "free") + 
+  geom_line()
+
+```
+
+We now have two parameters to estimate and we're going to assume that we have multiple observations, so that $y = [y_1, y_2, ,..., y_n]$.
+
+In general, this is how we do ML:
+
+**Step 1** Write down the likelihood function. Recall that we can obtain the joint density of $y_1$ AND $y_2$ AND ... AND $y_n$ by multiplying the probabilities of each (assuming independence).
+$$
+\begin{aligned}
+L(\alpha, \beta) = \displaystyle\prod_{i = 1}^n \overbrace{f(y_i;\alpha, \beta)}^{\text{density}} = \displaystyle\prod_{i = 1}^n \dfrac{y_i^{\alpha - 1}(1 - y_i)^{\beta - 1}}{B(\alpha, \beta)}
+\end{aligned}
+$$
+We see again, as will be usual, that we have this complicated product that will make our lives difficult.
+
+**Step 2** Take the log and simplify.
+$$
+\begin{aligned}
+L(\alpha, \beta) &= \displaystyle\prod_{i = 1}^n \dfrac{y_i^{\alpha - 1}(1 - y_i)^{\beta - 1}}{B(\alpha, \beta)}\\
+\log L(\alpha, \beta) &= \displaystyle\sum_{i = 1}^n \log \dfrac{y_i^{\alpha - 1}(1 - y_i)^{\beta - 1}}{B(\alpha, \beta)}\\
+&= \displaystyle\sum_{i = 1}^n \left[ \log y_i^{\alpha - 1} + \log (1 - y_i)^{\beta - 1} - \log B(\alpha, \beta)\right]\\
+&= \displaystyle\sum_{i = 1}^n \left[ (\alpha - 1)\log y_i + (\beta - 1)\log (1 - y_i) - \log B(\alpha, \beta)\right]\\
+&= \displaystyle\sum_{i = 1}^n \left[ (\alpha - 1)\log y_i + (\beta - 1)\log (1 - y_i)\right] - n \log B(\alpha, \beta)\\
+\log L(\alpha, \beta) &= (\alpha - 1) \sum_{i = 1}^n \log y_i + (\beta - 1) \sum_{i = 1}^n \log (1 - y_i) - n \log B(\alpha, \beta)
+\end{aligned}
+$$
+**Step 3** Maximize
+
+If we wanted, we could work on this one analytically. 
+
+1. Take the derivative w.r.t. $\alpha$.
+1. Take the derivative w.r.t. $\beta$.
+1. Set both equal to zero and solve. (Two equations and two unknowns.)
+
+But the last term $B(\alpha, \beta) = \int_0^1 t^{\alpha - 1}(1 - t)^{\beta - 1}dt$ is tricky! So let's do it numerically.
+
+To perform the optimization, we need a data set. For now, let's simulate a fake data set with known parameters
+
+```{r}
+y <- rbeta(1000, shape1 = 10, shape2 = 10)
+```
+
+Let's plot the log-likelihood function to see what we're dealing with.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+library(plotly)
+
+alpha <- seq(0.1, 25, length.out = 100)
+beta  <- seq(0.1, 25, length.out = 100)
+data <- crossing(alpha, beta) %>%
+  mutate(log_lik = alpha*sum(log(y)) + beta*sum(log(1 - y)) - 
+           length(y)*log(beta(alpha, beta)))
+
+plot_ly(x = ~alpha, y = ~beta, z = ~log_lik, data = data) %>%
+  add_mesh(labels = c("alpha", "beta", "log-likelihood"))
+```
+
+```{r fig.height=3, fig.width=4}
+ggplot(data, aes(x = alpha, y = beta, z = log_lik)) + 
+  geom_contour(bins = 100)
+```
+
+Now let's program the log-likelihood function in R to handle the optimization numerically.
+
+```{r}
+ll_fn <- function(theta, y) {
+  alpha <- theta[1]  # optim() requires a single parameter vector
+  beta <- theta[2]
+  ll <- alpha*sum(log(y)) + beta*sum(log(1 - y)) - 
+           length(y)*log(beta(alpha, beta))
+  return(ll)
+}
+```
+
+Now let's use `optim()` to do the maximization.
+
+```{r}
+est <- optim(par = c(1, 1), fn = ll_fn, y = y,
+               control = list(fnscale = -1),
+               method = "Nelder-Mead")
+
+print(est$par, digits = 3)
+```
+
+We can also wrap the `optim()` in a function, to make obtaining the estimates a little bit easier.
+
+```{r}
+est_beta <- function(y) {
+  est <- optim(par = c(1, 1), fn = ll_fn, y = y,
+               control = list(fnscale = -1),
+               method = "Nelder-Mead") # for >1d problems
+  if (est$convergence != 0) print("Model did not converge!")
+  res <- list(est = est$par)
+  return(res)
+}
+
+ml_est <- est_beta(y)
+print(ml_est, digits = 3)
+```
+
+<!--chapter:end:01-01-maximum-likelihood.Rmd-->
+
+## The Invariance Property
+
+The parameter $\pi$ has a nice interpretation--it's a probability or the expected fraction of 1s in the long-run. However, the model parameters might not always have nice interpretation. (See the "shape" parameters of the beta distribution.) Fortunately, it's easy to transform the ML estimates of the model parameters into ML estimates of a quantity of interest.
+
+Suppose we obtain an ML estimate $\hat{\theta}$ of a parameter $\theta$. But we also (or instead) want to estimate a transformation $\tau(\theta)$. The we can estimate $\tau(\theta)$ by applying the transformation $\tau$ to the ML estimate $\hat{\theta}$, so that $\widehat{\tau(\theta)} = \hat{\tau} = \tau(\hat{\theta})$.
+
+### Example: Bernoulli Odds
+
+Suppose that we want an ML estimator of the *odds* of getting a top for the toothpaste cap problem. We already used ML to estimate the *probability* $\pi$ of getting a top and came up with $\frac{8}{150} \approx 0.053$. We can directly transform a probability into odds using $\text{odds} = \frac{\pi}{1 - \pi}$. This has a nice interpretation: odds = 2 means that a top is twice as likely as not; odds = 0.5 means that a top is half as likely as not. 
+
+In our case, we can plug our ML estimate of $\pi$ into the transformation to obtain the ML estimate of the odds.
+$$
+\begin{aligned}
+\widehat{\text{odds}} &= \frac{\hat{\pi}}{1 - \hat{\pi}} \\
+& = \frac{\frac{8}{150}}{1 - \frac{8}{150}} \\
+& = \frac{\frac{8}{150}}{\frac{150}{150} - \frac{8}{150}} \\
+& = \frac{\frac{8}{150}}{\frac{142}{150}} \\
+& = \frac{8}{142} \\
+& \approx 0.056
+\end{aligned}
+$$
+This means that tops are about 0.06 times as likelihood as not-tops. Inverted, you're about $\frac{142}{8} \approx 18$ times more likely to not get a top than get a top.
+
+### Example: Poisson SD 
+
+In this example, we use real data from Hultman, Kathman, and Shannon (2013). They are interested in civilian casualties during civil wars. They write: 
+
+> To gauge the effectiveness of peacekeeping, we explore all intrastate armed conflicts in sub-Saharan Africa from 1991 to 2008 with monthly observations. Conflicts are identified using the Uppsala Conflict Data Program/Peace Research Institute, Oslo (UCDP/PRIO) Armed Conflict Dataset v.4–2010 (Gleditsch et al. 2002; Harbom and Wallensteen 2009), which employs a threshold of 25 battle deaths per year. The dataset covers 36 conflicts, 12 of which have a PKO present at some time. Consistent with previous research, we add two years of observations to the end of each conflict episode, as the theoretical processes associated with victimization may continue after the cessation of hostilities (Cunningham, Gleditsch, and Salehyan 2009).
+
+Below are a random sample of 250 observations from their 3,972 monthly observations.
+
+```{r}
+civilian_casualties <- c(0, 0, 0, 0, 0, 13, 0, 0, 61, 0, 0, 0, 0, 0, 0, 0, 0,
+                          0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 19, 0, 0, 12, 0, 0, 4, 147, 0, 934, 0, 0,
+                          42, 0, 24, 124, 0, 1, 0, 0, 0, 145844, 0, 0, 44, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                          0, 0, 2, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                          7971, 0, 0, 0, 0, 72, 0, 40, 0, 0, 444, 0, 0, 0, 0, 48, 109, 33, 0, 0, 0, 0,
+                          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 41, 0, 0, 0, 0, 84, 0, 34, 0, 0, 0,
+                          0, 0, 0, 0, 1, 0, 15, 0, 0, 15, 0, 104, 0, 24, 0, 0, 104, 0, 0, 4, 0, 0, 0, 0,
+                          0, 12, 41, 0, 0, 37, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                          0, 0, 12, 0, 4, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 8, 21, 0, 0, 0, 0, 25, 0, 0, 0,
+                          3, 0, 0, 27, 0, 0, 576, 3, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 32, 0, 0, 0, 0,
+                          0, 0, 0, 94, 42, 0, 30, 0, 2, 12, 0, 0, 5, 5 ) 
+```
+
+We can estimate a single-parameter Poisson model to estimate a mean $\lambda$ and a rate $\frac{1}{\lambda}$. In the case of the Poisson model, the ML estimate $\hat{lambda}$ of $\lambda$ is $\text{avg}(y)$.
+
+```{r}
+ml_est <- mean(civilian_casualties)
+print(ml_est, digits = 3)
+```
+
+The mean is a nice, interpretable parameter, but we might want also want the SD. For the Poisson distribution, the variance equals the mean, so $\text{Var}(y) = \text{E}(y) = \lambda$. Therefore, the SD is $\sqrt{\lambda}$.  
+
+```{r}
+# ML estimate of SD
+ml_est <- sqrt(630)
+print(ml_est, digits = 2)
+```
+
+This is the ML estimate of the SD of the data, and it carries all the properties of ML estimators. We're using the invariance property to move from the mean to the SD by a simple transformation.
+
+### Example: Beta Mean and Variance
+
+Now let's see an example of the beta distribution $Y \sim \text{beta}(\alpha, \beta)$. The beta distribution does not have parameters that are easily interpretable in terms of mean and variance. Instead, it has two "shape" parameters $\alpha$ and $\beta$ that are in tension---one pulls the distribution to the left and the other pulls the distribution to the right.
+
+For this example, I use opinion data from the 50 states from Barrilleaux and Rainey (2014). You can find the data here: https://github.com/carlislerainey/aca-opinion/blob/master/Data/mrp_est.csv
+
+To make these data suitable for the beta distribution, I rescaled the observations from a percent to a proportion that ranges from 0 to 1.
+
+```{r}
+br <- tibble::tribble(
+  ~state_abbr, ~prop_favorable_aca,
+         "AL",   0.382711108911823,
+         "AK",   0.374428493677838,
+         "AZ",   0.396721609154912,
+         "AR",   0.361623814680961,
+         "CA",   0.560999240847165,
+         "CO",   0.450011650633043,
+         "CT",   0.522239143634457,
+         "DE",   0.524637037667977,
+         "DC",   0.853595690161985,
+         "FL",    0.47022917052716,
+         "GA",   0.460216990024346,
+         "HI",    0.61965456264517,
+         "ID",   0.282992730179373,
+         "IL",   0.550517975187469,
+         "IN",   0.421854785281297,
+         "IA",   0.454007062646206,
+         "KS",   0.394817640911206,
+         "KY",   0.336156662764729,
+         "LA",   0.425588396620569,
+         "ME",   0.472319257331465,
+         "MD",   0.583719023711148,
+         "MA",   0.531871146279692,
+         "MI",   0.509096426714406,
+         "MN",   0.497981331879903,
+         "MS",   0.468038078521612,
+         "MO",   0.420161837905426,
+         "MT",   0.351773944902139,
+         "NE",   0.365225584190989,
+         "NV",   0.459026605256376,
+         "NH",    0.43886275738451,
+         "NJ",   0.531656835425683,
+         "NM",   0.528461049175538,
+         "NY",     0.6010574821094,
+         "NC",   0.452240849305449,
+         "ND",   0.367690453757597,
+         "OH",   0.456298880813516,
+         "OK",   0.309578750918355,
+         "OR",   0.455832591683007,
+         "PA",    0.45819440292365,
+         "RI",   0.536978574569609,
+         "SC",   0.444870259057071,
+         "SD",   0.377170366708612,
+         "TN",   0.368615233253355,
+         "TX",   0.428407014559672,
+         "UT",   0.248496577141183,
+         "VT",   0.553042362822573,
+         "VA",   0.470739058046787,
+         "WA",   0.496133477680592,
+         "WV",   0.295062675817918,
+         "WI",   0.489912969415965,
+         "WY",   0.263567780036879
+  )
+```
+
+Now let's find the ML estimates of the two shape parameters of the beta distribution.
+
+```{r}
+# obtain ml estimates
+log_lik_fn <- function(par = c(2, 2), y) {
+  a <- par[1]  # pulling these out makes the code a bit easier to follow
+  b <- par[2]
+  log_lik_i <- dbeta(y, shape1 = a, shape2 = b, log = TRUE)
+  log_lik <- sum(log_lik_i)
+  return(log_lik)
+}
+opt <- optim(par = c(2, 2), fn = log_lik_fn, y = br$prop_favorable_aca,
+             control = list(fnscale = -1))
+ml_est <- opt$par
+print(ml_est, digits = 3)
+```
+
+The mean is given by $\frac{\alpha}{\alpha + \beta}$ and the variance is given by $\frac{\alpha\beta}{(\alpha + \beta)^2(\alpha + \beta + 1)}$.
+
+We can use the invariance property to obtain ML estimates of the mean and variance using our ML estimates of $\alpha$ and $\beta$.
+
+```{r}
+a <- ml_est[1]
+b <- ml_est[2]
+
+a/(a + b)  # mean
+(a * b)/((a + b)^2 * (a + b + 1))  # var
+```
+
+It's worth noting that these correspond closely, *but not exactly* to the observed mean and variance.
+
+```{r}
+mean(br$prop_favorable_aca)
+var(br$prop_favorable_aca)
+```
+
+<!--chapter:end:01-02-invariance-property.Rmd-->
+
+
+## The Parametric Bootstrap
+
+The parametric bootstrap is a powerful, general tool to obtain confidence intervals for estimates from parametric models. 
+
+Importantly, we are going to lean *pretty heavily* on the assumption that we have a good model of the distribution of the data. (The predictive distribution below allows us to assess this.) There's also a ***non**parametric* bootstrap, which is much more popular. We consider that later in the semester.
+
+Suppose we have a sample $y$ from some known distribution $f(y; \theta)$ and use $y$ to estimate the model parameter(s) $\theta$ or some quantity of interest $\tau(\theta)$. Remember, we can use ML to estimate either.
+
+To compute a confidence interval, we can use a *parametric* bootstrap. To do implement the parametric bootstrap, do the following: 
+
+1. Approximate $f(y; \theta)$ with $\hat{f} = f(y; \hat{\theta})$. Simulate a new outcome $y^{\text{bs}}$ from the estimated distribution. 
+1. Re-compute the estimate of interest $\hat{\theta}^{\text{bs}}$ or $\hat{\tau}^{\text{bs}}$ using the bootstrapped outcome variable $y^{\text{bs}}$ rather than the observed outcome $y$.
+1. Repeat 1 and 2 many times (say 2,000) to obtain many bootstrapped estimates. To obtain the 95% confidence interval, take the 2.5th and 97.5th percentiles of the estimates. This is known as the percentile method.
+
+### Example: Toothpaste Cap Problm
+
+The code below implements the parametric bootstrap for the toothpaste cap problem. For 2,000 iterations, it draws 150 observations from $Y \sim \text{Bernoulli}(\hat{\pi} = \frac{8}{150})$. For each iteration, it computes the ML estimate of $\pi$ for the bootstrapped data set. Then it computes the percentiles to obtain the confidence interval.
+
+```{r}
+n_bs <- 2000
+bs_est <- numeric(n_bs)  # a container for the estimates
+for (i in 1:n_bs) {
+  bs_y <- rbinom(150, size = 1, prob = 8/150)
+  bs_est[i] <- mean(bs_y)
+}
+print(quantile(bs_est, probs = c(0.025, 0.975)), digits = 2)  # 95% ci
+```
+
+We leave an evaluation of this confidence interval (i.e., Does it capture $\theta$ 95% of the time?) to later in the semester.
+
+### Example: Beta Distribution
+
+Now let's apply the parametric bootrap to a two-parameter model: the beta distribution.
+
+First, let's simulate a (fake) data set to use.
+
+```{r}
+# set parameters
+alpha <- 5
+beta <- 2
+
+# simulate data
+set.seed(1234)
+n <- 100
+y <- rbeta(n, alpha, beta)
+```
+
+Now let's find the ML estimates of the two shape parameters.
+
+```{r}
+# obtain ml estimates
+log_lik_fn <- function(par = c(2, 2), y) {
+  a <- par[1]  # pulling these out makes the code a bit easier to follow
+  b <- par[2]
+  log_lik_i <- dbeta(y, shape1 = a, shape2 = b, log = TRUE)
+  log_lik <- sum(log_lik_i)
+  return(log_lik)
+}
+opt <- optim(par = c(3, 3), fn = log_lik_fn, y = y,
+             control = list(fnscale = -1))
+ml_est <- opt$par
+print(ml_est, digits = 3)
+```
+
+Now let's use those ML estimates to perform a parametric bootstrap and find 95% CIs for the shape parameters.
+
+```{r}
+# obtain parametric bootstrap 95% ci for alpha and beta
+n_bs <- 2000
+bs_est <- matrix(NA, nrow = n_bs, ncol = 2)  # a container for the estimates
+for (i in 1:n_bs) {
+  bs_y <- rbeta(n, shape1 = ml_est[1], shape2 = ml_est[2])
+  bs_opt <- optim(par = c(3, 3), fn = log_lik_fn, y = bs_y,
+             control = list(fnscale = -1))
+  bs_est[i, ] <- bs_opt$par
+}
+ci <- apply(bs_est, MARGIN = 2, quantile, probs = c(0.025, 0.975))
+print(ci, digits = 3)  # 95% ci
+```
+
+If instead we cared about the mean of the beta distribution (which is $\frac{\alpha}{\alpha + \beta}$), we can use the parametric bootstrap to obtain a confidence interval for that quantity as well.
+
+```{r}
+
+# obtain parametric bootstrap 95% ci for mean
+n_bs <- 2000
+bs_est <- numeric(n_bs)  # a container for the estimates
+for (i in 1:n_bs) {
+  bs_y <- rbeta(n, shape1 = ml_est[1], shape2 = ml_est[2])
+  bs_opt <- optim(par = c(3, 3), fn = log_lik_fn, y = bs_y,
+             control = list(fnscale = -1))
+  bs_alpha <- bs_opt$par[1]
+  bs_beta <- bs_opt$par[2]
+  bs_est[i] <- bs_alpha/(bs_alpha + bs_beta)
+}
+print(quantile(bs_est, probs = c(0.025, 0.975)), digits = 2)  # 95% ci
+
+# true mean 
+print(alpha/(alpha + beta), digits = 2)
+```
+
+<!--chapter:end:01-03-parametric-bootstrap.Rmd-->
+
+## Sampling Distribution
+
+```{r include=FALSE}
+library(tidyverse)
+```
+
+What's the most important concept in statistical inference? I don't know, but it could be **the sampling distribution**. For effect, let me back off the hedge.
+
+> The most important concept in statistical inference is the **sampling distribution**.
+
+To define a sampling distribution, you need to imagine repeating a study over and over. If each study has a random component (perhaps random sampling or random assignment to treatment and control), then the estimate will differ from study to study. The distribution of the estimates across the studies is called the sampling distribution.
+
+### Example: The Toothpaste Cap Problem
+
+For a given sample of 150 tosses, we recognize the the ML estimate $\hat{\pi}$ does not (usually) exactly equal the parameter $\pi$. Instead, the particular $\hat{\pi}$ that the study produces is draw from a distribution.
+
+Let's illustrate that with a simulation. For these simulations, I suppose that we toss the toothpaste cap 150 times and the chance of a head is 5%.
+
+```{r}
+n_sims <- 10
+ml_est <- numeric(n_sims)  # a container for the estimates
+for (i in 1:n_sims) {
+  y <- rbinom(150, size = 1, prob = 0.05)
+  ml_est[i] <- mean(y)
+}
+print(ml_est, digits = 2)
+```
+
+As you can see, the ML estimates vary to from sample to sample--different data sets produce different ML estimates. We need a way to create a confidence interval that consistently captures $\theta$. 
+
+If we repeat the simulations a large number of times, we can see an accuracy picture of the sampling distribution via histogram.
+
+```{r fig.height=3, fig.width=4}
+n_sims <- 10000
+ml_est <- numeric(n_sims)  # a container for the estimates
+for (i in 1:n_sims) {
+  y <- rbinom(150, size = 1, prob = 0.05)
+  ml_est[i] <- mean(y)
+}
+
+gg_data <- data.frame(ml_est = ml_est)
+ggplot(gg_data, aes(x = ml_est)) + 
+  geom_bar()
+```
+
+Many of our methods of evaluating an estimator are statements about the sampling distribution of that estimator. In general, we'd like the sampling distribution to be centered over the true parameter of interest and tightly dispersed.
+
+## Bias
+
+Imagine repeatedly sampling and computing the estimate $\hat{\theta}$ of the parameter $\theta$ for each sample. In this thought experiment, $\hat{\theta}$ is a random variable. We say that $\hat{\theta}$ is **biased** if $E(\hat{\theta}) \neq \theta$. We say that $\hat{\theta}$ is **unbiased** if $E(\hat{\theta}) = \theta$. We say that the **bias** of $\hat{\theta}$ is  $E(\hat{\theta}) - \theta$.
+
+Importantly, **ML estimators are not necessarily unbiased**. Of the models we will see in this course, *most* are biased.
+
+### Example: Bernoulli Distribution
+
+For example, we can compute the bias of our ML estimator of $\pi$ in the toothpaste cap problem.
+
+$$
+\begin{aligned}
+E\left[ \frac{k}{N}\right] &= \frac{1}{N} E(k) = \frac{1}{N} E  \overbrace{ \left( \sum_{n = 1}^N x_n \right) }^{\text{recall } k = \sum_{n = 1}^N x_n } = \frac{1}{N} \sum_{n = 1}^N E(x_n) = \frac{1}{N} \sum_{n = 1}^N \pi = \frac{1}{N}N\pi \\
+&= \pi
+\end{aligned}
+$$
+
+Thus, $\hat{\pi}^{ML}$ is an unbiased estimator of $\pi$ in the toothpaste cap problem.
+
+We can use a Monte Carlo simulation to check this analytical result.
+
+```{r}
+set.seed(1234)
+n_mc_sims <- 100000
+pi_hat <- numeric(n_mc_sims)
+for (i in 1:n_mc_sims) {
+  y <- rbinom(150, size = 1, prob = 0.05)
+  pi_hat[i] <- mean(y)
+}
+
+# expected value of pi-hat
+mean(pi_hat)
+
+# estimated monte carlo error
+sd(pi_hat)/sqrt(n_mc_sims)
+```
+
+But notice that the property of unbiasedness does not follow the estimate through transformation. Because the sample is relatively large in this case (150 tosses), the bias is small, but detectable with 100,000 Monte Carlo simulations
+
+```{r}
+odds_hat <- pi_hat/(1 - pi_hat)
+
+# actual odds
+0.05/(1 - 0.05)
+
+# expected value of odds-hat
+mean(odds_hat)
+
+# estimated monte carlo error
+sd(odds_hat)/sqrt(n_mc_sims)
+
+# the z-statistic
+(mean(odds_hat) - 0.05/0.95)/(sd(odds_hat)/sqrt(n_mc_sims))
+```
+
+
+### Example: Poisson Distribution
+
+Using math almost identical to the toothpaste cap problem, we can show that the ML estimator $\hat{\lambda} = \text{avg}(x)$ is an unbiased estimator of $\lambda$. 
+
+We can also illustrate the unbiasedness with a computer simulation.
+
+```{r}
+lambda <- 4.0      # the parameter we're trying to estimate
+sample_size <- 10  # the sample size we're using in each "study"
+
+n_mc_sims <- 10000  # the number of times we repeat the "study"
+lambda_hat <- numeric(n_mc_sims)  # a container 
+for (i in 1:n_mc_sims) {
+  x <- rpois(sample_size, lambda = lambda)
+  lambda_hat[i] <- mean(x)
+}
+
+# expected value of lambda-hat
+mean(lambda_hat)
+
+# estimated monte carlo error
+sd(lambda_hat)/sqrt(n_mc_sims)
+```
+
+## Consistency
+
+Imagine taking a sample of size $N$ and computing the estimate $\hat{\theta}_N$ of the parameter $\theta$. We say that $\hat{\theta}$ is a **consistent** estimator of $\theta$ if $\hat{\theta}$ converges in probability to $\theta$.
+
+Intuitively, this means the following:
+
+1. For a large enough sample, the estimator returns the exact right answer.
+1. For a large enough sample, the estimate $\hat{\theta}$ does not vary any more, but collapses onto a single point and that point is $\theta$.
+
+Under weak, but somewhat technical, assumptions that usually hold, ML estimators are consistent. 
+
+Given that we always have finite samples, why is consistency valuable? In short, it's not valuable, directly. However, consistent estimators tend to be decent with small samples. 
+
+But it does not follow that consistent estimators work well in small samples. However, as a rough guideline, consistent estimators work well for small samples. However, whether they actually work well in any particular situation needs a more careful investigation.
+
+### Example: Illustrative
+
+To illustrate the concept of consistency, consider this estimator of the population mean $\hat{\mu}^{\text{silly}} = \frac{\sum_{i = 1}^N x_i}{N + 10}$. While this estimator is biased, it is a consistent estimator.
+
+```{r message=FALSE, warning=FALSE}
+population <- c(1, 2, 3, 4, 5)
+sample_sizes <- c(2, 5, 10, 100, 1000, 10000, 100000)
+n_mc_sims <- 30  # for each sample size
+results_list <- list()  # grow with each iteration; slow, but easy
+for (i in 1:length(sample_sizes)) {
+  ml_est_i <- numeric(n_mc_sims)
+  for (j in 1:n_mc_sims) {
+    x <- sample(population, sample_sizes[i], replace = TRUE)
+    ml_est_i[j] <- sum(x)/(sample_sizes[i] + 10)
+  }
+  results_list[[i]] <- data.frame(sample_size = sample_sizes[i],
+                             ml_est = ml_est_i)
+}
+results <- dplyr::bind_rows(results_list) 
+
+ggplot(results, aes(x = sample_size, y = ml_est)) + 
+  geom_hline(yintercept = mean(population)) + 
+  geom_jitter() + 
+  scale_x_log10()
+```
+
+
+
+### Example: Bernoulli Odds
+
+There are two ways to see consistency for the Bernoulli. First, unless our sample size is a multiple of 20, it is impossible to obtain an estimated odds of 0.05/(1 - 0.05). Second, in small samples, the ML estimate of the odds is biased. As the sample size increases, the bias shrinks and the estimates collapse toward (and eventually onto) the true value.
+
+
+```{r message=FALSE, warning=FALSE}
+sample_sizes <- c(2:100, 250, 400, 500, 750, 1000)
+n_mc_sims <- 10  # for each sample size
+results_list <- list()  # grow with each iteration; slow, but easy
+for (i in 1:length(sample_sizes)) {
+  ml_est_i <- numeric(n_mc_sims)
+  for (j in 1:n_mc_sims) {
+    x <- rbinom(sample_sizes[i], 1, prob = 0.05)
+    pi_hat <- mean(x)
+    ml_est_i[j] <- pi_hat/(1 - pi_hat)
+  }
+  results_list[[i]] <- data.frame(sample_size = sample_sizes[i],
+                             ml_est = ml_est_i)
+}
+results <- dplyr::bind_rows(results_list) 
+
+ggplot(results, aes(x = sample_size, y = ml_est)) + 
+  geom_hline(yintercept = 0.05/(1 - 0.05)) + 
+  geom_jitter(alpha = 0.5, shape = 19) + 
+  scale_x_log10() 
+
+ggplot(results, aes(x = sample_size, y = ml_est)) + 
+  geom_hline(yintercept = 0.05/(1 - 0.05)) + 
+  scale_x_log10() + 
+  geom_smooth()
+```
+
+<!--chapter:end:01-04-bias-and-consistency.Rmd-->
+
+```{r include=FALSE}
+library(tidyverse)
+```
+
+## Predictive Distribution
+
+In Bayesian statistics, a popular tool for model evaluation is the posterior predictive distribution. But we might use an analogous approach for models fit with maximum likelihood. 
+
+The predictive distribution is just the distribution given the ML estimates. Using our notation above, the predictive distribution is $f(y; \hat{\theta})$. 
+
+When you perform a parametric bootstrap, you are resampling from this predictive distribution. Here, we're going to use it for a different purpose: to understand and evaluate our model.
+
+In my view, the predictive distribution is the best way to (1) understand, (2) evaluate, and then (3) improve models.
+
+You can use the predictive distribution as follows:
+
+1. Fit your model with maximum likelihood.
+1. Simulate a new outcome variable using the estimated model parameters (i.e., $f(y; \hat{theta})$). Perhaps simulate a handful for comparison.
+1. Compare the simulated outcome variable(s) to the observed outcome variables.
+
+### Example: Poisson Distribution
+
+Earlier, we fit a Poisson distribution to a sample of data from Hultman, Kathman, and Shannon (2013).
+
+```{r include=FALSE}
+civilian_casualties <- c(0, 0, 0, 0, 0, 13, 0, 0, 61, 0, 0, 0, 0, 0, 0, 0, 0,
+                          0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 19, 0, 0, 12, 0, 0, 4, 147, 0, 934, 0, 0,
+                          42, 0, 24, 124, 0, 1, 0, 0, 0, 145844, 0, 0, 44, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                          0, 0, 2, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                          7971, 0, 0, 0, 0, 72, 0, 40, 0, 0, 444, 0, 0, 0, 0, 48, 109, 33, 0, 0, 0, 0,
+                          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 41, 0, 0, 0, 0, 84, 0, 34, 0, 0, 0,
+                          0, 0, 0, 0, 1, 0, 15, 0, 0, 15, 0, 104, 0, 24, 0, 0, 104, 0, 0, 4, 0, 0, 0, 0,
+                          0, 12, 41, 0, 0, 37, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                          0, 0, 12, 0, 4, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 8, 21, 0, 0, 0, 0, 25, 0, 0, 0,
+                          3, 0, 0, 27, 0, 0, 576, 3, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 32, 0, 0, 0, 0,
+                          0, 0, 0, 94, 42, 0, 30, 0, 2, 12, 0, 0, 5, 5 ) 
+```
+
+```{r}
+ml_est <- mean(civilian_casualties)
+print(ml_est, digits = 3)
+
+n <- length(civilian_casualties)
+y_pred <- rpois(n, lambda = ml_est)
+print(y_pred[1:30])
+print(civilian_casualties[1:30])
+```
+Simply printing a few results, we can immediately see a problem with data, when compared with the raw data
+
+To see it even more clearly, we can create a histogram of the observed and simulated data.
+
+```{r fig.height=3, fig.width=6, message=FALSE, warning=FALSE}
+library(patchwork)
+
+p1 <- qplot(civilian_casualties)
+p2 <- qplot(y_pred)
+
+p1 + p2
+```
+These data sets are so different that the plots are difficult to read, so we might put the x-axes on the log scale. Note, though, that the two plots have very different ranges on the axes.
+
+```{r fig.height=3, fig.width=6, message=FALSE, warning=FALSE}
+p1 <- qplot(civilian_casualties) + scale_x_log10()
+p2 <- qplot(y_pred) + scale_x_log10()
+
+p1 + p2
+```
+
+For a more accurate and complete comparison, let's simulate five fake data sets and use common axes
+
+```{r message=FALSE, warning=FALSE}
+observed_data <- tibble(civilian_casualties, type = "observed")
+
+sim_list <- list()
+for (i in 1:5) {
+  y_pred <- rpois(n, lambda = ml_est)
+  sim_list[[i]] <- tibble(civilian_casualties = y_pred, 
+                          type = paste0("simulated #", i))
+}
+gg_data <- bind_rows(sim_list) %>%
+  bind_rows(observed_data) %>%
+  glimpse()
+
+ggplot(gg_data, aes(x = civilian_casualties)) + 
+  geom_histogram() + 
+  facet_wrap(vars(type)) + 
+  scale_x_log10()
+```
+The fit of this model is almost absurd.
+
+### Example: Beta Distribution
+
+Now let's return to our beta model of states' opinions toward the ACA in the `br` data frame we loaded earlier.
+
+```{r include=FALSE}
+# load data
+br <- tibble::tribble(
+  ~state_abbr, ~prop_favorable_aca,
+         "AL",   0.382711108911823,
+         "AK",   0.374428493677838,
+         "AZ",   0.396721609154912,
+         "AR",   0.361623814680961,
+         "CA",   0.560999240847165,
+         "CO",   0.450011650633043,
+         "CT",   0.522239143634457,
+         "DE",   0.524637037667977,
+         "DC",   0.853595690161985,
+         "FL",    0.47022917052716,
+         "GA",   0.460216990024346,
+         "HI",    0.61965456264517,
+         "ID",   0.282992730179373,
+         "IL",   0.550517975187469,
+         "IN",   0.421854785281297,
+         "IA",   0.454007062646206,
+         "KS",   0.394817640911206,
+         "KY",   0.336156662764729,
+         "LA",   0.425588396620569,
+         "ME",   0.472319257331465,
+         "MD",   0.583719023711148,
+         "MA",   0.531871146279692,
+         "MI",   0.509096426714406,
+         "MN",   0.497981331879903,
+         "MS",   0.468038078521612,
+         "MO",   0.420161837905426,
+         "MT",   0.351773944902139,
+         "NE",   0.365225584190989,
+         "NV",   0.459026605256376,
+         "NH",    0.43886275738451,
+         "NJ",   0.531656835425683,
+         "NM",   0.528461049175538,
+         "NY",     0.6010574821094,
+         "NC",   0.452240849305449,
+         "ND",   0.367690453757597,
+         "OH",   0.456298880813516,
+         "OK",   0.309578750918355,
+         "OR",   0.455832591683007,
+         "PA",    0.45819440292365,
+         "RI",   0.536978574569609,
+         "SC",   0.444870259057071,
+         "SD",   0.377170366708612,
+         "TN",   0.368615233253355,
+         "TX",   0.428407014559672,
+         "UT",   0.248496577141183,
+         "VT",   0.553042362822573,
+         "VA",   0.470739058046787,
+         "WA",   0.496133477680592,
+         "WV",   0.295062675817918,
+         "WI",   0.489912969415965,
+         "WY",   0.263567780036879
+  )
+```
+
+```{r}
+# obtain ml estimates
+log_lik_fn <- function(par = c(2, 2), y) {
+  a <- par[1]  # pulling these out makes the code a bit easier to follow
+  b <- par[2]
+  log_lik_i <- dbeta(y, shape1 = a, shape2 = b, log = TRUE)
+  log_lik <- sum(log_lik_i)
+  return(log_lik)
+}
+opt <- optim(par = c(2, 2), fn = log_lik_fn, y = br$prop_favorable_aca,
+             control = list(fnscale = -1))
+ml_est <- opt$par
+```
+
+Now let's simulate some fake data from the predictive distribution and compare that to the observed data
+
+```{r message=FALSE, warning=FALSE}
+
+observed_data <- br %>%
+  mutate(type = "observed")
+
+n <- nrow(br)
+sim_list <- list()
+for (i in 1:5) {
+  y_pred <- rbeta(n, shape1 = ml_est[1], shape2 = ml_est[2])
+  sim_list[[i]] <- tibble(prop_favorable_aca = y_pred, 
+                          type = paste0("simulated #", i))
+}
+gg_data <- bind_rows(sim_list) %>%
+  bind_rows(observed_data) 
+
+ggplot(gg_data, aes(x = prop_favorable_aca)) + 
+  geom_histogram() + 
+  facet_wrap(vars(type)) + 
+  scale_x_log10()
+```
+
+On the whole, we see hear a fairly close correspondence between the observed and simulated data. That suggests that our model is a good description of the data.
+
+
+
+
+
+<!--chapter:end:01-05-predictive-distribution.Rmd-->
+
+
+
+## Exercises
+
+From this week, you should be able to...
+
+1. Starting with a given distribution (pdf or pmf), find the log-likihood function.
+1. Optimize the log-likelihood function analytically or numerically (i.e., using `optim()`).
+1. Use the invariance property of ML estimator to transform parameter estimates into estimates of quantities of interest.
+1. Use the parametric bootstrap to compute confidence intervals.
+1. Describe a "sampling distribution" and illustrate it with a computer simulation.
+1. Describe the concepts of "bias" and "consistency." Are ML estimates unbaised? Consistent? Under what conditions?
+1. Use the predictive distribution to evaluate models.
+
+### Questions About the Exponential Distribution
+
+```{exercise, label="ml-exponential"}
+Suppose we collect $N$ random samples $x = \{x_1, x_2, ..., x_N\}$ and model each draw as a random variable $X \sim \text{exponential}(\lambda)$ with pdf $f(x_n | \lambda) = \lambda e^{-\lambda x_n}$. 
+
+1. Find the maximum likelihood estimator of $\lambda$.
+1. Perform a Monte Carlo simulation to assess the bias in the ML estimator of $\lambda$ you found above. Use 100,000 Monte Carlo simulations. Estimate the Monte Carlo error as $\frac{\text{SD of estimates}}{\sqrt{\text{number of MC simulations}}}$. Try a small sample size (e.g., $N = 5$ and a large (e.g., $N = 1,000$). Demonstrate analytically that the estimate is biased.
+1. Is the ML estimator of $\lambda$ consistent? Why or why not?
+1. We interpret the parameter $\lambda$ as a "rate." Find the ML estimate of the mean, which is the reciprocal of the rate. Is this estimate unbiased? Consistent?
+```  
+
+<details><summary>Solution</summary>
+1. The math follows the Poisson example closely. However, the solution is the inverse--$\hat{\lambda} = \frac{N}{\sum_{n = 1}^N x_n } = \frac{1}{\text{avg}(x)}$.
+</details>
+
+```{exercise}
+Suppose a data set `x <- c(0.306, 0.023, 0.0471, 0.042, 0.227)`. Model this data set using an exponential distribution and estimate the rate $\lambda$ using maximum likelihood. Find the estimates in two ways. First, compute the ML estimates using the analytical solution you found above. Second, derive the log-likelihood function, plot it, and use `optim()` to find the maximum. Show that the two solutions agree.
+```
+
+```{exercise}
+Load the `cancer` data frame from the survival package in R using `data(cancer, package="survival")`. Model the variable `time` using an exponential distribution. Estimate both the rate and the mean. Use the parametric bootstrap to obtain a 95% confidence interval for each. Use the predictive distribution to evaluate the fit of the model. Do the simulated data sets seems to match the observed data sets?
+```
+
+<!--- # remove for exam
+```{exercise, label="ml-govt-duration"}
+Obtain the data for King, Alta, Burns, and Laver (2008) from Dataverse: https://doi.org/10.7910/DVN/CVJPAN. Find the file `coalcold.tab`. The variable `DURAT` gives the number of months that the government lasted. Model these durations as an exponential distributions. 
+
+1. Estimate the rate $\lambda$ and mean (reciprocal of the rate). Use the parametric bootstrap to obtain a 95% confidence interval for each.
+1. Simulate fake data from the predictive distribution and graphically compare these draws to the observed values. How do the observed data deviate from the model?
+```
+--->
+
+```{exercise}
+Obtain the data for Barrilleaux and Rainey (2014) from GitHub: https://github.com/carlislerainey/aca-opinion/blob/master/Data/mrp_est.csv. Find the file `mrp_est.csv`. The variable `percent_supporting_expansion` gives the the percent of each state that supports expanding Medicaid under the ACA. 
+
+1. Model the distribution of *proportions* (you'll need to transform the variable from a percent to a proportion) as a beta distribution. Estimate the two shape parameters using maximum likelihood. Transform these estimates into estimates of the mean and SD. Compute a 95% confidence interval for the mean and SD using the parametric bootstap.
+1. Simulate fake data from the predictive distribution and graphically compare these draws to the observed values. How do the observed data deviate from the model? Compare the the observed and simulated distributions in several ways, such as histograms, ecdf plots, two-number summaries, five-number summaries, etc. Look for ways that the simulated data sets consistently deviate from the observed.
+```
+
+```{exercise}
+Suppose a discrete uniform distribution from 0 to $K$. The pdf is $f(x; K) = \frac{1}{K}$ for $x \in \{0, 1, ..., K\}$. Suppose I have three samples from the distribution: 676, 459, and 912. Find the ML estimate of $K$.
+```
+
+```{exercise}
+**DeGroot and Schervish, q. 9, p. 425.** Suppose a distribution $f(x; \theta) = \theta x^{\theta - 1}$ for $0 < x < 1$ and $\theta > 0$. Find the ML estimator of $\theta$.
+```
+
+```{exercise}
+Remember that the estimate $\hat{\lambda} = \text{avg}(y)$ for the Poisson distribution is unbiased. Remember that $E(y) = \lambda$ and $\text{SD}(y)$ is $\sqrt{\lambda}$. By the invariance properity, the ML estimator of $SD(y) = \sqrt{\hat{\lambda}}$. Use a Monte Carlo simulation to assess whether (and how much) this estimator of the SD is biased. Be sure to experiment with the sample size of y (e.g., N = 5, N = 200, etc.), but use a large number of Monte Carlo simulations (e.g., 100,000).
+```
+
+
+
+<!--chapter:end:01-99-exercises.Rmd-->
+
+```{r include=FALSE}
+library(tidyverse)
+```
+
+# Week 2: Bayesian Inference
+
+This week, we introduce the following tools.
+
+1. **engine** Bayesian inference
+1. **distributions** normal, uniform
+1. **confidence intervals** posterior simulation, Bayesian credible intervals, percentile intervals.
+1. **quantities of interest** transforming posterior simulations
+1. **evaluating models** posterior predictive distribution
+
+## Bayesian Inference
+
+Bayesian inference follows a simple recipe:
+
+1. Choose a distribution for the data.
+1. Choose a distribution to describe your prior beliefs.
+1. Update the prior distribution upon observing the data by computing the posterior distribution. 
+
+In simple examples, we can implement this process analytically and obtain a closed-form posterior. In most applied cases, we can only *sample from* the posterior distribution, but this turns out to work almost as well.
+
+### Mechanics
+
+Suppose a random sample from a distribution $f(x; \theta)$ that depends on the unknown parameter $\theta$. 
+
+Bayesian inference models our *beliefs* about the unknown parameter $\theta$ as a distribution. It answers the question: what should we believe about $\theta$, given the observed samples $x = \{x_1, x_2, ..., x_n\}$ from $f(x; \theta)$? These beliefs are simply the conditional distribution $f(\theta \mid x)$.
+
+By Bayes' rule, $\displaystyle f(\theta \mid x) = \frac{f(x \mid \theta)f(\theta)}{f(x)} = \frac{f(x \mid \theta)f(\theta)}{\displaystyle \int_{-\infty}^\infty f(x \mid \theta)f(\theta) d\theta}$.
+
+$$
+\displaystyle \underbrace{f(\theta \mid x)}_{\text{posterior}} = \frac{\overbrace{f(x \mid \theta)}^{\text{likelihood}} \times \overbrace{f(\theta)}^{\text{prior}}}{\displaystyle \underbrace{\int_{-\infty}^\infty f(x \mid \theta)f(\theta) d\theta}_{\text{normalizing constant}}}
+$$
+There are four parts to a Bayesian analysis.
+
+1. $f(\theta \mid x)$. "The posterior;" what we're trying to find. This distribution models our beliefs about parameter $\theta$ given the data $x$. 
+1. $f(x \mid \theta)$. "The likelihood." This distribution model conditional density/probability of the data $x$ given the parameter $\theta$. We need to invert the conditioning in order to find the posterior.
+1. $f(\theta)$. "The prior;" our beliefs about $\theta$ prior to observing the sample $x$. 
+1. $f(x) =\int_{-\infty}^\infty f(x \mid \theta)f(\theta) d\theta$. A normalizing constant. Recall that the role of the normalizing constant is to force the distribution to integrate or sum to one. Therefore, we can safely ignore this constant until the end, and then find proper normalizing constant. 
+
+It's convenient to choose a **conjugate** prior distribution that, when combined with the likelihood, produces a posterior from the same family as the prior. 
+
+The resulting distribution is a complete and correct summary of our updated beliefs about the parameters.
+
+### Posterior Summaries
+
+If we want to summarize the posterior distribution, then we can (though we lose some information).
+
+First, we might summarize the distribution using a single point to make a "best guess" at the parameter of interest. We have three options:
+
+1. *The posterior mean*. The posterior mean minimizes a squared-error loss function.
+1. *The posterior median*: The posterior median minimizes an absolute loss function where the cost of guessing $a$ when the truth is $\alpha$ is $|a - \alpha|$. Intuitively, there's a 50% chance that $\pi$ falls above and below the posterior median. 
+1. *The posterior mode*: The posterior mode is the most likely value of $\pi$, so it minimizes a loss function that penalizes all misses equally.
+
+Second, we might find an $100(1 - \alpha)\%$ credible interval, by finding an interval that that integrates to $(1 - \alpha)$. That is, a region that has a $100(1 - \alpha)\%$ chance of containing the parameter. This interval is not unique; there are many. However, *one* $100(1 - \alpha)\%$  credible interval is the $100(1 - \alpha)\%$ *percentile* credible interval. Construct this interval by finding the $100\frac{\alpha}{2}th$ percentile and the $100(1 - \frac{\alpha}{2})th$ percentile. For example, if we want a 90% credible interval, we would find the 5th and 95th percentiles.
+
+
+### Posterior Simulation
+
+In some cases, we have an analytical solution for the posterior---we can write down the equation for the posterior. But in most cases, we cannot write down the posterior. Perhaps unexpectedly, it is usually easier to *sample from* the distribution that write down the posterior in closed form.
+
+But notice that the samples are almost as good as the closed-form solution. We can sample from the distribution many times and then draw the histogram, compute the average, and find the percentiles. Except for sampling error that we can make arbitraryily small, these correspond to the posterior density, the posterior mean, and the 95% (percentile) credible interval.
+
+## Example: Bernoulli
+
+As a running example, we use the **toothpaste cap problem**:
+
+> We have a toothpaste cap--one with a wide bottom and a narrow top. We're going to toss the toothpaste cap. It can either end up lying on its side, its (wide) bottom, or its (narrow) top. 
+
+> We want to estimate the probability of the toothpaste cap landing on its top.
+
+> We can model each toss as a Bernoulli trial, thinking of each toss as a random variable $X$ where $X \sim \text{Bernoulli}(\pi)$. If the cap lands on its top, we think of the outcome as 1. If not, as 0. 
+
+> Suppose we toss the cap $N$ times and observe $k$ tops. What is the posterior distribution of $\pi$?
+
+### The Likelihood {#likelihood}
+
+According to the model $f(x_i \mid \pi) = \pi^{x_i} (1 - \pi)^{(1 - x_i)}$. Because the samples are iid, we can find the *joint* distribution $f(x) = f(x_1) \times ... \times f(x_N) = \prod_{i = 1}^N f(x_i)$. We're just multiplying $k$ $\pi$s (i.e., each of the $k$ ones has probability $\pi$) and $(N - k)$ $(1 - \pi)$s (i.e., each of the $N - k$ zeros has probability $1 - \pi$), so that the $f(x | \pi) = \pi^{k} (1 - \pi)^{(N - k)}$.
+
+$$
+\text{the likelihood:  } f(x | \pi) = \pi^{k} (1 - \pi)^{(N - k)}, \text{where } k = \sum_{n = 1}^N x_n \\
+$$
+
+### The Prior
+
+The prior describes your beliefs about $\pi$ *before* observing the data.
+
+Here are some questions that we might ask ourselves the following questions:
+
+1. What's the most likely value of $\pi$? *Perhaps 0.15.*
+1. Are our beliefs best summarizes by a distribution that's skewed to the left or right? *To the right.*
+1. $\pi$ is about _____, give or take _____ or so. *Perhaps 0.17 and 0.10.*
+1. There's a 25% chance that $\pi$ is less than ____. *Perhaps 0.05.*
+1. There's a 25% chance that $\pi$ is greater than ____. *Perhaps 0.20*.
+
+Given these answers, we can sketch the pdf of the prior distribution for $\pi$.
+
+```{r echo=FALSE, fig.height=3, fig.width=6, message=FALSE, warning=FALSE}
+library(tidyverse)
+#library(xkcd)
+#library(extrafont)
+#loadfonts()
+
+set.seed(1234)
+a <- 3
+
+b <- 15
+s <- rbeta(200, a, b)
+gg_data <- tibble(s)
+ggplot(gg_data, aes(x = s)) + 
+  geom_density() + 
+  theme_minimal() + 
+  scale_x_continuous(limits = c(0, 1)) +
+  annotate(geom = "text", x = .35, y = 1, 
+           label = "probably not larger than 0.3", 
+           #family = "Humor Sans", 
+           hjust = "left", 
+           color = "grey50") + 
+  annotate(geom = "segment", x = .34, xend = 0.30, y = 0.9, yend = 0.5, 
+           color = "grey50") + 
+  annotate(geom = "text", x = .05, y = 1.5, 
+           label = "might be close to zero", 
+           #family = "Humor Sans", 
+           hjust = "left", 
+           color = "grey50") + 
+  annotate(geom = "segment", x = .1, xend = 0.03, y = 1.3, yend = 0.3, 
+           color = "grey50") + 
+    annotate(geom = "text", x = 0.18, y = 5.1, 
+           label = "most likely around 0.15", 
+           #family = "Humor Sans", 
+           hjust = "left", 
+           color = "grey50") + 
+  annotate(geom = "segment", x = .14, xend = 0.17, y = 4.9, yend = 5.05, 
+           color = "grey50") + 
+  theme(text = element_text(size = 12), #, family = "Humor Sans"),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank()) + 
+  scale_y_continuous(breaks = NULL) + 
+  labs(title = "A Sketch of Our Prior Beleifs About pi",
+       x = "pi",
+       y = "Prior Density") 
+
+```
+
+Now we need to find a density function that matches these prior beliefs. For this Bernoulli model, the *beta distribution* is the conjugate prior. While a conjugate prior is not crucial in general, it makes the math much more tractable. 
+
+So then what beta distribution captures our prior beliefs?
+
+There's a code snippet [here](https://gist.github.com/carlislerainey/45414e0d9f22e4e1960449402e6a8048) to help you explore different beta distributions.
+
+After some exploration, I find that setting the parameters $\alpha$ and $\beta$ of the beta distribution to 3 and 15, respectively, captures my prior beliefs about the probability of getting a top.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data_frame(x = seq(0, 1, length.out = 100))) + 
+  stat_function(fun = dbeta, args = list(shape1 = 3, shape2 = 15)) + 
+  labs(title = "pdf of the beta(3, 15) distribution", x = "pi", y = "prior density")
+```
+The pdf of the beta distribution is $f(x) = \frac{1}{B(\alpha, \beta)} x^{\alpha - 1}(1 - x)^{\beta - 1}$. Remember that $B()$ is the beta function, so $\frac{1}{B(\alpha, \beta)}$ is a constant.
+
+Let's denote our chosen values of $\alpha = 3$ and $\beta = 15$ as $\alpha^*$ and $\beta^*$. As we see in a moment, it's convenient distinguish the parameters in the prior distribution from other parameters.
+
+$$
+\text{the prior:  }  f(\pi) = \frac{1}{B(\alpha^*, \beta^*)} \pi^{\alpha^* - 1}(1 - \pi)^{\beta^* - 1}
+$$
+
+### The Posterior
+
+Now we need to compute the posterior by multiplying the likelihood times the prior and then finding the normalizing constant.
+$$
+\text{the posterior: } \displaystyle \underbrace{f(\pi \mid x)}_{\text{posterior}} = \frac{\overbrace{f(x \mid \pi)}^{\text{likelihood}} \times \overbrace{f(\pi)}^{\text{prior}}}{\displaystyle \underbrace{\int_{-\infty}^\infty f(x \mid \pi)f(\pi) d\pi}_{\text{normalizing constant}}} \\
+$$
+Now we plug in the likelihood, plug in the prior, and denote the normalizing constant as $C_1$ to remind ourselves that it's just a constant.
+
+$$
+\displaystyle f(\pi \mid x) = \frac{\left[ \pi^{k} (1 - \pi)^{(N - k) }\right] \times \left[ \frac{1}{B(\alpha^*, \beta^*)} \pi^{\alpha^* - 1}(1 - \pi)^{\beta^* - 1} \right]}{ C_1} \\
+$$
+
+$$
+\text{the posterior: } \displaystyle \underbrace{f(\pi \mid x)}_{\text{posterior}} = \frac{\overbrace{\left[ \pi^{k} (1 - \pi)^{(N - k) }\right] }^{\text{likelihood}} \times \overbrace{ \left[ \frac{1}{B(\alpha^*, \beta^*)} \pi^{\alpha^* - 1}(1 - \pi)^{\beta^* - 1} \right] }^{\text{prior}}}{\displaystyle \underbrace{C_1}_{\text{normalizing constant}}} \\
+$$
+
+Now we need to simplify the right-hand side. 
+
+First, notice that the term $\frac{1}{B(\alpha^*, \beta^*)}$ in the numerator is just a constant. We can incorporate that constant term with $C_1$ by multiplying top and bottom by $B(\alpha^*, \beta^*)$ and letting $C_2 = C_1 \times B(\alpha^*, \beta^*)$.
+
+$$
+\text{the posterior: } \displaystyle \underbrace{f(\pi \mid x)}_{\text{posterior}} = \frac{\overbrace{\left[ \pi^{k} (1 - \pi)^{(N - k) }\right] }^{\text{likelihood}} \times  \left[ \pi^{\alpha^* - 1}(1 - \pi)^{\beta^* - 1} \right] }{\displaystyle \underbrace{C_2}_{\text{new normalizing constant}}} \\
+$$
+
+Now we can collect the exponents with base $\pi$ and the exponents with base $(1 - \pi)$.
+
+$$
+\text{the posterior: } \displaystyle \underbrace{f(\pi \mid x)}_{\text{posterior}} = \frac{\left[ \pi^{k} \times \pi^{\alpha^* - 1} \right] \times  \left[ (1 - \pi)^{(N - k) } \times (1 - \pi)^{\beta^* - 1} \right] }{ C_2} \\
+$$
+Recalling that $x^a \times x^b = x^{a + b}$, we combine the powers.
+
+$$
+\text{the posterior: } \displaystyle \underbrace{f(\pi \mid x)}_{\text{posterior}} = \frac{\left[ \pi^{(\alpha^* + k) - 1} \right] \times  \left[ (1 - \pi)^{[\beta^* + (N - k)] - 1} \right] }{ C_2} \\
+$$
+$$
+\displaystyle f(\theta \mid x) = \frac{f(x \mid \theta) \times f(\theta)}{\displaystyle \int_{-\infty}^\infty f(x \mid \theta)f(\theta) d\theta}
+$$
+
+Because we're clever, we notice that this is *almost* a beta distribution with $\alpha = (\alpha^* + k)$ and $\beta = [\beta^* + (N - k)]$. If $C_2 = B(\alpha^* + k, \beta^* + (N - k))$, then the posterior is *exactly* a $\text{beta}(\alpha^* + k, \beta^* + [N - k]))$ distribution. 
+
+This is completely expected. We chose a beta distribution for the prior because it would give us a beta posterior distribution. For simplicity, we can denote the parameter for the beta posterior as $\alpha^\prime$ and $\beta^\prime$, so that $\alpha^\prime = \alpha^* + k$ and $\beta^\prime = \beta^* + [N - k]$
+
+$$
+\begin{aligned}
+\text{the posterior: } \displaystyle \underbrace{f(\pi \mid x)}_{\text{posterior}} &= \frac{ \pi^{\overbrace{(\alpha^* + k)}^{\alpha^\prime} - 1}  \times  (1 - \pi)^{\overbrace{[\beta^* + (N - k)]}^{\beta^\prime} - 1}  }{ B(\alpha^* + k, \beta^* + [N - k])} \\
+&= \frac{ \pi^{\alpha^\prime - 1}  \times  (1 - \pi)^{\beta^\prime - 1}  }{ B(\alpha^\prime, \beta^\prime)}, \text{where } \alpha^\prime = \alpha^* + k \text{ and } \beta^\prime = \beta^* + [N - k]
+\end{aligned}
+$$
+
+This is an elegant, simple solution. To obtain the parameters for the beta posterior distribution, we just add the number of tops (Bernoulli successes) to the prior value for $\alpha$ and the number of not-tops (sides and bottoms; Bernoulli failures) to the prior value for $\beta$.
+
+Suppose that I tossed the toothpaste cap 150 times and got 8 tops.
+
+```{r fig.height=3, fig.width=8, message=FALSE, warning=FALSE}
+
+# prior parameters
+alpha_prior <- 3
+beta_prior <- 15
+
+# data 
+k <- 8
+N <- 150
+
+# posterior parameters
+alpha_posterior <- alpha_prior + k
+beta_posterior <- beta_prior + N - k
+
+# plot prior and posterior
+gg_prior <- ggplot() + 
+  stat_function(fun = dbeta, args = list(shape1 = alpha_prior, shape2 = beta_prior)) + 
+  labs(title = "prior distribution", x = "pi", y = "prior density")
+gg_posterior <- ggplot() + 
+  stat_function(fun = dbeta, args = list(shape1 = alpha_posterior, shape2 = beta_posterior)) + 
+  labs(title = "posterior distribution", x = "pi", y = "posterior density")
+
+library(patchwork)
+gg_prior + gg_posterior
+
+```
+
+### Point Estimates
+
+1. *The posterior mean*. The posterior mean minimizes a squared-error loss function. That is, the cost of guessing $a$ when the truth is $\alpha$ is $(a - \alpha)^2$. In the case of the beta posterior, it's just $\dfrac{\alpha^\prime}{\alpha^\prime + \beta^\prime}$. For our prior and data, we have $\dfrac{3 + 8}{(3 + 8) + (15 + 150 - 8)} \approx 0.065$.
+1. *The posterior median*: The posterior median minimizes an absolute loss function where the cost of guessing $a$ when the truth is $\alpha$ is $|a - \alpha|$. Intuitively, there's a 50% chance that $\pi$ falls above and below the posterior median. In the case of the beta posterior, it's just $\dfrac{\alpha^\prime - \frac{1}{3}}{\alpha^\prime + \beta^\prime - \frac{2}{3}}$ (for $\alpha^\prime, \beta^\prime > 1$). For our prior and data, we have $\dfrac{3 + 8 -\frac{1}{3}}{(3 + k) + (15 + 150 - 8) - \frac{2}{3}} \approx 0.064$.
+1. *The posterior mode*: The posterior mode is the most likely value of $\pi$, so it minimizes a loss function that penalizes all misses equally. In the case of the beta posterior, it's just $\dfrac{\alpha^\prime - 1}{\alpha^\prime + \beta^\prime - 2}$ (for $\alpha^\prime, \beta^\prime > 1$). For our prior and data, we have $\dfrac{3 + 8 - 1}{(3 + k) + (15 + 150 - 8) - 2} \approx 0.060$.
+
+### Credible Interval
+
+Using the percentile method, we can compute the 90% and 95% credible intervals with `qbeta()`.
+
+```{r}
+# 90% credible interval
+qbeta(c(0.05, 0.95), 3 + 8, 15 + 150 - 8)
+
+# 95% credible interval
+qbeta(c(0.025, 0.975), 3 + 8, 15 + 150 - 8)
+```
+
+### Simulation
+
+We don't need to use simulation here---we have the simple closed-form posterior. However, let's see how simulation would work.
+
+```{r}
+post_sims <- rbeta(1000, 3 + 8, 15 + 150 - 8)
+
+# posterior density
+gg_data <- tibble(post_sims)
+ggplot(gg_data, aes(x = post_sims)) + 
+  geom_histogram()
+
+# posterior mean
+mean(post_sims)
+
+# credible interval
+```
+
+
+## Example: Poisson Distribution
+
+Suppose we collect $N$ random samples $x = \{x_1, x_2, ..., x_N\}$ and model each draw as a random variable $X \sim \text{Poisson}(\lambda)$. Find the posterior distribution of $\lambda$ for the gamma prior distribution. Hint: the gamma distribution is the conjugate prior for the Poisson likelihood.
+
+$$
+\begin{aligned}
+\text{Poisson likelihood: } f(x \mid \lambda) &= \prod_{n = 1}^N \frac{\lambda^{x_n} e^{-\lambda}}{x_n!} \\
+&= \displaystyle \left[ \frac{1}{\prod_{n = 1}^N x_n !} \right]e^{-N\lambda}\lambda^{\sum_{n = 1}^N x_n}
+\end{aligned}
+$$
+
+$$
+\text{Gamma prior: } f( \lambda; \alpha^*, \beta^*) = \frac{{\beta^*}^{\alpha^*}}{\Gamma(\alpha^*)} \lambda^{\alpha^* - 1} e^{-\beta^*\lambda}
+$$
+To find the posterior, we multiply the likelihood times the prior and normalize. Because the gamma prior distribution is the conjugate prior for the Poisson likelihood, we know that the posterior will be a gamma distribution.
+
+$$
+\begin{aligned}
+\text{Gamma posterior: } f( \lambda  \mid x) &= \frac{\left( \displaystyle \left[ \frac{1}{\prod_{n = 1}^N x_n !} \right]e^{-N\lambda}\lambda^{\sum_{n = 1}^N x_n}\right) \times \left( \left[ \frac{{\beta^*}^{\alpha^*}}{\Gamma(\alpha^*)} \right] \lambda^{\alpha^* - 1} e^{-\beta^*\lambda}\right)}{C_1} \\
+\end{aligned}
+$$
+Because $x$, $\alpha_*$, and $\beta$ are fixed, the terms in square brackets are constant, so we can safely consider those part of the normalizing constant.
+
+$$
+\begin{aligned}
+&= \frac{\left( \displaystyle  e^{-N\lambda}\lambda^{\sum_{n = 1}^N x_n}\right) \times \left( \lambda^{\alpha^* - 1} e^{-\beta^*\lambda}\right)}{C_2} \\
+\end{aligned}
+$$
+Now we can collect the exponents with the same base.
+
+$$
+\begin{aligned}
+&= \frac{\left( \lambda^{\alpha^* - 1} \times \lambda^{\sum_{n = 1}^N x_n}\right) \times \left( \displaystyle  e^{-N\lambda} \times e^{-\beta^*\lambda} \right)}{C_2} \\
+&= \frac{\lambda^{ \overbrace{\left[ \alpha^* + \sum_{n = 1}^N x_n \right]}^{\alpha^\prime} - 1}  e^{-\overbrace{[\beta^* + N]}^{\beta^\prime}\lambda} }{C_2} \\
+\end{aligned}
+$$
+
+We recognize this as *almost* a Gamma distribution with parameters $\alpha^\prime = \alpha^* +  \sum_{n = 1}^N x_n$ and $\beta^\prime = \beta^* + N$. Indeed, if $\frac{1}{C_2} = \frac{{\beta^\prime}^{\alpha^\prime}}{\Gamma(\alpha^{\prime})}$, then we have exactly a gamma distribution. 
+
+$$
+\begin{aligned}
+&= \frac{{\beta^\prime}^{\alpha^\prime}}{\Gamma(\alpha^{\prime})} \lambda^{ \alpha^\prime - 1}  e^{-\beta^\prime\lambda}, \text{where } \alpha^\prime = \alpha^* +  \sum_{n = 1}^N x_n \text{ and } \beta^\prime = \beta^* + N
+\end{aligned}
+$$
+
+Like the Bernoulli likelihood with the beta prior, the Poisson likelihood withe the gamma prior gives a nice result. We start with values parameters of the gamma distribution $\alpha = \alpha^*$ and $\beta + \beta^*$ so that the gamma prior distribution describes our prior beliefs about the parameters $\lambda$ of the Poisson distribution. Then we add the sum of the data $x$ to $\alpha^*$ and the number of samples $N$ to $\beta^*$ to obtain the parameters of the gamma posterior distribution.
+
+The code below shows the posterior distribution 
+
+```{r fig.height=3, fig.width=8, message=FALSE, warning=FALSE}
+# set see to make reproducible
+set.seed(1234)
+
+# prior parameters
+alpha_prior <- 3
+beta_prior <- 3
+
+# create an "unknown" value of lambda to estimate
+lambda <- 2
+
+# generate a data set
+N <- 5  # number of samples
+x <- rpois(N, lambda = lambda)
+print(x)  # print the data set
+
+# posterior parameters
+alpha_posterior <- alpha_prior + sum(x)
+beta_posterior <- beta_prior + N
+
+# plot prior and posterior
+gg_prior <- ggplot() + xlim(0, 5) + 
+  stat_function(fun = dgamma, args = list(shape = alpha_prior, rate = beta_prior)) + 
+  labs(title = "prior distribution", x = "lambda", y = "prior density")
+gg_posterior <- ggplot() + xlim(0, 5) + 
+  stat_function(fun = dgamma, args = list(shape = alpha_posterior, rate = beta_posterior)) + 
+  labs(title = "posterior distribution", x = "lambda", y = "posterior density")
+gg_prior + gg_posterior  # uses patchwork package
+
+# posterior mean: alpha/beta
+alpha_posterior/beta_posterior
+
+# posterior mode: (alpha - 1)/beta for alpha > 1
+(alpha_posterior - 1)/beta_posterior
+
+# 90% credible interval
+qgamma(c(0.05, 0.95), alpha_posterior, beta_posterior)
+
+# 95% credible interval
+qgamma(c(0.025, 0.975), alpha_posterior, beta_posterior)
+
+```
+
+In the case of the posterior median, there is no closed-form solution, even though we know the form of the posterior. We can use simulation to obtain the median.
+
+```{r}
+# posterior median: no closed form, so simulate
+post_sims <- rgamma(1000, alpha_posterior, beta_posterior)
+median(post_sims)
+```
+
+## Remarks
+
+Bayesian inference presents two difficulties. 
+
+1. Choosing a prior. 
+   a. It can be hard to actually construct a prior distribution. It's challenging when dealing with a single parameter. It becomes much more difficult when dealing with several or many parameters.
+   a. Priors are subjective, so that one researcher's prior might not work for another. 
+1. Computing the posterior. Especially for many-parameter problems and non-conjugate priors, computing the posterior can be nearly intractable.
+
+However, there are several practical solutions to these difficulties.
+
+1. Choosing a prior.
+    a. We can use a "uninformative" or constant prior. Sometimes, we can use an improper prior that doesn't integrate to one, but places equal prior weight on all values. 
+    a. We can use an extremely diffuse prior. For example, if we wanted to estimate the average height in a population in inches, we might use a normal distribution centered at zero with an SD of 10,000. This prior says: "The average height is about zero, give or take 10,000 inches or so."
+    a. We can use an informative prior, but conduct careful robustness checks to assess whether the conclusions depend on the particular prior.
+    a. We can use a weakly informative prior, that rules places meaningful prior weight on all the plausible values and little prior weight only on the most implausible values. As a guideline, you might create a weakly informative prior by doubling or tripling the SD of the informative prior.
+1. Computing the posterior.
+    a. While analytically deriving the posterior becomes intractable for most applied problems, it's relatively easy to *sample* from the posterior distribution for many models. 
+    a. Algorithms like Gibbs samplers, MCMC, and HMC make this sampling procedure straightforward for a given model.
+    a. Software such as Stan make sampling easy to set up and very fast. Post-processing R packages such as tidybayes make it each to work with the posterior simulations.
+    
+
+<!--chapter:end:02-01-bayes.Rmd-->
+
+
+# Week 3: Adding Predictors
+
+```{r include=FALSE}
+library(tidyverse)
+```
+
+So far, we have discussed several major ideas:
+
+1. **Maximum likelihood** to obtain point estimates of model parameters and the **invariance property** to transform those estimates into quantities of interest. In this framework, we can use the **parametric bootstrap** to create confidence intervals and the **predictive distribution** to understand fitted models.
+1. **Bayesian inference** to obtain posterior beliefs (i.e., distributions) of model parameters. In most applied cases, we will **simulate from the posterior**. We can **transform** those simulations to obtain posterior distributions of the quantities of interest. We can use the **posterior predictive distribution** to understand the fit.
+1. We've discussed the tools above in the context of the **Bernoulli**, **Poisson**, and **exponential** models. Using the toothpaste cap, binary survey responses, civilian casualties, and government survival data.
+
+Today, we're going to focus on two narrow parts of **models** and explore how two current tools generalize to the regression context.
+
+1. The linear predictor $X\beta$.
+1. The inverse link function.
+1. How the [posterior] predictive distribution generalizes to regression.
+1. How quantities of interest generalize to regression.
+
+For this week, we'll need the following packages:
+
+- rstan/rstanarm
+- tidybayes
+- Zelig; `devtools::install_github('IQSS/Zelig')`
+
+## Review: The Normal Model
+
+To fix ideas, we are going to re-develop the linear model from POS 5746.
+
+We imagine a continuous outcome $y = \{y_1, y_1,..., y_n\}$ and a set of predictors or "explanatory variables" $x_1 = \{x_{11}, x_{21}, ..., x_{n1}\}, x_2 = \{x_{12}, x_{22}, ..., x_{n2}\}, ..., x_k = \{x_{1k}, x_{2k}, ..., x_{nk}\}$.
+
+The notation $y_i$ refers to the $i$th observation of the outcome variable.
+
+The notation $x_{ij}$ refers to the $i$th observation of the $j$th control variable.
+
+The we write the linear regression model as
+
+$$
+y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_k x_{ik} + r_i.
+$$
+
+We might then assume that the $r_i$s follow a normal distribution, so that $r_i \sim N(0, \sigma^2)$ for all $i$.
+
+The we can define $\mu_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_k x_{ik}$ and see that
+
+$$
+y_i \sim N(\mu_i, \sigma^2).
+$$
+Taking the expectation, we have $E(y_i \mid x_1, x_2, ... , x_n) = \mu_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_k x_{ik}$. This is just a *conditional average* (the average of the outcome conditional on the explanatory variables). Sometimes we refer to this quantity as $\hat{y}_i$. 
+
+There are two important features of this model that I want to explore: the **distribution** or "stochastic component" and the **linear predictor** of the model.
+
+### Distribution
+
+This model uses the normal distribution to describe the unexplained variation in $y_i - \hat{y}_i$. POS 5746 focuses (mostly) on models that assume a normal distribution for the outcome. King (1998) calls this the "stochastic" component of the model.
+
+For now, simply note that we are not restricted to a normal model, we could easily adapt the model to use a Bernoulli, exponential, or Poisson distribution, for example.
+
+### Linear Predictor
+
+The linear predictor $\beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_k x_{ik}$ is **critically** important. So we should spend some time to get familiar with it.
+
+For the sake of this exercise, the values of the $\beta$s and the $x_{ij}$s are arbitrary, 
+
+```{r}
+# devtools::install_github('IQSS/Zelig')
+data(macro, package = "Zelig")
+
+set.seed(1234)
+small_macro <- macro %>%
+  select(unem, gdp, capmob, trade) %>%
+  sample_n(5) %>%
+  mutate(across(.fns = signif, digits = 2)) 
+kableExtra::kable(small_macro, format = "markdown")
+
+fit <- lm(unem ~ gdp + capmob + trade, data = small_macro)
+signif(coef(fit), digits = 2)
+```
+
+**In-Class Exercise** For the $\beta$s and the $x_{ij}$s above, compute each $\mu_i$ and $r_i = y_i - \mu_i$. 
+
+Now, let's bind the explanatory variables into a matrix, so that 
+
+$$
+X = [x_1, x_2, ..., x_k] = \begin{bmatrix} 
+    x_{11} & x_{12} &\dots  & x_{1k}\\
+    x_{21} & x_{22} &\dots  & x_{2k}\\
+    \vdots & \vdots &\ddots & \vdots\\
+    x_{n1} & x_{n2} & \dots  & x_{nk} 
+    \end{bmatrix}.
+$$
+And let's bind the $\beta$s into a column-vector, so that 
+
+$$
+\beta = \begin{bmatrix} 
+    \beta_{1} \\
+    \beta_{2} \\
+    \vdots\\
+    \beta_{k}  
+    \end{bmatrix}.
+$$
+
+$\beta = [\beta_0, \beta_1, \beta_2, ..., \beta_k]$.
+
+Notice that we have a $n \times (k + 1)$ matrix $X$ and a $(k + 1) x 1$ matrix $\beta$. I content that the matrix multiplication $\mu = X\beta$ is identical to $\mu_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_k x_{ik}$.
+
+**In-Class Exercise** For the $\beta$s and the $x_{ij}$s above, compute each $\mu = X\beta$ and $r = y - \mu$.
+
+We can confirm with R.
+
+```{r}
+y <- small_macro$unem
+
+X <- cbind(1, 
+           small_macro$gdp, 
+           small_macro$capmob,
+           small_macro$trade)
+print(X)
+
+beta <- matrix(signif(coef(fit), digits = 2), ncol = 1)
+print(beta)
+
+mu <- X%*%beta; mu
+r <- small_macro$unem - mu; r
+```
+
+From now on, we can just write...
+
+- $X_i\beta$ rather than $\beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_k x_{ik}$ (returns a *scalar* $\mu_i$)
+- $X\beta$ rather than $\beta_0 + \beta_1 x_{1} + \beta_2 x_{2} + \beta_k x_{k}$ (returns a *vector* $\mu$)
+
+### Fitting the Normal-Linear Model
+
+
+#### Maximum Likelihood
+
+It turns out that the usual least-squares solution from POS 5746 is the maximum likelihood estimate of $\beta$. And the RMS of the residuals is the ML estimator of $\sigma$. 
+
+```{r}
+beta_hat <- solve(t(X)%*%X)%*%t(X)%*%y
+print(beta_hat, digits = 2)
+
+sigma_hat <- sqrt(sum((y - X%*%beta_hat)^2))
+print(sigma_hat, digits = 2)
+```
+
+```{r}
+fit <- lm(unem ~ gdp + capmob + trade, data = small_macro)
+arm::display(fit)
+```
+
+We can get confidence intervals with the parametric bootstrap.
+
+```{r}
+# get ml estimates
+fit <- lm(unem ~ gdp + capmob + trade, data = small_macro)
+mu_hat <- predict(fit)  # same as X%*%beta_hat
+sigma_hat <- sqrt(sum(residuals(fit)^2))
+
+# do parametric bootstrap
+n_bs <- 100
+bs_est <- matrix(NA, ncol = length(coef(fit)), nrow = n_bs)
+for (i in 1:n_bs) {
+  bs_y <- rnorm(nrow(small_macro), mean = mu_hat, sd = sigma_hat)
+  bs_fit <- update(fit, bs_y ~ .)
+  bs_est[i, ] <- coef(bs_fit)
+}
+
+# compute the quantiles for each coef
+apply(bs_est, 2, quantile, probs = c(0.05, 0.95))
+```
+
+#### Bayesian
+
+The `stan_glm()` function allows us to easily get posterior simulations for the coefficients (and $\sigma$) for the normal linear model.
+
+```{r message=FALSE, warning=FALSE, results="hide", cache = TRUE}
+library(rstanarm); options(mc.cores = parallel::detectCores())
+stan_fit <- stan_glm(unem ~ gdp + capmob + trade, data = small_macro, 
+                     family = "gaussian", 
+                     chains = 1, 
+                     prior = NULL,
+                     prior_intercept = NULL)
+```
+```{r}
+print(stan_fit)
+```
+
+### Applied Example
+
+```{r message=FALSE, warning=FALSE}
+# load data
+cg <- read_csv("data/parties.csv") %>%
+  glimpse()
+
+# fitting model with ls/ml
+f <- enep ~ eneg*log(average_magnitude) + eneg*upper_tier + en_pres*proximity
+fit <- lm(f, data = cg)
+arm::display(fit, detail = TRUE)
+```
+
+```{r, results="hide", cache = TRUE}
+# fitting model with Stan
+fit <- stan_glm(f, data = cg, chains = 1)
+```
+
+```{r}
+print(fit)
+```
+
+<!--chapter:end:03-01-normal-model.Rmd-->
+
+
+
+```{r include=FALSE}
+library(tidyverse)
+library(rstanarm); options(mc.cores = parallel::detectCores())
+```
+
+## Bernoulli Model
+
+In the case of the normal model, we used $y_i \sim N(\mu_i, \sigma^2)$, where $\mu_i = X_i\beta$. The normal model does a great job with roughly continuous outcomes like ENEP.
+
+But sometimes we care about **binary outcomes**.
+
+- Binary outcomes are categorical outcome variables with exactly two categories, such as whether or not someone voted, whether two countries are at war, and so on.
+- These variables are usually coded as $y_i \in \{0, 1\}$, with one representing "an event" and zero representing "a non-event."
+- In generic language, we’ll say that $y_i = 1$ means that "an event has occurred" and $y_i = 0$ means that "an event has not occurred."
+- This allows us to talk about the "probability of an event" (e.g., the probability of war, etc)
+
+The normal model cannot describe a binary outcome well.  But it doesn't make much conceptual sense to model 0s and 1s as following a normal distribution. 
+
+### The Linear Probability Model 
+
+We can use the linear model (i.e., OLS) with binary outcome variables.
+
+- Recall that we the linear model is represented by the equation $E(y_i) = X_i\beta$.
+- It is important to note that a probability is just a particular kind of expected value---a probability is an expected value of a binary variable.
+- Since $y_i$ is binary, the $E(y_i) = \Pr(y_i = 1) = \Pr(y_i)$, giving us $\Pr(y_i) = X_i\beta$.
+
+The LPM has two advantages:
+
+1. It's is *very* easy to estimate (i.e., OLS; $\hat{\beta} = (X'X)^{-1}X'y$).
+1. It is easy to interpret (i.e., a one unit change in $x_j$ leads to a $\hat{\beta_j}$ unit increase in $\Pr(y)$).
+
+The LPM has several disadvantages
+
+1. **Unbounded Predictions** Because the potential values for the explanatory variables are unbounded, you can obtain predicted probabilities above one and below zero. Of course, these predictions make no sense.
+1. **Conditional Heteroskedasticity** The normal-linear model assumes a constant variance $\sigma^2$. However, it is impossible to have homoskedastic residuals of a binary outcome if the probability of an event varies. Specifically, if $y_i$ is binary, then $\text{Var}(y_i) = \Pr(y_i)[1 - \Pr(y_i)]$, which, for the LPM, equals $X_i\beta(1 - X_i\beta)$. (Non-zero coefficients imply heteroskedasticity.)
+1. **Non-Normal Errors** Normal errors implies that the residuals can take on any value along the real line, with values closer to zero being more likely and errors outside three standard deviations being quite unlikely. However, if $y_i$ is binary, then the residual can take on only two values: $-Pr(y_i)$ or $1 - Pr(y_i)$.
+1. **Functional Form** Theoretically, you'd probably expect explanatory variables to have smaller effects as $Pr(y_i)$ approaches zero or one (called "compression"). The LPM assumes that the effects are constant.
+
+Let's fit the normal model to data from Wolfinger and Rosenstone (1993), Nagler (1994, the "Scobit" paper), and Berry, DeMeritt, and Esarey (2010).
+
+```{r, cache = TRUE}
+scobit <- haven::read_dta("data/scobit.dta") %>%
+  filter(newvote != -1) %>%  # weird -1s in data; unsure if sufficient
+  glimpse()
+
+f <- newvote ~ poly(neweduc, 2, raw = TRUE) + closing + poly(age, 2, raw = TRUE) + south + gov
+fit <- lm(f, data = scobit)
+
+mu_hat <- predict(fit)  # the linear predictor for each row of data frame
+sigma_hat <- sqrt(sum(residuals(fit)^2))
+y_tilde <- rnorm(nrow(scobit), mu_hat, sigma_hat)
+
+# note: the code below uses variables NOT in the data frame; this is sloppy
+library(patchwork)
+gg1 <- ggplot(scobit, aes(x = mu_hat, y = newvote)) + 
+  geom_jitter(height = 0.05, alpha = 0.1, shape = 21, size = 0.3)
+gg2 <- ggplot(scobit, aes(x = mu_hat, y = y_tilde)) + 
+  geom_point(alpha = 0.1, shape = 21, size = 0.3)
+gg1 + gg2
+```
+
+rstanarm has a convenient `pp_check()` function that allows you to compare the posterior predictive distribution to the observed distribution.
+
+```{r message=FALSE, warning=FALSE, results='hide', cache = TRUE}
+library(rstanarm); options(mc.cores = parallel::detectCores())
+
+stan_fit <- stan_glm(f, data = scobit, family = "gaussian", chains = 1)
+```
+
+```{r}
+pp_check(stan_fit)
+```
+
+### The Logit Model
+
+As an initial effort to handle the "non-normal" distribution of the data, we might then use the Bernoulli model $y_i \sim \text{Bernoulli}(\pi_i)$, where $\pi_i = X_i\beta$. However, this has a *big* problem that can make the approach unworkable: $X_i\beta$ might be less than zero or greater than one. 
+
+To address bounds of $\pi_i$ and $X_i\beta$, we are going to introduce a new concept called the "inverse link function." Many of the "disadvantages" of the LPM above follow from the fact that the linear predictor is unbounded. For the normal model, the inverse link function is **not necessary** because the parameter of interest $\mu$ is unbounded and maps to the entire real line. But for other models, the key parameter has a restricted domain. In the case of the Bernoulli distribution, $\pi_i \in [0, 1] \subset \mathbb{R}$.
+
+The idea of the inverse link function is to wrap around the linear predictor and force its values into the desired domain. 
+
+For the Bernoulli distribution, we might use the inverse link function $g^{-1}(x) = \frac{e^x}{1 + e^x}$. This is called the "inverse logit" and it has an "S"-shape. It's job is to map $X\beta$ into $[0, 1]$. (It's also the cdf of the standard logistic distribution.)
+
+```{r fig.height=2, fig.width=3}
+inv_logit <- function(x) {
+  (exp(x))/(1 + exp(x))
+}
+
+ggplot() + 
+  xlim(-10, 10) + 
+  stat_function(fun = inv_logit)
+```
+
+Hint: The inverse-logit function is the cdf of the standard logistic distribution, so you can just use `plogis()` in R, rather than hard-coding the `inv_logit()` function I create above.
+
+Swapping the normal distribution for the Bernoulli and adding the inverse-logit inverse-link function gives us the logit model (or "logistic regression").
+
+$$
+y_i \sim \text{Bernoulli}(\pi_i)\text{, where } \pi_i = \text{logit}^{-1}(X_i\beta).
+$$
+
+We can fit this model using maximum likelihood or posterior simulation. 
+
+### Fitting a Logit Model
+
+#### With `optim()`
+
+To develop the log-likelihood of the logit model, we start with the Bernoulli likelihood from Week 1. 
+
+$$
+f(y; \beta) = L(\beta) = \prod_{i = 1}^{N}\pi_i^{y_i} (1 - \pi_i)^{(1 - y_i)}\text{, where } \pi_i = \text{logit}^{-1}(X_i\beta)
+$$
+Taking the log, we have 
+
+$$
+\log L(\beta) = \sum_{i = 1}^{N} y_i \log \pi_i +  \sum_{i = 1}^{N}(1 - y_i) \log(1 - \pi_i)\text{, where } \pi_i = \text{logit}^{-1}(X_i\beta)
+$$
+We can program this into R for use in `optim()`.
+
+```{r}
+logit_ll <- function(beta, y, X) {
+  p <- plogis(X%*%beta)  # pi is special in R, so I use p
+  ll <- sum(y*log(p)) + sum((1 - y)*log(1 - p))
+  return(ll)
+}
+
+# alternatively
+logit_ll2 <- function(beta, y, X) {
+  ll <- sum(dbinom(y, size = 1, prob = plogis(X%*%beta), log = TRUE))  # easier to use R's d*() functions
+  return(ll)
+}
+```
+
+The tricky part about using `optim()` here is not the log-likelihood function, but setting up `X` and `y`. The code below creates the outcome vector $y$ and the matrix $X$ of explanatory variables (with a leading columns of 1s).
+
+```{r}
+# create formula
+f <- newvote ~ poly(neweduc, 2, raw = TRUE) + closing + poly(age, 2, raw = TRUE) + south + gov
+
+# obtain the model matrix X
+mf <- model.frame(f, data = scobit)  # model frame
+X <- model.matrix(f, mf)         # model matrix X
+
+# obtain the outcome variable y
+y <- model.response(mf)
+```
+
+Then we can use `optim()`.
+
+```{r}
+# for some reason, this isn't converging
+par_start <- c(-3, rep(0, ncol(X) - 1))
+opt <- optim(par_start, fn = logit_ll, y = y, X = X, 
+      control = list(fnscale = -1))
+opt$par
+
+# test w/ same X and y; works
+coef(glm.fit(X, y, family = binomial()))
+```
+
+#### With `glm()`
+
+```{r}
+fit <- glm(f, data = scobit, family = "binomial")
+coef(fit)
+```
+
+
+#### With Stan
+
+```{r, results = "hide", cache = TRUE}
+small_scobit <- sample_n(scobit, 1000)
+stan_fit <- stan_glm(f, data = small_scobit, family = "binomial")
+```
+
+```{r}
+summary(stan_fit)
+```
+
+<!--chapter:end:03-02-bernoulli-model.Rmd-->
+
+
+```{r include=FALSE}
+library(tidyverse)
+```
+
+## Poisson Model
+
+We've now got two models:
+
+$$
+y_i \sim N(\mu_i, \sigma^2)\text{, where } \mu_i = X_i\beta
+$$ 
+
+and
+$$
+y_i \sim \text{Bernoulli}(\pi_i)\text{, where } \pi_i = \text{logit}^{-1}(X_i\beta).
+$$
+We can extend this in many ways by modifying the distribution $f$ and the inverse-link function $g^{-1}$ appropriately.
+
+$$
+y_i \sim f(\theta_i)\text{, where } \theta_i = g^{-1}(X_i\beta).
+$$
+
+In the case of the normal model, $f$ and $g^{-1}$ are the normal distribution and the identity function. In the case of the logit model, they are the Bernoulli distribution and the inverse logit function. 
+
+To build a Poisson regression model, we can use the Poisson distribution for $f$. We just need to identify an appropriate inverse-link function.
+
+The Poisson distribution has a mean parameter $\lambda$ that must be positive. Therefore, we need a function that maps the real line to the positive (or non-negative) reals. The exponential function $g^{-1}(x) = e^x$ does this.
+
+$$
+y_i \sim \text{Poisson}(\lambda_i)\text{, where } \lambda_i = e^{X_i\beta}.
+$$
+
+We can program the log-likelihood function into R for use in `optim()`.
+
+```{r}
+# create log-likelihood
+poisson_ll <- function(beta, y, X) {
+  lambda <- exp(X%*%beta)
+  ll <- sum(dpois(y, lambda = lambda, log = TRUE))
+  return(ll)
+}
+
+# load hks data
+hks <- read_csv("data/hks.csv") %>%
+  na.omit()
+
+# create X and y
+f <- osvAll ~ troopLag + policeLag + militaryobserversLag + 
+  brv_AllLag + osvAllLagDum + incomp + epduration + 
+  lntpop
+mf <- model.frame(f, data = hks)  # model frame
+X <- model.matrix(f, mf)          # model matrix X
+y <- model.response(mf)           # outcome variable y
+
+par_start <- rep(0, ncol(X))
+# this poisson model is so bad that optim has a bit of trouble 
+# intutitively, there's a single outlier that basically makes
+# all poissons nearly impossible.
+opt <- optim(par_start, fn = poisson_ll, y = y, X = X, 
+             control = list(fnscale = -1))
+
+opt$par
+```
+
+Or we can use the `glm()` function.
+
+```{r}
+fit <- glm(f, data = hks, family = poisson)
+coef(fit)
+```
+
+We could also use `stan_glm()` to obtain simulations from the posterior distribution.
+
+### Predictive Distribution
+
+```{r}
+observed_data <- hks %>%
+  mutate(type = "observed", 
+         linpred_hat = predict(fit, type = "link"))
+
+sim_list <- list()
+for (i in 1:5) {
+  sim_list[[i]] <- observed_data %>%
+    mutate(osvAll = rpois(nrow(observed_data), 
+                          lambda = exp(observed_data$linpred_hat)),
+           type = paste0("simulated #", i))
+}
+gg_data <- bind_rows(sim_list) %>%
+  bind_rows(observed_data) %>%
+  glimpse()
+
+ggplot(gg_data, aes(x = linpred_hat, y = osvAll + 1)) + 
+  geom_point(alpha = 0.1, shape = 21, size = 0.3) + 
+  facet_wrap(vars(type)) + 
+  scale_y_log10()
+
+ggplot(gg_data, aes(x = troopLag, y = osvAll + 1)) + 
+  geom_point(alpha = 0.3, shape = 21, size = 0.3) + 
+  facet_wrap(vars(type)) + 
+  scale_y_log10() + 
+  geom_smooth(se = FALSE)
+```
+
+### Posterior Predictive Distribution 
+
+```{r, cache = TRUE}
+library(rstanarm); options(mc.cores = parallel::detectCores())
+stan_fit <- stan_glm(f, data = hks, family = "poisson")
+
+library(tidybayes)
+ppd <- hks %>%
+  add_predicted_draws(stan_fit, ndraws = 8) %>% 
+  mutate(.draw = paste0("Draw #", .draw)) %>% 
+  pivot_wider(names_from = .draw, values_from = .prediction) %>%
+  mutate(`Observed` = osvAll) %>% 
+  pivot_longer(`Draw #1`:`Observed`, names_to = "type", values_to = "osvAll2") %>%
+  glimpse()
+
+ggplot(ppd, aes(x = troopLag, y = osvAll2 + 1)) + 
+  geom_point(alpha = 0.2, shape = 21, size = 0.3) + 
+  facet_wrap(vars(type)) + 
+  geom_smooth(se = FALSE) + 
+  scale_y_log10()
+```
+
+<!--chapter:end:03-03-poisson-model.Rmd-->
+
+
+```{r include=FALSE}
+library(tidyverse)
+```
+
+## [Posterior] Predictive Distribution
+
+As with simple models without covariates, we can use the predictive distribution and the posterior predictive distribution to understand models *with* covariate. In fact, these tools become more valuable as the complexity of the model increases.
+
+### ... for the logit model
+
+```{r, cache = TRUE}
+scobit <- haven::read_dta("data/scobit.dta") %>%
+  filter(newvote != -1) %>%  # weird -1s in data; unsure if sufficient
+  glimpse()
+
+f <- newvote ~ poly(neweduc, 2, raw = TRUE) + closing + poly(age, 2, raw = TRUE) + south + gov
+
+fit <- glm(f, data = scobit, family = "binomial")
+
+# compute estimates of linear predictor and pi
+linpred_hat <- predict(fit, type = "link")  # on scale of linear predictor
+pi_hat <- predict(fit, type = "response")   # on probability scale
+
+# put observed data into a data frame with linpred and pi ests
+observed_data <- scobit %>%
+  mutate(type = "observed", 
+         linpred_hat = linpred_hat, 
+         pi_hat = pi_hat)
+
+# create data frames with simulated data from predictive distribution
+sim_list <- list()
+for (i in 1:5) {
+  y_tilde <- rbinom(nrow(observed_data), size = 1, prob = pi_hat)
+  sim_list[[i]] <- observed_data %>%
+    mutate(newvote = y_tilde, 
+           type = paste0("simulated #", i))
+}
+
+# bind data together
+gg_data <- bind_rows(sim_list) %>%
+  bind_rows(observed_data) %>%
+  glimpse()
+
+# plot fake and obs data against linear predictor.
+ggplot(gg_data, aes(x = linpred_hat, y = newvote)) + 
+  geom_jitter(height = 0.05, alpha = 0.01, shape = 21, size = 0.3) + 
+  facet_wrap(vars(type)) + 
+  geom_smooth()
+
+# plot fake and obs data against age.
+ggplot(gg_data, aes(x = age, y = newvote)) + 
+  geom_jitter(height = 0.05, alpha = 0.01, shape = 21, size = 0.3) + 
+  facet_wrap(vars(type)) + 
+  geom_smooth(se = FALSE)
+```
+
+This model, because we included a second-order polynomial for `age`, does a great job of picking up the nonlinear relationship between age and voting. If we replace the polynomial with a simple linear term, then the observed and predictive distributions show a stark dissimilarity.
+
+```{r}
+f <- newvote ~ poly(neweduc, 2, raw = TRUE) + closing + age + south + gov
+fit <- glm(f, data = scobit, family = "binomial")
+
+observed_data <- scobit %>%
+  mutate(type = "observed", 
+         linpred_hat = predict(fit, type = "link"))
+
+sim_list <- list()
+for (i in 1:5) {
+  y_tilde <- rbinom(nrow(observed_data), size = 1, prob = plogis(observed_data$linpred_hat))
+  sim_list[[i]] <- observed_data %>%
+    mutate(newvote = y_tilde, 
+           type = paste0("simulated #", i))
+}
+gg_data <- bind_rows(sim_list) %>%
+  bind_rows(observed_data) %>%
+  glimpse()
+
+ggplot(gg_data, aes(x = age, y = newvote)) + 
+  geom_jitter(height = 0.05, alpha = 0.01, shape = 21, size = 0.3) + 
+  facet_wrap(vars(type)) + 
+  geom_smooth(se = FALSE)
+```
+
+We can do this same thing with Stan. However, working with the posterior simulations can be tricky. I use tidybayes `add_predicted_draws()` function along with some clever pivoting to get the data ready for `ggplot()`.
+
+```{r results = "hide", cache = TRUE}
+library(rstanarm); options(mc.cores = parallel::detectCores())
+
+small_scobit <- sample_n(scobit, 1000)  # subsample b/c model is slow
+stan_fit <- stan_glm(f, data = small_scobit, family = "binomial")
+```
+
+```{r}
+library(tidybayes)
+
+ppd <- small_scobit %>%
+  add_predicted_draws(stan_fit, ndraws = 8) %>%
+  mutate(.draw = paste0("Draw #", .draw)) %>% 
+  pivot_wider(names_from = .draw, values_from = .prediction) %>%
+  mutate(`Observed` = newvote) %>% 
+  pivot_longer(`Draw #1`:`Observed`, names_to = "type", values_to = "newvote2") %>%
+  glimpse()
+
+ggplot(ppd, aes(x = age, y = newvote2)) + 
+  geom_jitter(height = 0.15, alpha = 0.2, shape = 21, size = 0.3) + 
+  facet_wrap(vars(type)) + 
+  geom_smooth(se = FALSE)
+```
+
+### ... for the Poisson model
+
+The code below repeated this exercise for the Poisson model using the HKS data.
+
+```{r}
+
+# load hks data
+hks <- read_csv("data/hks.csv") %>%
+  na.omit()
+
+# fit poisson model
+f <- osvAll ~ troopLag + policeLag + militaryobserversLag + 
+  brv_AllLag + osvAllLagDum + incomp + epduration + 
+  lntpop
+fit <- glm(f, data = hks, family = poisson)
+
+# simulate fake data from predictive distribution
+observed_data <- hks %>%
+  mutate(type = "observed", 
+         linpred_hat = predict(fit, type = "link"))
+sim_list <- list()
+for (i in 1:5) {
+  sim_list[[i]] <- observed_data %>%
+    mutate(osvAll = rpois(nrow(observed_data), 
+                          lambda = exp(observed_data$linpred_hat)),
+           type = paste0("simulated #", i))
+}
+gg_data <- bind_rows(sim_list) %>%
+  bind_rows(observed_data) %>%
+  glimpse()
+
+# plot fake and observed data against linear predictor
+ggplot(gg_data, aes(x = linpred_hat, y = osvAll + 1)) + 
+  geom_point(alpha = 0.1, shape = 21, size = 0.3) + 
+  facet_wrap(vars(type)) + 
+  scale_y_log10()
+
+# plot fake and observed data against number of troops
+ggplot(gg_data, aes(x = troopLag, y = osvAll + 1)) + 
+  geom_point(alpha = 0.3, shape = 21, size = 0.3) + 
+  facet_wrap(vars(type)) + 
+  scale_y_log10() + 
+  geom_smooth(se = FALSE)
+```
+
+And below is code to work with the posterior predictive distribution.
+
+```{r, results = "hide", cache = TRUE}
+stan_fit <- stan_glm(f, data = hks, family = "poisson", chains = 1)
+```
+
+```{r}
+ppd <- hks %>%
+  add_predicted_draws(stan_fit, ndraws = 8) %>% 
+  mutate(.draw = paste0("Draw #", .draw)) %>% 
+  pivot_wider(names_from = .draw, values_from = .prediction) %>%
+  mutate(`Observed` = osvAll) %>% 
+  pivot_longer(`Draw #1`:`Observed`, names_to = "type", values_to = "osvAll2") %>%
+  glimpse()
+
+ggplot(ppd, aes(x = troopLag, y = osvAll2 + 1)) + 
+  geom_point(alpha = 0.2, shape = 21, size = 0.3) + 
+  facet_wrap(vars(type)) + 
+  geom_smooth(se = FALSE) + 
+  scale_y_log10()
+```
+
+<!--chapter:end:03-04-predictive-distributions.Rmd-->
+
+
+```{r include=FALSE}
+library(tidyverse)
+```
+
+## Quantities of Interest
+
+We've now got three models:
+
+1. the normal model
+1. the logit model
+1. the Poisson model
+
+In only the case of the normal distribution are the parameters directly interpretable. The meaning of the coefficients in the case of the logit and Poisson model is especially unclear.
+
+Thus, we are interested not in the coefficients themselves, but in other "quantities of interest."
+
+### Expected Value
+
+The first quantity of interest is the **expected value** $E(y \mid X_s)$. 
+
+Imagine a particular scenario of interest $X_s$. For the logit model, we can compute the expected value of $y$ for that scenario using $\hat{E}(y \mid X_p) = \hat{\pi}_s = \text{logit}^{-1}(X_s\hat{\beta})$. For the Poisson model, it's $\hat{E}(y \mid X_p) = \hat{\lambda}_s = e^{X_s\hat{\beta}}$. 
+
+Let's see how this would work with the scobit data.
+
+```{r}
+scobit <- haven::read_dta("data/scobit.dta") %>%
+  filter(newvote != -1) 
+
+f <- newvote ~ poly(neweduc, 2, raw = TRUE) + closing + poly(age, 2, raw = TRUE) + south + gov
+fit <- glm(f, data = scobit, family = binomial)
+```
+
+First, let's create the scenario of interest.
+
+```{r}
+# create the scenario of interest X_s (but a data frame)
+
+scenario <- tibble(
+  neweduc = median(scobit$neweduc),
+  closing = median(scobit$closing),
+  age = median(scobit$age),
+  south = median(scobit$south),
+  gov = median(scobit$gov)) %>%
+  glimpse()
+
+# now use the predict() function to get pi_hat
+pi_hat <- predict(fit, newdata = scenario, type = "response")
+```
+
+So when all the $x$s are set to their median, the estimated probability of voting is `pi_hat`.
+
+We could all compute the expected value for all values of a single variable with other variables set to their median.
+
+```{r fig.height=3, fig.width=4}
+scenarios <- tibble(
+  neweduc = sort(unique(scobit$neweduc)),
+  closing = median(scobit$closing),
+  age = median(scobit$age),
+  south = median(scobit$south),
+  gov = median(scobit$gov)) %>%
+  glimpse()
+
+scenarios$pi_hat <- predict(fit, newdata = scenarios, type = "response")
+
+ggplot(scenarios, aes(x = neweduc, y = pi_hat))+
+  geom_point()
+```
+
+### First Difference
+
+Perhaps the most important quantity of interest, though, is the **first difference**. Imagine *two* scenario of interest $X_{lo}$ and $X_{hi}$. We then compute the *difference* $\Delta$ between the expected values $X_{lo}$ and $X_{hi}$, so that $\hat{\Delta} = \hat{E}(y \mid X_{hi}) -  \hat{E}(y \mid X_{lo})$. This works for (almost?) all models we'll see in this course.
+
+```{r}
+lo_scenario <- tibble(
+  neweduc = quantile(scobit$neweduc, 0.10), # 25th percentile
+  closing = median(scobit$closing),
+  age = median(scobit$age),
+  south = median(scobit$south),
+  gov = median(scobit$gov)) %>%
+  glimpse()
+
+hi_scenario <- tibble(
+  neweduc = quantile(scobit$neweduc, 0.90), # 75th percentile
+  closing = median(scobit$closing),
+  age = median(scobit$age),
+  south = median(scobit$south),
+  gov = median(scobit$gov)) %>%
+  glimpse()
+
+fd_hat <- predict(fit, newdata = hi_scenario, type = "response") - 
+  predict(fit, newdata = lo_scenario, type = "response")
+print(fd_hat)
+```
+
+This shows that if we move education from it minimum value (1) to its maximum value (8), the expected value goes up by 0.70. Since the expected value here is a probability, we can say that the chance of voting goes up by 42 percentage points (from 44% to 87%).
+
+<!--chapter:end:03-05-first-difference.Rmd-->
+
