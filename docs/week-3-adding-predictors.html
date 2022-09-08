@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 3 Week 3: Adding Predictors | Statistical Modeling: A Tools Approach</title>
+  <meta name="description" content="Lecture notes covering the key tools of regression modeling in political science." />
+  <meta name="generator" content="bookdown 0.25 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 3 Week 3: Adding Predictors | Statistical Modeling: A Tools Approach" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="Lecture notes covering the key tools of regression modeling in political science." />
+  <meta name="github-repo" content="pos5747/adv-methods-notes" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 3 Week 3: Adding Predictors | Statistical Modeling: A Tools Approach" />
+  
+  <meta name="twitter:description" content="Lecture notes covering the key tools of regression modeling in political science." />
+  
+
+<meta name="author" content="Carlisle Rainey" />
+
+
+<meta name="date" content="2022-09-08" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="week-2-bayesian-inference.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.10.0/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
+<script>
+    $(document).ready(function () {
+        process_solutions();
+    });
+    function process_solutions() {
+        $("div.section[id^='solution']").each(function(i) {
+        var soln_wrapper_id = "cvxr_ex_" + i;
+        var solution_id = $(this).attr('id');
+        var button = $("<button onclick=\"toggle_solution('" + soln_wrapper_id + "')\">Show/Hide</button>");
+        var new_div = $("<div id='" + soln_wrapper_id + "' class='solution' style='display: none;'></div>");
+        var h = $(this).first();
+        var others = $(this).children().slice(1);
+        $(others).each(function() {
+            $(this).appendTo($(new_div));
+        });
+        $(button).insertAfter($(h));
+        $(new_div).insertAfter($(button));
+        })
+    }
+    function toggle_solution(el_id) {
+      $("#" + el_id).toggle();
+    } 
+</script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Advanced Methods Notes</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Week 1: Maximum Likelihood<span></span></a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#class-agenda"><i class="fa fa-check"></i><b>1.1</b> Class agenda<span></span></a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#maximum-likelihood"><i class="fa fa-check"></i><b>1.2</b> Maximum Likelihood<span></span></a>
+<ul>
+<li class="chapter" data-level="1.2.1" data-path="index.html"><a href="index.html#example-bernoulli-distribution"><i class="fa fa-check"></i><b>1.2.1</b> Example: Bernoulli Distribution<span></span></a></li>
+<li class="chapter" data-level="1.2.2" data-path="index.html"><a href="index.html#example-poisson-distribution"><i class="fa fa-check"></i><b>1.2.2</b> Example: Poisson Distribution<span></span></a></li>
+<li class="chapter" data-level="1.2.3" data-path="index.html"><a href="index.html#remarks"><i class="fa fa-check"></i><b>1.2.3</b> Remarks<span></span></a></li>
+<li class="chapter" data-level="1.2.4" data-path="index.html"><a href="index.html#example-beta-distribution"><i class="fa fa-check"></i><b>1.2.4</b> Example: Beta Distribution<span></span></a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html"><i class="fa fa-check"></i><b>2</b> Week 2: Bayesian Inference<span></span></a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html#bayesian-inference"><i class="fa fa-check"></i><b>2.1</b> Bayesian Inference<span></span></a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html#mechanics"><i class="fa fa-check"></i><b>2.1.1</b> Mechanics<span></span></a></li>
+<li class="chapter" data-level="2.1.2" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html#posterior-summaries"><i class="fa fa-check"></i><b>2.1.2</b> Posterior Summaries<span></span></a></li>
+<li class="chapter" data-level="2.1.3" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html#posterior-simulation"><i class="fa fa-check"></i><b>2.1.3</b> Posterior Simulation<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html#example-bernoulli"><i class="fa fa-check"></i><b>2.2</b> Example: Bernoulli<span></span></a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html#likelihood"><i class="fa fa-check"></i><b>2.2.1</b> The Likelihood<span></span></a></li>
+<li class="chapter" data-level="2.2.2" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html#the-prior"><i class="fa fa-check"></i><b>2.2.2</b> The Prior<span></span></a></li>
+<li class="chapter" data-level="2.2.3" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html#the-posterior"><i class="fa fa-check"></i><b>2.2.3</b> The Posterior<span></span></a></li>
+<li class="chapter" data-level="2.2.4" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html#point-estimates"><i class="fa fa-check"></i><b>2.2.4</b> Point Estimates<span></span></a></li>
+<li class="chapter" data-level="2.2.5" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html#credible-interval"><i class="fa fa-check"></i><b>2.2.5</b> Credible Interval<span></span></a></li>
+<li class="chapter" data-level="2.2.6" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html#simulation"><i class="fa fa-check"></i><b>2.2.6</b> Simulation<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html#example-poisson-distribution-1"><i class="fa fa-check"></i><b>2.3</b> Example: Poisson Distribution<span></span></a></li>
+<li class="chapter" data-level="2.4" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html#remarks-1"><i class="fa fa-check"></i><b>2.4</b> Remarks<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="week-3-adding-predictors.html"><a href="week-3-adding-predictors.html"><i class="fa fa-check"></i><b>3</b> Week 3: Adding Predictors<span></span></a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="week-3-adding-predictors.html"><a href="week-3-adding-predictors.html#review-the-normal-model"><i class="fa fa-check"></i><b>3.1</b> Review: The Normal Model<span></span></a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="week-3-adding-predictors.html"><a href="week-3-adding-predictors.html#distribution"><i class="fa fa-check"></i><b>3.1.1</b> Distribution<span></span></a></li>
+<li class="chapter" data-level="3.1.2" data-path="week-3-adding-predictors.html"><a href="week-3-adding-predictors.html#linear-predictor"><i class="fa fa-check"></i><b>3.1.2</b> Linear Predictor<span></span></a></li>
+<li class="chapter" data-level="3.1.3" data-path="week-3-adding-predictors.html"><a href="week-3-adding-predictors.html#fitting-the-normal-linear-model"><i class="fa fa-check"></i><b>3.1.3</b> Fitting the Normal-Linear Model<span></span></a></li>
+<li class="chapter" data-level="3.1.4" data-path="week-3-adding-predictors.html"><a href="week-3-adding-predictors.html#applied-example"><i class="fa fa-check"></i><b>3.1.4</b> Applied Example<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="week-3-adding-predictors.html"><a href="week-3-adding-predictors.html#quantities-of-interest"><i class="fa fa-check"></i><b>3.2</b> Quantities of Interest<span></span></a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="week-3-adding-predictors.html"><a href="week-3-adding-predictors.html#expected-value"><i class="fa fa-check"></i><b>3.2.1</b> Expected Value<span></span></a></li>
+<li class="chapter" data-level="3.2.2" data-path="week-3-adding-predictors.html"><a href="week-3-adding-predictors.html#first-difference"><i class="fa fa-check"></i><b>3.2.2</b> First Difference<span></span></a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistical Modeling: A Tools Approach</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="week-3-adding-predictors" class="section level1 hasAnchor" number="3">
+<h1><span class="header-section-number">Chapter 3</span> Week 3: Adding Predictors<a href="week-3-adding-predictors.html#week-3-adding-predictors" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>So far, we have discussed several major ideas:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Maximum likelihood</strong> to obtain point estimates of model parameters and the <strong>invariance property</strong> to transform those estimates into quantities of interest. In this framework, we can use the <strong>parametric bootstrap</strong> to create confidence intervals and the <strong>predictive distribution</strong> to understand fitted models.</li>
+<li><strong>Bayesian inference</strong> to obtain posterior beliefs (i.e., distributions) of model parameters. In most applied cases, we will <strong>simulate from the posterior</strong>. We can <strong>transform</strong> those simulations to obtain posterior distributions of the quantities of interest. We can use the <strong>posterior predictive distribution</strong> to understand the fit.</li>
+<li>We’ve discussed the tools above in the context of the <strong>Bernoulli</strong>, <strong>Poisson</strong>, and <strong>exponential</strong> models. Using the toothpaste cap, binary survey responses, civilian casualties, and government survival data.</li>
+</ol>
+<p>Today, we’re going to focus on two narrow parts of <strong>models</strong> and explore how two current tools generalize to the regression context.</p>
+<ol style="list-style-type: decimal">
+<li>The linear predictor <span class="math inline">\(X\beta\)</span>.</li>
+<li>The inverse link function.</li>
+<li>How the [posterior] predictive distribution generalizes to regression.</li>
+<li>How quantities of interest generalize to regression.</li>
+</ol>
+<p>For this week, we’ll need the following packages:</p>
+<ul>
+<li>rstan/rstanarm</li>
+<li>tidybayes</li>
+<li>Zelig; <code>devtools::install_github('IQSS/Zelig')</code></li>
+</ul>
+<div id="review-the-normal-model" class="section level2 hasAnchor" number="3.1">
+<h2><span class="header-section-number">3.1</span> Review: The Normal Model<a href="week-3-adding-predictors.html#review-the-normal-model" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>To fix ideas, we are going to re-develop the linear model from POS 5746.</p>
+<p>We imagine a continuous outcome <span class="math inline">\(y = \{y_1, y_1,..., y_n\}\)</span> and a set of predictors or “explanatory variables” <span class="math inline">\(x_1 = \{x_{11}, x_{21}, ..., x_{n1}\}, x_2 = \{x_{12}, x_{22}, ..., x_{n2}\}, ..., x_k = \{x_{1k}, x_{2k}, ..., x_{nk}\}\)</span>.</p>
+<p>The notation <span class="math inline">\(y_i\)</span> refers to the <span class="math inline">\(i\)</span>th observation of the outcome variable.</p>
+<p>The notation <span class="math inline">\(x_{ij}\)</span> refers to the <span class="math inline">\(i\)</span>th observation of the <span class="math inline">\(j\)</span>th control variable.</p>
+<p>The we write the linear regression model as</p>
+<p><span class="math display">\[
+y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_k x_{ik} + r_i.
+\]</span></p>
+<p>We might then assume that the <span class="math inline">\(r_i\)</span>s follow a normal distribution, so that <span class="math inline">\(r_i \sim N(0, \sigma^2)\)</span> for all <span class="math inline">\(i\)</span>.</p>
+<p>The we can define <span class="math inline">\(\mu_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_k x_{ik}\)</span> and see that</p>
+<p><span class="math display">\[
+y_i \sim N(\mu_i, \sigma^2).
+\]</span>
+Taking the expectation, we have <span class="math inline">\(E(y_i \mid x_1, x_2, ... , x_n) = \mu_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_k x_{ik}\)</span>. This is just a <em>conditional average</em> (the average of the outcome conditional on the explanatory variables). Sometimes we refer to this quantity as <span class="math inline">\(\hat{y}_i\)</span>.</p>
+<p>There are two important features of this model that I want to explore: the <strong>distribution</strong> or “stochastic component” and the <strong>linear predictor</strong> of the model.</p>
+<div id="distribution" class="section level3 hasAnchor" number="3.1.1">
+<h3><span class="header-section-number">3.1.1</span> Distribution<a href="week-3-adding-predictors.html#distribution" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>This model uses the normal distribution to describe the unexplained variation in <span class="math inline">\(y_i - \hat{y}_i\)</span>. POS 5746 focuses (mostly) on models that assume a normal distribution for the outcome. King (1998) calls this the “stochastic” component of the model.</p>
+<p>For now, simply note that we are not restricted to a normal model, we could easily adapt the model to use a Bernoulli, exponential, or Poisson distribution, for example.</p>
+</div>
+<div id="linear-predictor" class="section level3 hasAnchor" number="3.1.2">
+<h3><span class="header-section-number">3.1.2</span> Linear Predictor<a href="week-3-adding-predictors.html#linear-predictor" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The linear predictor <span class="math inline">\(\beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_k x_{ik}\)</span> is <strong>critically</strong> important. So we should spend some time to get familiar with it.</p>
+<p>For the sake of this exercise, the values of the <span class="math inline">\(\beta\)</span>s and the <span class="math inline">\(x_{ij}\)</span>s are arbitrary,</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="week-3-adding-predictors.html#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># devtools::install_github(&#39;IQSS/Zelig&#39;)</span></span>
+<span id="cb34-2"><a href="week-3-adding-predictors.html#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(macro, <span class="at">package =</span> <span class="st">&quot;Zelig&quot;</span>)</span>
+<span id="cb34-3"><a href="week-3-adding-predictors.html#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="week-3-adding-predictors.html#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb34-5"><a href="week-3-adding-predictors.html#cb34-5" aria-hidden="true" tabindex="-1"></a>small_macro <span class="ot">&lt;-</span> macro <span class="sc">%&gt;%</span></span>
+<span id="cb34-6"><a href="week-3-adding-predictors.html#cb34-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(unem, gdp, capmob, trade) <span class="sc">%&gt;%</span></span>
+<span id="cb34-7"><a href="week-3-adding-predictors.html#cb34-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sample_n</span>(<span class="dv">5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb34-8"><a href="week-3-adding-predictors.html#cb34-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="at">.fns =</span> signif, <span class="at">digits =</span> <span class="dv">2</span>)) </span>
+<span id="cb34-9"><a href="week-3-adding-predictors.html#cb34-9" aria-hidden="true" tabindex="-1"></a>kableExtra<span class="sc">::</span><span class="fu">kable</span>(small_macro, <span class="at">format =</span> <span class="st">&quot;markdown&quot;</span>)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">unem</th>
+<th align="right">gdp</th>
+<th align="right">capmob</th>
+<th align="right">trade</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">284</td>
+<td align="right">1.5</td>
+<td align="right">5.2</td>
+<td align="right">-1</td>
+<td align="right">88</td>
+</tr>
+<tr class="even">
+<td align="left">336</td>
+<td align="right">2.0</td>
+<td align="right">4.8</td>
+<td align="right">-1</td>
+<td align="right">27</td>
+</tr>
+<tr class="odd">
+<td align="left">101</td>
+<td align="right">2.7</td>
+<td align="right">3.2</td>
+<td align="right">-2</td>
+<td align="right">74</td>
+</tr>
+<tr class="even">
+<td align="left">111</td>
+<td align="right">6.8</td>
+<td align="right">5.3</td>
+<td align="right">0</td>
+<td align="right">94</td>
+</tr>
+<tr class="odd">
+<td align="left">133</td>
+<td align="right">2.6</td>
+<td align="right">5.4</td>
+<td align="right">-1</td>
+<td align="right">33</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="week-3-adding-predictors.html#cb35-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(unem <span class="sc">~</span> gdp <span class="sc">+</span> capmob <span class="sc">+</span> trade, <span class="at">data =</span> small_macro)</span>
+<span id="cb35-2"><a href="week-3-adding-predictors.html#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">signif</span>(<span class="fu">coef</span>(fit), <span class="at">digits =</span> <span class="dv">2</span>)</span></code></pre></div>
+<pre><code>## (Intercept)         gdp      capmob       trade 
+##     19.0000     -2.4000      4.5000      0.0027</code></pre>
+<p><strong>In-Class Exercise</strong> For the <span class="math inline">\(\beta\)</span>s and the <span class="math inline">\(x_{ij}\)</span>s above, compute each <span class="math inline">\(\mu_i\)</span> and <span class="math inline">\(r_i = y_i - \mu_i\)</span>.</p>
+<p>Now, let’s bind the explanatory variables into a matrix, so that</p>
+<p><span class="math display">\[
+X = [x_1, x_2, ..., x_k] = \begin{bmatrix}
+    x_{11} &amp; x_{12} &amp;\dots  &amp; x_{1k}\\
+    x_{21} &amp; x_{22} &amp;\dots  &amp; x_{2k}\\
+    \vdots &amp; \vdots &amp;\ddots &amp; \vdots\\
+    x_{n1} &amp; x_{n2} &amp; \dots  &amp; x_{nk}
+    \end{bmatrix}.
+\]</span>
+And let’s bind the <span class="math inline">\(\beta\)</span>s into a column-vector, so that</p>
+<p><span class="math display">\[
+\beta = \begin{bmatrix}
+    \beta_{1} \\
+    \beta_{2} \\
+    \vdots\\
+    \beta_{k}  
+    \end{bmatrix}.
+\]</span></p>
+<p><span class="math inline">\(\beta = [\beta_0, \beta_1, \beta_2, ..., \beta_k]\)</span>.</p>
+<p>Notice that we have a <span class="math inline">\(n \times (k + 1)\)</span> matrix <span class="math inline">\(X\)</span> and a <span class="math inline">\((k + 1) x 1\)</span> matrix <span class="math inline">\(\beta\)</span>. I content that the matrix multiplication <span class="math inline">\(\mu = X\beta\)</span> is identical to <span class="math inline">\(\mu_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_k x_{ik}\)</span>.</p>
+<p><strong>In-Class Exercise</strong> For the <span class="math inline">\(\beta\)</span>s and the <span class="math inline">\(x_{ij}\)</span>s above, compute each <span class="math inline">\(\mu = X\beta\)</span> and <span class="math inline">\(r = y - \mu\)</span>.</p>
+<p>We can confirm with R.</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="week-3-adding-predictors.html#cb37-1" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> small_macro<span class="sc">$</span>unem</span>
+<span id="cb37-2"><a href="week-3-adding-predictors.html#cb37-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-3"><a href="week-3-adding-predictors.html#cb37-3" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="dv">1</span>, </span>
+<span id="cb37-4"><a href="week-3-adding-predictors.html#cb37-4" aria-hidden="true" tabindex="-1"></a>           small_macro<span class="sc">$</span>gdp, </span>
+<span id="cb37-5"><a href="week-3-adding-predictors.html#cb37-5" aria-hidden="true" tabindex="-1"></a>           small_macro<span class="sc">$</span>capmob,</span>
+<span id="cb37-6"><a href="week-3-adding-predictors.html#cb37-6" aria-hidden="true" tabindex="-1"></a>           small_macro<span class="sc">$</span>trade)</span>
+<span id="cb37-7"><a href="week-3-adding-predictors.html#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(X)</span></code></pre></div>
+<pre><code>##      [,1] [,2] [,3] [,4]
+## [1,]    1  5.2   -1   88
+## [2,]    1  4.8   -1   27
+## [3,]    1  3.2   -2   74
+## [4,]    1  5.3    0   94
+## [5,]    1  5.4   -1   33</code></pre>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="week-3-adding-predictors.html#cb39-1" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">signif</span>(<span class="fu">coef</span>(fit), <span class="at">digits =</span> <span class="dv">2</span>), <span class="at">ncol =</span> <span class="dv">1</span>)</span>
+<span id="cb39-2"><a href="week-3-adding-predictors.html#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(beta)</span></code></pre></div>
+<pre><code>##         [,1]
+## [1,] 19.0000
+## [2,] -2.4000
+## [3,]  4.5000
+## [4,]  0.0027</code></pre>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="week-3-adding-predictors.html#cb41-1" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> X<span class="sc">%*%</span>beta; mu</span></code></pre></div>
+<pre><code>##        [,1]
+## [1,] 2.2576
+## [2,] 3.0529
+## [3,] 2.5198
+## [4,] 6.5338
+## [5,] 1.6291</code></pre>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="week-3-adding-predictors.html#cb43-1" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> small_macro<span class="sc">$</span>unem <span class="sc">-</span> mu; r</span></code></pre></div>
+<pre><code>##         [,1]
+## [1,] -0.7576
+## [2,] -1.0529
+## [3,]  0.1802
+## [4,]  0.2662
+## [5,]  0.9709</code></pre>
+<p>From now on, we can just write…</p>
+<ul>
+<li><span class="math inline">\(X_i\beta\)</span> rather than <span class="math inline">\(\beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_k x_{ik}\)</span> (returns a <em>scalar</em> <span class="math inline">\(\mu_i\)</span>)</li>
+<li><span class="math inline">\(X\beta\)</span> rather than <span class="math inline">\(\beta_0 + \beta_1 x_{1} + \beta_2 x_{2} + \beta_k x_{k}\)</span> (returns a <em>vector</em> <span class="math inline">\(\mu\)</span>)</li>
+</ul>
+</div>
+<div id="fitting-the-normal-linear-model" class="section level3 hasAnchor" number="3.1.3">
+<h3><span class="header-section-number">3.1.3</span> Fitting the Normal-Linear Model<a href="week-3-adding-predictors.html#fitting-the-normal-linear-model" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="maximum-likelihood-1" class="section level4 hasAnchor" number="3.1.3.1">
+<h4><span class="header-section-number">3.1.3.1</span> Maximum Likelihood<a href="week-3-adding-predictors.html#maximum-likelihood-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>It turns out that the usual least-squares solution from POS 5746 is the maximum likelihood estimate of <span class="math inline">\(\beta\)</span>. And the RMS of the residuals is the ML estimator of <span class="math inline">\(\sigma\)</span>.</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="week-3-adding-predictors.html#cb45-1" aria-hidden="true" tabindex="-1"></a>beta_hat <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(X)<span class="sc">%*%</span>X)<span class="sc">%*%</span><span class="fu">t</span>(X)<span class="sc">%*%</span>y</span>
+<span id="cb45-2"><a href="week-3-adding-predictors.html#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(beta_hat, <span class="at">digits =</span> <span class="dv">2</span>)</span></code></pre></div>
+<pre><code>##         [,1]
+## [1,] 18.8277
+## [2,] -2.3766
+## [3,]  4.5184
+## [4,]  0.0027</code></pre>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="week-3-adding-predictors.html#cb47-1" aria-hidden="true" tabindex="-1"></a>sigma_hat <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">sum</span>((y <span class="sc">-</span> X<span class="sc">%*%</span>beta_hat)<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb47-2"><a href="week-3-adding-predictors.html#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(sigma_hat, <span class="at">digits =</span> <span class="dv">2</span>)</span></code></pre></div>
+<pre><code>## [1] 1.6</code></pre>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="week-3-adding-predictors.html#cb49-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(unem <span class="sc">~</span> gdp <span class="sc">+</span> capmob <span class="sc">+</span> trade, <span class="at">data =</span> small_macro)</span>
+<span id="cb49-2"><a href="week-3-adding-predictors.html#cb49-2" aria-hidden="true" tabindex="-1"></a>arm<span class="sc">::</span><span class="fu">display</span>(fit)</span></code></pre></div>
+<pre><code>## lm(formula = unem ~ gdp + capmob + trade, data = small_macro)
+##             coef.est coef.se
+## (Intercept) 18.83    11.64  
+## gdp         -2.38     1.77  
+## capmob       4.52     2.33  
+## trade        0.00     0.03  
+## ---
+## n = 5, k = 4
+## residual sd = 1.64, R-Squared = 0.85</code></pre>
+<p>We can get confidence intervals with the parametric bootstrap.</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="week-3-adding-predictors.html#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># get ml estimates</span></span>
+<span id="cb51-2"><a href="week-3-adding-predictors.html#cb51-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(unem <span class="sc">~</span> gdp <span class="sc">+</span> capmob <span class="sc">+</span> trade, <span class="at">data =</span> small_macro)</span>
+<span id="cb51-3"><a href="week-3-adding-predictors.html#cb51-3" aria-hidden="true" tabindex="-1"></a>mu_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit)  <span class="co"># same as X%*%beta_hat</span></span>
+<span id="cb51-4"><a href="week-3-adding-predictors.html#cb51-4" aria-hidden="true" tabindex="-1"></a>sigma_hat <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">sum</span>(<span class="fu">residuals</span>(fit)<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb51-5"><a href="week-3-adding-predictors.html#cb51-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-6"><a href="week-3-adding-predictors.html#cb51-6" aria-hidden="true" tabindex="-1"></a><span class="co"># do parametric bootstrap</span></span>
+<span id="cb51-7"><a href="week-3-adding-predictors.html#cb51-7" aria-hidden="true" tabindex="-1"></a>n_bs <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb51-8"><a href="week-3-adding-predictors.html#cb51-8" aria-hidden="true" tabindex="-1"></a>bs_est <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">ncol =</span> <span class="fu">length</span>(<span class="fu">coef</span>(fit)), <span class="at">nrow =</span> n_bs)</span>
+<span id="cb51-9"><a href="week-3-adding-predictors.html#cb51-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_bs) {</span>
+<span id="cb51-10"><a href="week-3-adding-predictors.html#cb51-10" aria-hidden="true" tabindex="-1"></a>  bs_y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(small_macro), <span class="at">mean =</span> mu_hat, <span class="at">sd =</span> sigma_hat)</span>
+<span id="cb51-11"><a href="week-3-adding-predictors.html#cb51-11" aria-hidden="true" tabindex="-1"></a>  bs_fit <span class="ot">&lt;-</span> <span class="fu">update</span>(fit, bs_y <span class="sc">~</span> .)</span>
+<span id="cb51-12"><a href="week-3-adding-predictors.html#cb51-12" aria-hidden="true" tabindex="-1"></a>  bs_est[i, ] <span class="ot">&lt;-</span> <span class="fu">coef</span>(bs_fit)</span>
+<span id="cb51-13"><a href="week-3-adding-predictors.html#cb51-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb51-14"><a href="week-3-adding-predictors.html#cb51-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-15"><a href="week-3-adding-predictors.html#cb51-15" aria-hidden="true" tabindex="-1"></a><span class="co"># compute the quantiles for each coef</span></span>
+<span id="cb51-16"><a href="week-3-adding-predictors.html#cb51-16" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(bs_est, <span class="dv">2</span>, quantile, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>))</span></code></pre></div>
+<pre><code>##           [,1]       [,2]     [,3]        [,4]
+## 5%   0.6518702 -4.9998081 1.690274 -0.04557350
+## 95% 35.5920062  0.4865889 7.987606  0.06363354</code></pre>
+</div>
+<div id="bayesian" class="section level4 hasAnchor" number="3.1.3.2">
+<h4><span class="header-section-number">3.1.3.2</span> Bayesian<a href="week-3-adding-predictors.html#bayesian" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>The <code>stan_glm()</code> function allows us to easily get posterior simulations for the coefficients (and <span class="math inline">\(\sigma\)</span>) for the normal linear model.</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="week-3-adding-predictors.html#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstanarm); <span class="fu">options</span>(<span class="at">mc.cores =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span>
+<span id="cb53-2"><a href="week-3-adding-predictors.html#cb53-2" aria-hidden="true" tabindex="-1"></a>stan_fit <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(unem <span class="sc">~</span> gdp <span class="sc">+</span> capmob <span class="sc">+</span> trade, <span class="at">data =</span> small_macro, </span>
+<span id="cb53-3"><a href="week-3-adding-predictors.html#cb53-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">family =</span> <span class="st">&quot;gaussian&quot;</span>, </span>
+<span id="cb53-4"><a href="week-3-adding-predictors.html#cb53-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">chains =</span> <span class="dv">1</span>, </span>
+<span id="cb53-5"><a href="week-3-adding-predictors.html#cb53-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">prior =</span> <span class="cn">NULL</span>,</span>
+<span id="cb53-6"><a href="week-3-adding-predictors.html#cb53-6" aria-hidden="true" tabindex="-1"></a>                     <span class="at">prior_intercept =</span> <span class="cn">NULL</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="week-3-adding-predictors.html#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(stan_fit)</span></code></pre></div>
+<pre><code>## stan_glm
+##  family:       gaussian [identity]
+##  formula:      unem ~ gdp + capmob + trade
+##  observations: 5
+##  predictors:   4
+## ------
+##             Median MAD_SD
+## (Intercept) 19.3   11.7  
+## gdp         -2.4    1.7  
+## capmob       4.5    2.3  
+## trade        0.0    0.0  
+## 
+## Auxiliary parameter(s):
+##       Median MAD_SD
+## sigma 1.8    0.9   
+## 
+## ------
+## * For help interpreting the printed output see ?print.stanreg
+## * For info on the priors used see ?prior_summary.stanreg</code></pre>
+</div>
+</div>
+<div id="applied-example" class="section level3 hasAnchor" number="3.1.4">
+<h3><span class="header-section-number">3.1.4</span> Applied Example<a href="week-3-adding-predictors.html#applied-example" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="week-3-adding-predictors.html#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load data</span></span>
+<span id="cb56-2"><a href="week-3-adding-predictors.html#cb56-2" aria-hidden="true" tabindex="-1"></a>cg <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/parties.csv&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb56-3"><a href="week-3-adding-predictors.html#cb56-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code></pre></div>
+<pre><code>## Rows: 555
+## Columns: 10
+## $ country              &lt;chr&gt; &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Argentina&quot;, &quot;Ar…
+## $ year                 &lt;dbl&gt; 1992, 1996, 1997, 1946, 1951, 1954, 1958, 1960, 1…
+## $ average_magnitude    &lt;dbl&gt; 1.00, 1.00, 1.00, 10.53, 10.53, 4.56, 8.13, 4.17,…
+## $ eneg                 &lt;dbl&gt; 1.106929, 1.106929, 1.106929, 1.342102, 1.342102,…
+## $ enep                 &lt;dbl&gt; 2.190, 2.785, 2.870, 5.750, 1.970, 1.930, 2.885, …
+## $ upper_tier           &lt;dbl&gt; 28.57, 17.86, 25.80, 0.00, 0.00, 0.00, 0.00, 0.00…
+## $ en_pres              &lt;dbl&gt; 0.00, 0.00, 0.00, 2.09, 1.96, 1.96, 2.65, 2.65, 3…
+## $ proximity            &lt;dbl&gt; 0.00, 0.00, 0.00, 1.00, 1.00, 0.20, 1.00, 0.20, 1…
+## $ social_heterogeneity &lt;chr&gt; &quot;Bottom 3rd of ENEG&quot;, &quot;Bottom 3rd of ENEG&quot;, &quot;Bott…
+## $ electoral_system     &lt;chr&gt; &quot;Single-Member District&quot;, &quot;Single-Member District…</code></pre>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="week-3-adding-predictors.html#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fitting model with ls/ml</span></span>
+<span id="cb58-2"><a href="week-3-adding-predictors.html#cb58-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> enep <span class="sc">~</span> eneg<span class="sc">*</span><span class="fu">log</span>(average_magnitude) <span class="sc">+</span> eneg<span class="sc">*</span>upper_tier <span class="sc">+</span> en_pres<span class="sc">*</span>proximity</span>
+<span id="cb58-3"><a href="week-3-adding-predictors.html#cb58-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(f, <span class="at">data =</span> cg)</span>
+<span id="cb58-4"><a href="week-3-adding-predictors.html#cb58-4" aria-hidden="true" tabindex="-1"></a>arm<span class="sc">::</span><span class="fu">display</span>(fit, <span class="at">detail =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>## lm(formula = f, data = cg)
+##                             coef.est coef.se t value Pr(&gt;|t|)
+## (Intercept)                  2.81     0.20   14.31    0.00   
+## eneg                         0.19     0.08    2.47    0.01   
+## log(average_magnitude)       0.33     0.11    2.88    0.00   
+## upper_tier                   0.05     0.01    4.98    0.00   
+## en_pres                      0.35     0.07    4.84    0.00   
+## proximity                   -3.42     0.38   -8.98    0.00   
+## eneg:log(average_magnitude)  0.08     0.06    1.28    0.20   
+## eneg:upper_tier             -0.02     0.00   -3.37    0.00   
+## en_pres:proximity            0.80     0.15    5.34    0.00   
+## ---
+## n = 555, k = 9
+## residual sd = 1.59, R-Squared = 0.30</code></pre>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="week-3-adding-predictors.html#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fitting model with Stan</span></span>
+<span id="cb60-2"><a href="week-3-adding-predictors.html#cb60-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(f, <span class="at">data =</span> cg, <span class="at">chains =</span> <span class="dv">1</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="week-3-adding-predictors.html#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span></code></pre></div>
+<pre><code>## stan_glm
+##  family:       gaussian [identity]
+##  formula:      enep ~ eneg * log(average_magnitude) + eneg * upper_tier + en_pres * 
+##     proximity
+##  observations: 555
+##  predictors:   9
+## ------
+##                             Median MAD_SD
+## (Intercept)                  2.8    0.2  
+## eneg                         0.2    0.1  
+## log(average_magnitude)       0.3    0.1  
+## upper_tier                   0.0    0.0  
+## en_pres                      0.3    0.1  
+## proximity                   -3.4    0.4  
+## eneg:log(average_magnitude)  0.1    0.1  
+## eneg:upper_tier              0.0    0.0  
+## en_pres:proximity            0.8    0.1  
+## 
+## Auxiliary parameter(s):
+##       Median MAD_SD
+## sigma 1.6    0.0   
+## 
+## ------
+## * For help interpreting the printed output see ?print.stanreg
+## * For info on the priors used see ?prior_summary.stanreg</code></pre>
+
+</div>
+</div>
+<div id="quantities-of-interest" class="section level2 hasAnchor" number="3.2">
+<h2><span class="header-section-number">3.2</span> Quantities of Interest<a href="week-3-adding-predictors.html#quantities-of-interest" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>We’ve now got three models:</p>
+<ol style="list-style-type: decimal">
+<li>the normal model</li>
+<li>the logit model</li>
+<li>the Poisson model</li>
+</ol>
+<p>In only the case of the normal distribution are the parameters directly interpretable. The meaning of the coefficients in the case of the logit and Poisson model is especially unclear.</p>
+<p>Thus, we are interested not in the coefficients themselves, but in other “quantities of interest.”</p>
+<div id="expected-value" class="section level3 hasAnchor" number="3.2.1">
+<h3><span class="header-section-number">3.2.1</span> Expected Value<a href="week-3-adding-predictors.html#expected-value" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The first quantity of interest is the <strong>expected value</strong> <span class="math inline">\(E(y \mid X_s)\)</span>.</p>
+<p>Imagine a particular scenario of interest <span class="math inline">\(X_s\)</span>. For the logit model, we can compute the expected value of <span class="math inline">\(y\)</span> for that scenario using <span class="math inline">\(\hat{E}(y \mid X_p) = \hat{\pi}_s = \text{logit}^{-1}(X_s\hat{\beta})\)</span>. For the Poisson model, it’s <span class="math inline">\(\hat{E}(y \mid X_p) = \hat{\lambda}_s = e^{X_s\hat{\beta}}\)</span>.</p>
+<p>Let’s see how this would work with the scobit data.</p>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="week-3-adding-predictors.html#cb63-1" aria-hidden="true" tabindex="-1"></a>scobit <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">&quot;data/scobit.dta&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb63-2"><a href="week-3-adding-predictors.html#cb63-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(newvote <span class="sc">!=</span> <span class="sc">-</span><span class="dv">1</span>) </span>
+<span id="cb63-3"><a href="week-3-adding-predictors.html#cb63-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-4"><a href="week-3-adding-predictors.html#cb63-4" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> newvote <span class="sc">~</span> <span class="fu">poly</span>(neweduc, <span class="dv">2</span>, <span class="at">raw =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> closing <span class="sc">+</span> <span class="fu">poly</span>(age, <span class="dv">2</span>, <span class="at">raw =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> south <span class="sc">+</span> gov</span>
+<span id="cb63-5"><a href="week-3-adding-predictors.html#cb63-5" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(f, <span class="at">data =</span> scobit, <span class="at">family =</span> binomial)</span></code></pre></div>
+<p>First, let’s create the scenario of interest.</p>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="week-3-adding-predictors.html#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create the scenario of interest X_s (but a data frame)</span></span>
+<span id="cb64-2"><a href="week-3-adding-predictors.html#cb64-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-3"><a href="week-3-adding-predictors.html#cb64-3" aria-hidden="true" tabindex="-1"></a>scenario <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb64-4"><a href="week-3-adding-predictors.html#cb64-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">neweduc =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>neweduc),</span>
+<span id="cb64-5"><a href="week-3-adding-predictors.html#cb64-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">closing =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>closing),</span>
+<span id="cb64-6"><a href="week-3-adding-predictors.html#cb64-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>age),</span>
+<span id="cb64-7"><a href="week-3-adding-predictors.html#cb64-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">south =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>south),</span>
+<span id="cb64-8"><a href="week-3-adding-predictors.html#cb64-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">gov =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>gov)) <span class="sc">%&gt;%</span></span>
+<span id="cb64-9"><a href="week-3-adding-predictors.html#cb64-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code></pre></div>
+<pre><code>## Rows: 1
+## Columns: 5
+## $ neweduc &lt;dbl&gt; 5
+## $ closing &lt;dbl&gt; 30
+## $ age     &lt;dbl&gt; 40
+## $ south   &lt;dbl&gt; 0
+## $ gov     &lt;dbl&gt; 0</code></pre>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="week-3-adding-predictors.html#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="co"># now use the predict() function to get pi_hat</span></span>
+<span id="cb66-2"><a href="week-3-adding-predictors.html#cb66-2" aria-hidden="true" tabindex="-1"></a>pi_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> scenario, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span></code></pre></div>
+<p>So when all the <span class="math inline">\(x\)</span>s are set to their median, the estimated probability of voting is <code>pi_hat</code>.</p>
+<p>We could all compute the expected value for all values of a single variable with other variables set to their median.</p>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="week-3-adding-predictors.html#cb67-1" aria-hidden="true" tabindex="-1"></a>scenarios <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb67-2"><a href="week-3-adding-predictors.html#cb67-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">neweduc =</span> <span class="fu">sort</span>(<span class="fu">unique</span>(scobit<span class="sc">$</span>neweduc)),</span>
+<span id="cb67-3"><a href="week-3-adding-predictors.html#cb67-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">closing =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>closing),</span>
+<span id="cb67-4"><a href="week-3-adding-predictors.html#cb67-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>age),</span>
+<span id="cb67-5"><a href="week-3-adding-predictors.html#cb67-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">south =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>south),</span>
+<span id="cb67-6"><a href="week-3-adding-predictors.html#cb67-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">gov =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>gov)) <span class="sc">%&gt;%</span></span>
+<span id="cb67-7"><a href="week-3-adding-predictors.html#cb67-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code></pre></div>
+<pre><code>## Rows: 8
+## Columns: 5
+## $ neweduc &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8
+## $ closing &lt;dbl&gt; 30, 30, 30, 30, 30, 30, 30, 30
+## $ age     &lt;dbl&gt; 40, 40, 40, 40, 40, 40, 40, 40
+## $ south   &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0
+## $ gov     &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0</code></pre>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="week-3-adding-predictors.html#cb69-1" aria-hidden="true" tabindex="-1"></a>scenarios<span class="sc">$</span>pi_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> scenarios, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
+<span id="cb69-2"><a href="week-3-adding-predictors.html#cb69-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-3"><a href="week-3-adding-predictors.html#cb69-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(scenarios, <span class="fu">aes</span>(<span class="at">x =</span> neweduc, <span class="at">y =</span> pi_hat))<span class="sc">+</span></span>
+<span id="cb69-4"><a href="week-3-adding-predictors.html#cb69-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code></pre></div>
+<p><img src="03-05-first-difference_files/figure-html/unnamed-chunk-4-1.png" width="384" /></p>
+</div>
+<div id="first-difference" class="section level3 hasAnchor" number="3.2.2">
+<h3><span class="header-section-number">3.2.2</span> First Difference<a href="week-3-adding-predictors.html#first-difference" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Perhaps the most important quantity of interest, though, is the <strong>first difference</strong>. Imagine <em>two</em> scenario of interest <span class="math inline">\(X_{lo}\)</span> and <span class="math inline">\(X_{hi}\)</span>. We then compute the <em>difference</em> <span class="math inline">\(\Delta\)</span> between the expected values <span class="math inline">\(X_{lo}\)</span> and <span class="math inline">\(X_{hi}\)</span>, so that <span class="math inline">\(\hat{\Delta} = \hat{E}(y \mid X_{hi}) - \hat{E}(y \mid X_{lo})\)</span>. This works for (almost?) all models we’ll see in this course.</p>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="week-3-adding-predictors.html#cb70-1" aria-hidden="true" tabindex="-1"></a>lo_scenario <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb70-2"><a href="week-3-adding-predictors.html#cb70-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">neweduc =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="fl">0.10</span>), <span class="co"># 25th percentile</span></span>
+<span id="cb70-3"><a href="week-3-adding-predictors.html#cb70-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">closing =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>closing),</span>
+<span id="cb70-4"><a href="week-3-adding-predictors.html#cb70-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>age),</span>
+<span id="cb70-5"><a href="week-3-adding-predictors.html#cb70-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">south =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>south),</span>
+<span id="cb70-6"><a href="week-3-adding-predictors.html#cb70-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">gov =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>gov)) <span class="sc">%&gt;%</span></span>
+<span id="cb70-7"><a href="week-3-adding-predictors.html#cb70-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code></pre></div>
+<pre><code>## Rows: 1
+## Columns: 5
+## $ neweduc &lt;dbl&gt; 3
+## $ closing &lt;dbl&gt; 30
+## $ age     &lt;dbl&gt; 40
+## $ south   &lt;dbl&gt; 0
+## $ gov     &lt;dbl&gt; 0</code></pre>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="week-3-adding-predictors.html#cb72-1" aria-hidden="true" tabindex="-1"></a>hi_scenario <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb72-2"><a href="week-3-adding-predictors.html#cb72-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">neweduc =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="fl">0.90</span>), <span class="co"># 75th percentile</span></span>
+<span id="cb72-3"><a href="week-3-adding-predictors.html#cb72-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">closing =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>closing),</span>
+<span id="cb72-4"><a href="week-3-adding-predictors.html#cb72-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>age),</span>
+<span id="cb72-5"><a href="week-3-adding-predictors.html#cb72-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">south =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>south),</span>
+<span id="cb72-6"><a href="week-3-adding-predictors.html#cb72-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">gov =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>gov)) <span class="sc">%&gt;%</span></span>
+<span id="cb72-7"><a href="week-3-adding-predictors.html#cb72-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code></pre></div>
+<pre><code>## Rows: 1
+## Columns: 5
+## $ neweduc &lt;dbl&gt; 7
+## $ closing &lt;dbl&gt; 30
+## $ age     &lt;dbl&gt; 40
+## $ south   &lt;dbl&gt; 0
+## $ gov     &lt;dbl&gt; 0</code></pre>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="week-3-adding-predictors.html#cb74-1" aria-hidden="true" tabindex="-1"></a>fd_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> hi_scenario, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>) <span class="sc">-</span> </span>
+<span id="cb74-2"><a href="week-3-adding-predictors.html#cb74-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(fit, <span class="at">newdata =</span> lo_scenario, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
+<span id="cb74-3"><a href="week-3-adding-predictors.html#cb74-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fd_hat)</span></code></pre></div>
+<pre><code>##         1 
+## 0.4240654</code></pre>
+<p>This shows that if we move education from it minimum value (1) to its maximum value (8), the expected value goes up by 0.70. Since the expected value here is a probability, we can say that the chance of voting goes up by 42 percentage points (from 44% to 87%).</p>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="week-2-bayesian-inference.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["adv-methods-notes.pdf", "adv-methods-notes.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

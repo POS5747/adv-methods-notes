@@ -2,17 +2,15 @@
 title: 'Statistical Modeling: A Tools Approach'
 author: "Carlisle Rainey"
 date: "2022-09-08"
-output: pdf_document
-geometry: margin=2cm
-documentclass: book
-bibliography:
-- book.bib
-- packages.bib
-biblio-style: apalike
-link-citations: yes
-description: Lecture notes covering the key tools of regression modeling in political
-  science.
 site: bookdown::bookdown_site
+documentclass: book
+bibliography: [book.bib, packages.bib]
+# url: your book url like https://bookdown.org/yihui/bookdown
+# cover-image: path to the social sharing image like images/cover.jpg
+description: |
+  Lecture notes covering the key tools of regression modeling in political science.
+link-citations: yes
+github-repo: pos5747/adv-methods-notes
 ---
 
 # Week 1: Maximum Likelihood

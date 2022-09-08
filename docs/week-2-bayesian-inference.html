@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 2 Week 2: Bayesian Inference | Statistical Modeling: A Tools Approach</title>
+  <meta name="description" content="Lecture notes covering the key tools of regression modeling in political science." />
+  <meta name="generator" content="bookdown 0.25 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 2 Week 2: Bayesian Inference | Statistical Modeling: A Tools Approach" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="Lecture notes covering the key tools of regression modeling in political science." />
+  <meta name="github-repo" content="pos5747/adv-methods-notes" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 2 Week 2: Bayesian Inference | Statistical Modeling: A Tools Approach" />
+  
+  <meta name="twitter:description" content="Lecture notes covering the key tools of regression modeling in political science." />
+  
+
+<meta name="author" content="Carlisle Rainey" />
+
+
+<meta name="date" content="2022-09-08" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="index.html"/>
+<link rel="next" href="week-3-adding-predictors.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.10.0/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
+<script>
+    $(document).ready(function () {
+        process_solutions();
+    });
+    function process_solutions() {
+        $("div.section[id^='solution']").each(function(i) {
+        var soln_wrapper_id = "cvxr_ex_" + i;
+        var solution_id = $(this).attr('id');
+        var button = $("<button onclick=\"toggle_solution('" + soln_wrapper_id + "')\">Show/Hide</button>");
+        var new_div = $("<div id='" + soln_wrapper_id + "' class='solution' style='display: none;'></div>");
+        var h = $(this).first();
+        var others = $(this).children().slice(1);
+        $(others).each(function() {
+            $(this).appendTo($(new_div));
+        });
+        $(button).insertAfter($(h));
+        $(new_div).insertAfter($(button));
+        })
+    }
+    function toggle_solution(el_id) {
+      $("#" + el_id).toggle();
+    } 
+</script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Advanced Methods Notes</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Week 1: Maximum Likelihood<span></span></a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#class-agenda"><i class="fa fa-check"></i><b>1.1</b> Class agenda<span></span></a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#maximum-likelihood"><i class="fa fa-check"></i><b>1.2</b> Maximum Likelihood<span></span></a>
+<ul>
+<li class="chapter" data-level="1.2.1" data-path="index.html"><a href="index.html#example-bernoulli-distribution"><i class="fa fa-check"></i><b>1.2.1</b> Example: Bernoulli Distribution<span></span></a></li>
+<li class="chapter" data-level="1.2.2" data-path="index.html"><a href="index.html#example-poisson-distribution"><i class="fa fa-check"></i><b>1.2.2</b> Example: Poisson Distribution<span></span></a></li>
+<li class="chapter" data-level="1.2.3" data-path="index.html"><a href="index.html#remarks"><i class="fa fa-check"></i><b>1.2.3</b> Remarks<span></span></a></li>
+<li class="chapter" data-level="1.2.4" data-path="index.html"><a href="index.html#example-beta-distribution"><i class="fa fa-check"></i><b>1.2.4</b> Example: Beta Distribution<span></span></a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html"><i class="fa fa-check"></i><b>2</b> Week 2: Bayesian Inference<span></span></a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html#bayesian-inference"><i class="fa fa-check"></i><b>2.1</b> Bayesian Inference<span></span></a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html#mechanics"><i class="fa fa-check"></i><b>2.1.1</b> Mechanics<span></span></a></li>
+<li class="chapter" data-level="2.1.2" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html#posterior-summaries"><i class="fa fa-check"></i><b>2.1.2</b> Posterior Summaries<span></span></a></li>
+<li class="chapter" data-level="2.1.3" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html#posterior-simulation"><i class="fa fa-check"></i><b>2.1.3</b> Posterior Simulation<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html#example-bernoulli"><i class="fa fa-check"></i><b>2.2</b> Example: Bernoulli<span></span></a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html#likelihood"><i class="fa fa-check"></i><b>2.2.1</b> The Likelihood<span></span></a></li>
+<li class="chapter" data-level="2.2.2" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html#the-prior"><i class="fa fa-check"></i><b>2.2.2</b> The Prior<span></span></a></li>
+<li class="chapter" data-level="2.2.3" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html#the-posterior"><i class="fa fa-check"></i><b>2.2.3</b> The Posterior<span></span></a></li>
+<li class="chapter" data-level="2.2.4" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html#point-estimates"><i class="fa fa-check"></i><b>2.2.4</b> Point Estimates<span></span></a></li>
+<li class="chapter" data-level="2.2.5" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html#credible-interval"><i class="fa fa-check"></i><b>2.2.5</b> Credible Interval<span></span></a></li>
+<li class="chapter" data-level="2.2.6" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html#simulation"><i class="fa fa-check"></i><b>2.2.6</b> Simulation<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html#example-poisson-distribution-1"><i class="fa fa-check"></i><b>2.3</b> Example: Poisson Distribution<span></span></a></li>
+<li class="chapter" data-level="2.4" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html#remarks-1"><i class="fa fa-check"></i><b>2.4</b> Remarks<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="week-3-adding-predictors.html"><a href="week-3-adding-predictors.html"><i class="fa fa-check"></i><b>3</b> Week 3: Adding Predictors<span></span></a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="week-3-adding-predictors.html"><a href="week-3-adding-predictors.html#review-the-normal-model"><i class="fa fa-check"></i><b>3.1</b> Review: The Normal Model<span></span></a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="week-3-adding-predictors.html"><a href="week-3-adding-predictors.html#distribution"><i class="fa fa-check"></i><b>3.1.1</b> Distribution<span></span></a></li>
+<li class="chapter" data-level="3.1.2" data-path="week-3-adding-predictors.html"><a href="week-3-adding-predictors.html#linear-predictor"><i class="fa fa-check"></i><b>3.1.2</b> Linear Predictor<span></span></a></li>
+<li class="chapter" data-level="3.1.3" data-path="week-3-adding-predictors.html"><a href="week-3-adding-predictors.html#fitting-the-normal-linear-model"><i class="fa fa-check"></i><b>3.1.3</b> Fitting the Normal-Linear Model<span></span></a></li>
+<li class="chapter" data-level="3.1.4" data-path="week-3-adding-predictors.html"><a href="week-3-adding-predictors.html#applied-example"><i class="fa fa-check"></i><b>3.1.4</b> Applied Example<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="week-3-adding-predictors.html"><a href="week-3-adding-predictors.html#quantities-of-interest"><i class="fa fa-check"></i><b>3.2</b> Quantities of Interest<span></span></a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="week-3-adding-predictors.html"><a href="week-3-adding-predictors.html#expected-value"><i class="fa fa-check"></i><b>3.2.1</b> Expected Value<span></span></a></li>
+<li class="chapter" data-level="3.2.2" data-path="week-3-adding-predictors.html"><a href="week-3-adding-predictors.html#first-difference"><i class="fa fa-check"></i><b>3.2.2</b> First Difference<span></span></a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistical Modeling: A Tools Approach</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="week-2-bayesian-inference" class="section level1 hasAnchor" number="2">
+<h1><span class="header-section-number">Chapter 2</span> Week 2: Bayesian Inference<a href="week-2-bayesian-inference.html#week-2-bayesian-inference" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>This week, we introduce the following tools.</p>
+<ol style="list-style-type: decimal">
+<li><strong>engine</strong> Bayesian inference</li>
+<li><strong>distributions</strong> normal, uniform</li>
+<li><strong>confidence intervals</strong> posterior simulation, Bayesian credible intervals, percentile intervals.</li>
+<li><strong>quantities of interest</strong> transforming posterior simulations</li>
+<li><strong>evaluating models</strong> posterior predictive distribution</li>
+</ol>
+<div id="bayesian-inference" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> Bayesian Inference<a href="week-2-bayesian-inference.html#bayesian-inference" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Bayesian inference follows a simple recipe:</p>
+<ol style="list-style-type: decimal">
+<li>Choose a distribution for the data.</li>
+<li>Choose a distribution to describe your prior beliefs.</li>
+<li>Update the prior distribution upon observing the data by computing the posterior distribution.</li>
+</ol>
+<p>In simple examples, we can implement this process analytically and obtain a closed-form posterior. In most applied cases, we can only <em>sample from</em> the posterior distribution, but this turns out to work almost as well.</p>
+<div id="mechanics" class="section level3 hasAnchor" number="2.1.1">
+<h3><span class="header-section-number">2.1.1</span> Mechanics<a href="week-2-bayesian-inference.html#mechanics" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Suppose a random sample from a distribution <span class="math inline">\(f(x; \theta)\)</span> that depends on the unknown parameter <span class="math inline">\(\theta\)</span>.</p>
+<p>Bayesian inference models our <em>beliefs</em> about the unknown parameter <span class="math inline">\(\theta\)</span> as a distribution. It answers the question: what should we believe about <span class="math inline">\(\theta\)</span>, given the observed samples <span class="math inline">\(x = \{x_1, x_2, ..., x_n\}\)</span> from <span class="math inline">\(f(x; \theta)\)</span>? These beliefs are simply the conditional distribution <span class="math inline">\(f(\theta \mid x)\)</span>.</p>
+<p>By Bayes’ rule, <span class="math inline">\(\displaystyle f(\theta \mid x) = \frac{f(x \mid \theta)f(\theta)}{f(x)} = \frac{f(x \mid \theta)f(\theta)}{\displaystyle \int_{-\infty}^\infty f(x \mid \theta)f(\theta) d\theta}\)</span>.</p>
+<p><span class="math display">\[
+\displaystyle \underbrace{f(\theta \mid x)}_{\text{posterior}} = \frac{\overbrace{f(x \mid \theta)}^{\text{likelihood}} \times \overbrace{f(\theta)}^{\text{prior}}}{\displaystyle \underbrace{\int_{-\infty}^\infty f(x \mid \theta)f(\theta) d\theta}_{\text{normalizing constant}}}
+\]</span>
+There are four parts to a Bayesian analysis.</p>
+<ol style="list-style-type: decimal">
+<li><span class="math inline">\(f(\theta \mid x)\)</span>. “The posterior;” what we’re trying to find. This distribution models our beliefs about parameter <span class="math inline">\(\theta\)</span> given the data <span class="math inline">\(x\)</span>.</li>
+<li><span class="math inline">\(f(x \mid \theta)\)</span>. “The likelihood.” This distribution model conditional density/probability of the data <span class="math inline">\(x\)</span> given the parameter <span class="math inline">\(\theta\)</span>. We need to invert the conditioning in order to find the posterior.</li>
+<li><span class="math inline">\(f(\theta)\)</span>. “The prior;” our beliefs about <span class="math inline">\(\theta\)</span> prior to observing the sample <span class="math inline">\(x\)</span>.</li>
+<li><span class="math inline">\(f(x) =\int_{-\infty}^\infty f(x \mid \theta)f(\theta) d\theta\)</span>. A normalizing constant. Recall that the role of the normalizing constant is to force the distribution to integrate or sum to one. Therefore, we can safely ignore this constant until the end, and then find proper normalizing constant.</li>
+</ol>
+<p>It’s convenient to choose a <strong>conjugate</strong> prior distribution that, when combined with the likelihood, produces a posterior from the same family as the prior.</p>
+<p>The resulting distribution is a complete and correct summary of our updated beliefs about the parameters.</p>
+</div>
+<div id="posterior-summaries" class="section level3 hasAnchor" number="2.1.2">
+<h3><span class="header-section-number">2.1.2</span> Posterior Summaries<a href="week-2-bayesian-inference.html#posterior-summaries" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>If we want to summarize the posterior distribution, then we can (though we lose some information).</p>
+<p>First, we might summarize the distribution using a single point to make a “best guess” at the parameter of interest. We have three options:</p>
+<ol style="list-style-type: decimal">
+<li><em>The posterior mean</em>. The posterior mean minimizes a squared-error loss function.</li>
+<li><em>The posterior median</em>: The posterior median minimizes an absolute loss function where the cost of guessing <span class="math inline">\(a\)</span> when the truth is <span class="math inline">\(\alpha\)</span> is <span class="math inline">\(|a - \alpha|\)</span>. Intuitively, there’s a 50% chance that <span class="math inline">\(\pi\)</span> falls above and below the posterior median.</li>
+<li><em>The posterior mode</em>: The posterior mode is the most likely value of <span class="math inline">\(\pi\)</span>, so it minimizes a loss function that penalizes all misses equally.</li>
+</ol>
+<p>Second, we might find an <span class="math inline">\(100(1 - \alpha)\%\)</span> credible interval, by finding an interval that that integrates to <span class="math inline">\((1 - \alpha)\)</span>. That is, a region that has a <span class="math inline">\(100(1 - \alpha)\%\)</span> chance of containing the parameter. This interval is not unique; there are many. However, <em>one</em> <span class="math inline">\(100(1 - \alpha)\%\)</span> credible interval is the <span class="math inline">\(100(1 - \alpha)\%\)</span> <em>percentile</em> credible interval. Construct this interval by finding the <span class="math inline">\(100\frac{\alpha}{2}th\)</span> percentile and the <span class="math inline">\(100(1 - \frac{\alpha}{2})th\)</span> percentile. For example, if we want a 90% credible interval, we would find the 5th and 95th percentiles.</p>
+</div>
+<div id="posterior-simulation" class="section level3 hasAnchor" number="2.1.3">
+<h3><span class="header-section-number">2.1.3</span> Posterior Simulation<a href="week-2-bayesian-inference.html#posterior-simulation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>In some cases, we have an analytical solution for the posterior—we can write down the equation for the posterior. But in most cases, we cannot write down the posterior. Perhaps unexpectedly, it is usually easier to <em>sample from</em> the distribution that write down the posterior in closed form.</p>
+<p>But notice that the samples are almost as good as the closed-form solution. We can sample from the distribution many times and then draw the histogram, compute the average, and find the percentiles. Except for sampling error that we can make arbitraryily small, these correspond to the posterior density, the posterior mean, and the 95% (percentile) credible interval.</p>
+</div>
+</div>
+<div id="example-bernoulli" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> Example: Bernoulli<a href="week-2-bayesian-inference.html#example-bernoulli" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>As a running example, we use the <strong>toothpaste cap problem</strong>:</p>
+<blockquote>
+<p>We have a toothpaste cap–one with a wide bottom and a narrow top. We’re going to toss the toothpaste cap. It can either end up lying on its side, its (wide) bottom, or its (narrow) top.</p>
+</blockquote>
+<blockquote>
+<p>We want to estimate the probability of the toothpaste cap landing on its top.</p>
+</blockquote>
+<blockquote>
+<p>We can model each toss as a Bernoulli trial, thinking of each toss as a random variable <span class="math inline">\(X\)</span> where <span class="math inline">\(X \sim \text{Bernoulli}(\pi)\)</span>. If the cap lands on its top, we think of the outcome as 1. If not, as 0.</p>
+</blockquote>
+<blockquote>
+<p>Suppose we toss the cap <span class="math inline">\(N\)</span> times and observe <span class="math inline">\(k\)</span> tops. What is the posterior distribution of <span class="math inline">\(\pi\)</span>?</p>
+</blockquote>
+<div id="likelihood" class="section level3 hasAnchor" number="2.2.1">
+<h3><span class="header-section-number">2.2.1</span> The Likelihood<a href="week-2-bayesian-inference.html#likelihood" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>According to the model <span class="math inline">\(f(x_i \mid \pi) = \pi^{x_i} (1 - \pi)^{(1 - x_i)}\)</span>. Because the samples are iid, we can find the <em>joint</em> distribution <span class="math inline">\(f(x) = f(x_1) \times ... \times f(x_N) = \prod_{i = 1}^N f(x_i)\)</span>. We’re just multiplying <span class="math inline">\(k\)</span> <span class="math inline">\(\pi\)</span>s (i.e., each of the <span class="math inline">\(k\)</span> ones has probability <span class="math inline">\(\pi\)</span>) and <span class="math inline">\((N - k)\)</span> <span class="math inline">\((1 - \pi)\)</span>s (i.e., each of the <span class="math inline">\(N - k\)</span> zeros has probability <span class="math inline">\(1 - \pi\)</span>), so that the <span class="math inline">\(f(x | \pi) = \pi^{k} (1 - \pi)^{(N - k)}\)</span>.</p>
+<p><span class="math display">\[
+\text{the likelihood:  } f(x | \pi) = \pi^{k} (1 - \pi)^{(N - k)}, \text{where } k = \sum_{n = 1}^N x_n \\
+\]</span></p>
+</div>
+<div id="the-prior" class="section level3 hasAnchor" number="2.2.2">
+<h3><span class="header-section-number">2.2.2</span> The Prior<a href="week-2-bayesian-inference.html#the-prior" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The prior describes your beliefs about <span class="math inline">\(\pi\)</span> <em>before</em> observing the data.</p>
+<p>Here are some questions that we might ask ourselves the following questions:</p>
+<ol style="list-style-type: decimal">
+<li>What’s the most likely value of <span class="math inline">\(\pi\)</span>? <em>Perhaps 0.15.</em></li>
+<li>Are our beliefs best summarizes by a distribution that’s skewed to the left or right? <em>To the right.</em></li>
+<li><span class="math inline">\(\pi\)</span> is about _____, give or take _____ or so. <em>Perhaps 0.17 and 0.10.</em></li>
+<li>There’s a 25% chance that <span class="math inline">\(\pi\)</span> is less than ____. <em>Perhaps 0.05.</em></li>
+<li>There’s a 25% chance that <span class="math inline">\(\pi\)</span> is greater than ____. <em>Perhaps 0.20</em>.</li>
+</ol>
+<p>Given these answers, we can sketch the pdf of the prior distribution for <span class="math inline">\(\pi\)</span>.</p>
+<p><img src="02-01-bayes_files/figure-html/unnamed-chunk-2-1.png" width="576" /></p>
+<p>Now we need to find a density function that matches these prior beliefs. For this Bernoulli model, the <em>beta distribution</em> is the conjugate prior. While a conjugate prior is not crucial in general, it makes the math much more tractable.</p>
+<p>So then what beta distribution captures our prior beliefs?</p>
+<p>There’s a code snippet <a href="https://gist.github.com/carlislerainey/45414e0d9f22e4e1960449402e6a8048">here</a> to help you explore different beta distributions.</p>
+<p>After some exploration, I find that setting the parameters <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> of the beta distribution to 3 and 15, respectively, captures my prior beliefs about the probability of getting a top.</p>
+<p><img src="02-01-bayes_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+The pdf of the beta distribution is <span class="math inline">\(f(x) = \frac{1}{B(\alpha, \beta)} x^{\alpha - 1}(1 - x)^{\beta - 1}\)</span>. Remember that <span class="math inline">\(B()\)</span> is the beta function, so <span class="math inline">\(\frac{1}{B(\alpha, \beta)}\)</span> is a constant.</p>
+<p>Let’s denote our chosen values of <span class="math inline">\(\alpha = 3\)</span> and <span class="math inline">\(\beta = 15\)</span> as <span class="math inline">\(\alpha^*\)</span> and <span class="math inline">\(\beta^*\)</span>. As we see in a moment, it’s convenient distinguish the parameters in the prior distribution from other parameters.</p>
+<p><span class="math display">\[
+\text{the prior:  }  f(\pi) = \frac{1}{B(\alpha^*, \beta^*)} \pi^{\alpha^* - 1}(1 - \pi)^{\beta^* - 1}
+\]</span></p>
+</div>
+<div id="the-posterior" class="section level3 hasAnchor" number="2.2.3">
+<h3><span class="header-section-number">2.2.3</span> The Posterior<a href="week-2-bayesian-inference.html#the-posterior" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Now we need to compute the posterior by multiplying the likelihood times the prior and then finding the normalizing constant.
+<span class="math display">\[
+\text{the posterior: } \displaystyle \underbrace{f(\pi \mid x)}_{\text{posterior}} = \frac{\overbrace{f(x \mid \pi)}^{\text{likelihood}} \times \overbrace{f(\pi)}^{\text{prior}}}{\displaystyle \underbrace{\int_{-\infty}^\infty f(x \mid \pi)f(\pi) d\pi}_{\text{normalizing constant}}} \\
+\]</span>
+Now we plug in the likelihood, plug in the prior, and denote the normalizing constant as <span class="math inline">\(C_1\)</span> to remind ourselves that it’s just a constant.</p>
+<p><span class="math display">\[
+\displaystyle f(\pi \mid x) = \frac{\left[ \pi^{k} (1 - \pi)^{(N - k) }\right] \times \left[ \frac{1}{B(\alpha^*, \beta^*)} \pi^{\alpha^* - 1}(1 - \pi)^{\beta^* - 1} \right]}{ C_1} \\
+\]</span></p>
+<p><span class="math display">\[
+\text{the posterior: } \displaystyle \underbrace{f(\pi \mid x)}_{\text{posterior}} = \frac{\overbrace{\left[ \pi^{k} (1 - \pi)^{(N - k) }\right] }^{\text{likelihood}} \times \overbrace{ \left[ \frac{1}{B(\alpha^*, \beta^*)} \pi^{\alpha^* - 1}(1 - \pi)^{\beta^* - 1} \right] }^{\text{prior}}}{\displaystyle \underbrace{C_1}_{\text{normalizing constant}}} \\
+\]</span></p>
+<p>Now we need to simplify the right-hand side.</p>
+<p>First, notice that the term <span class="math inline">\(\frac{1}{B(\alpha^*, \beta^*)}\)</span> in the numerator is just a constant. We can incorporate that constant term with <span class="math inline">\(C_1\)</span> by multiplying top and bottom by <span class="math inline">\(B(\alpha^*, \beta^*)\)</span> and letting <span class="math inline">\(C_2 = C_1 \times B(\alpha^*, \beta^*)\)</span>.</p>
+<p><span class="math display">\[
+\text{the posterior: } \displaystyle \underbrace{f(\pi \mid x)}_{\text{posterior}} = \frac{\overbrace{\left[ \pi^{k} (1 - \pi)^{(N - k) }\right] }^{\text{likelihood}} \times  \left[ \pi^{\alpha^* - 1}(1 - \pi)^{\beta^* - 1} \right] }{\displaystyle \underbrace{C_2}_{\text{new normalizing constant}}} \\
+\]</span></p>
+<p>Now we can collect the exponents with base <span class="math inline">\(\pi\)</span> and the exponents with base <span class="math inline">\((1 - \pi)\)</span>.</p>
+<p><span class="math display">\[
+\text{the posterior: } \displaystyle \underbrace{f(\pi \mid x)}_{\text{posterior}} = \frac{\left[ \pi^{k} \times \pi^{\alpha^* - 1} \right] \times  \left[ (1 - \pi)^{(N - k) } \times (1 - \pi)^{\beta^* - 1} \right] }{ C_2} \\
+\]</span>
+Recalling that <span class="math inline">\(x^a \times x^b = x^{a + b}\)</span>, we combine the powers.</p>
+<p><span class="math display">\[
+\text{the posterior: } \displaystyle \underbrace{f(\pi \mid x)}_{\text{posterior}} = \frac{\left[ \pi^{(\alpha^* + k) - 1} \right] \times  \left[ (1 - \pi)^{[\beta^* + (N - k)] - 1} \right] }{ C_2} \\
+\]</span>
+<span class="math display">\[
+\displaystyle f(\theta \mid x) = \frac{f(x \mid \theta) \times f(\theta)}{\displaystyle \int_{-\infty}^\infty f(x \mid \theta)f(\theta) d\theta}
+\]</span></p>
+<p>Because we’re clever, we notice that this is <em>almost</em> a beta distribution with <span class="math inline">\(\alpha = (\alpha^* + k)\)</span> and <span class="math inline">\(\beta = [\beta^* + (N - k)]\)</span>. If <span class="math inline">\(C_2 = B(\alpha^* + k, \beta^* + (N - k))\)</span>, then the posterior is <em>exactly</em> a <span class="math inline">\(\text{beta}(\alpha^* + k, \beta^* + [N - k]))\)</span> distribution.</p>
+<p>This is completely expected. We chose a beta distribution for the prior because it would give us a beta posterior distribution. For simplicity, we can denote the parameter for the beta posterior as <span class="math inline">\(\alpha^\prime\)</span> and <span class="math inline">\(\beta^\prime\)</span>, so that <span class="math inline">\(\alpha^\prime = \alpha^* + k\)</span> and <span class="math inline">\(\beta^\prime = \beta^* + [N - k]\)</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{the posterior: } \displaystyle \underbrace{f(\pi \mid x)}_{\text{posterior}} &amp;= \frac{ \pi^{\overbrace{(\alpha^* + k)}^{\alpha^\prime} - 1}  \times  (1 - \pi)^{\overbrace{[\beta^* + (N - k)]}^{\beta^\prime} - 1}  }{ B(\alpha^* + k, \beta^* + [N - k])} \\
+&amp;= \frac{ \pi^{\alpha^\prime - 1}  \times  (1 - \pi)^{\beta^\prime - 1}  }{ B(\alpha^\prime, \beta^\prime)}, \text{where } \alpha^\prime = \alpha^* + k \text{ and } \beta^\prime = \beta^* + [N - k]
+\end{aligned}
+\]</span></p>
+<p>This is an elegant, simple solution. To obtain the parameters for the beta posterior distribution, we just add the number of tops (Bernoulli successes) to the prior value for <span class="math inline">\(\alpha\)</span> and the number of not-tops (sides and bottoms; Bernoulli failures) to the prior value for <span class="math inline">\(\beta\)</span>.</p>
+<p>Suppose that I tossed the toothpaste cap 150 times and got 8 tops.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="week-2-bayesian-inference.html#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># prior parameters</span></span>
+<span id="cb11-2"><a href="week-2-bayesian-inference.html#cb11-2" aria-hidden="true" tabindex="-1"></a>alpha_prior <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb11-3"><a href="week-2-bayesian-inference.html#cb11-3" aria-hidden="true" tabindex="-1"></a>beta_prior <span class="ot">&lt;-</span> <span class="dv">15</span></span>
+<span id="cb11-4"><a href="week-2-bayesian-inference.html#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="week-2-bayesian-inference.html#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># data </span></span>
+<span id="cb11-6"><a href="week-2-bayesian-inference.html#cb11-6" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="dv">8</span></span>
+<span id="cb11-7"><a href="week-2-bayesian-inference.html#cb11-7" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">150</span></span>
+<span id="cb11-8"><a href="week-2-bayesian-inference.html#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="week-2-bayesian-inference.html#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior parameters</span></span>
+<span id="cb11-10"><a href="week-2-bayesian-inference.html#cb11-10" aria-hidden="true" tabindex="-1"></a>alpha_posterior <span class="ot">&lt;-</span> alpha_prior <span class="sc">+</span> k</span>
+<span id="cb11-11"><a href="week-2-bayesian-inference.html#cb11-11" aria-hidden="true" tabindex="-1"></a>beta_posterior <span class="ot">&lt;-</span> beta_prior <span class="sc">+</span> N <span class="sc">-</span> k</span>
+<span id="cb11-12"><a href="week-2-bayesian-inference.html#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-13"><a href="week-2-bayesian-inference.html#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co"># plot prior and posterior</span></span>
+<span id="cb11-14"><a href="week-2-bayesian-inference.html#cb11-14" aria-hidden="true" tabindex="-1"></a>gg_prior <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb11-15"><a href="week-2-bayesian-inference.html#cb11-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dbeta, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">shape1 =</span> alpha_prior, <span class="at">shape2 =</span> beta_prior)) <span class="sc">+</span> </span>
+<span id="cb11-16"><a href="week-2-bayesian-inference.html#cb11-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;prior distribution&quot;</span>, <span class="at">x =</span> <span class="st">&quot;pi&quot;</span>, <span class="at">y =</span> <span class="st">&quot;prior density&quot;</span>)</span>
+<span id="cb11-17"><a href="week-2-bayesian-inference.html#cb11-17" aria-hidden="true" tabindex="-1"></a>gg_posterior <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb11-18"><a href="week-2-bayesian-inference.html#cb11-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dbeta, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">shape1 =</span> alpha_posterior, <span class="at">shape2 =</span> beta_posterior)) <span class="sc">+</span> </span>
+<span id="cb11-19"><a href="week-2-bayesian-inference.html#cb11-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;posterior distribution&quot;</span>, <span class="at">x =</span> <span class="st">&quot;pi&quot;</span>, <span class="at">y =</span> <span class="st">&quot;posterior density&quot;</span>)</span>
+<span id="cb11-20"><a href="week-2-bayesian-inference.html#cb11-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-21"><a href="week-2-bayesian-inference.html#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb11-22"><a href="week-2-bayesian-inference.html#cb11-22" aria-hidden="true" tabindex="-1"></a>gg_prior <span class="sc">+</span> gg_posterior</span></code></pre></div>
+<p><img src="02-01-bayes_files/figure-html/unnamed-chunk-4-1.png" width="768" /></p>
+</div>
+<div id="point-estimates" class="section level3 hasAnchor" number="2.2.4">
+<h3><span class="header-section-number">2.2.4</span> Point Estimates<a href="week-2-bayesian-inference.html#point-estimates" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ol style="list-style-type: decimal">
+<li><em>The posterior mean</em>. The posterior mean minimizes a squared-error loss function. That is, the cost of guessing <span class="math inline">\(a\)</span> when the truth is <span class="math inline">\(\alpha\)</span> is <span class="math inline">\((a - \alpha)^2\)</span>. In the case of the beta posterior, it’s just <span class="math inline">\(\dfrac{\alpha^\prime}{\alpha^\prime + \beta^\prime}\)</span>. For our prior and data, we have <span class="math inline">\(\dfrac{3 + 8}{(3 + 8) + (15 + 150 - 8)} \approx 0.065\)</span>.</li>
+<li><em>The posterior median</em>: The posterior median minimizes an absolute loss function where the cost of guessing <span class="math inline">\(a\)</span> when the truth is <span class="math inline">\(\alpha\)</span> is <span class="math inline">\(|a - \alpha|\)</span>. Intuitively, there’s a 50% chance that <span class="math inline">\(\pi\)</span> falls above and below the posterior median. In the case of the beta posterior, it’s just <span class="math inline">\(\dfrac{\alpha^\prime - \frac{1}{3}}{\alpha^\prime + \beta^\prime - \frac{2}{3}}\)</span> (for <span class="math inline">\(\alpha^\prime, \beta^\prime &gt; 1\)</span>). For our prior and data, we have <span class="math inline">\(\dfrac{3 + 8 -\frac{1}{3}}{(3 + k) + (15 + 150 - 8) - \frac{2}{3}} \approx 0.064\)</span>.</li>
+<li><em>The posterior mode</em>: The posterior mode is the most likely value of <span class="math inline">\(\pi\)</span>, so it minimizes a loss function that penalizes all misses equally. In the case of the beta posterior, it’s just <span class="math inline">\(\dfrac{\alpha^\prime - 1}{\alpha^\prime + \beta^\prime - 2}\)</span> (for <span class="math inline">\(\alpha^\prime, \beta^\prime &gt; 1\)</span>). For our prior and data, we have <span class="math inline">\(\dfrac{3 + 8 - 1}{(3 + k) + (15 + 150 - 8) - 2} \approx 0.060\)</span>.</li>
+</ol>
+</div>
+<div id="credible-interval" class="section level3 hasAnchor" number="2.2.5">
+<h3><span class="header-section-number">2.2.5</span> Credible Interval<a href="week-2-bayesian-inference.html#credible-interval" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Using the percentile method, we can compute the 90% and 95% credible intervals with <code>qbeta()</code>.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="week-2-bayesian-inference.html#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 90% credible interval</span></span>
+<span id="cb12-2"><a href="week-2-bayesian-inference.html#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qbeta</span>(<span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>), <span class="dv">3</span> <span class="sc">+</span> <span class="dv">8</span>, <span class="dv">15</span> <span class="sc">+</span> <span class="dv">150</span> <span class="sc">-</span> <span class="dv">8</span>)</span></code></pre></div>
+<pre><code>## [1] 0.03737493 0.09945329</code></pre>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="week-2-bayesian-inference.html#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 95% credible interval</span></span>
+<span id="cb14-2"><a href="week-2-bayesian-inference.html#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qbeta</span>(<span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>), <span class="dv">3</span> <span class="sc">+</span> <span class="dv">8</span>, <span class="dv">15</span> <span class="sc">+</span> <span class="dv">150</span> <span class="sc">-</span> <span class="dv">8</span>)</span></code></pre></div>
+<pre><code>## [1] 0.03333712 0.10736323</code></pre>
+</div>
+<div id="simulation" class="section level3 hasAnchor" number="2.2.6">
+<h3><span class="header-section-number">2.2.6</span> Simulation<a href="week-2-bayesian-inference.html#simulation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>We don’t need to use simulation here—we have the simple closed-form posterior. However, let’s see how simulation would work.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="week-2-bayesian-inference.html#cb16-1" aria-hidden="true" tabindex="-1"></a>post_sims <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(<span class="dv">1000</span>, <span class="dv">3</span> <span class="sc">+</span> <span class="dv">8</span>, <span class="dv">15</span> <span class="sc">+</span> <span class="dv">150</span> <span class="sc">-</span> <span class="dv">8</span>)</span>
+<span id="cb16-2"><a href="week-2-bayesian-inference.html#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="week-2-bayesian-inference.html#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior density</span></span>
+<span id="cb16-4"><a href="week-2-bayesian-inference.html#cb16-4" aria-hidden="true" tabindex="-1"></a>gg_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(post_sims)</span>
+<span id="cb16-5"><a href="week-2-bayesian-inference.html#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(gg_data, <span class="fu">aes</span>(<span class="at">x =</span> post_sims)) <span class="sc">+</span> </span>
+<span id="cb16-6"><a href="week-2-bayesian-inference.html#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>()</span></code></pre></div>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="02-01-bayes_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="week-2-bayesian-inference.html#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior mean</span></span>
+<span id="cb18-2"><a href="week-2-bayesian-inference.html#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(post_sims)</span></code></pre></div>
+<pre><code>## [1] 0.06558303</code></pre>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="week-2-bayesian-inference.html#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># credible interval</span></span></code></pre></div>
+</div>
+</div>
+<div id="example-poisson-distribution-1" class="section level2 hasAnchor" number="2.3">
+<h2><span class="header-section-number">2.3</span> Example: Poisson Distribution<a href="week-2-bayesian-inference.html#example-poisson-distribution-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Suppose we collect <span class="math inline">\(N\)</span> random samples <span class="math inline">\(x = \{x_1, x_2, ..., x_N\}\)</span> and model each draw as a random variable <span class="math inline">\(X \sim \text{Poisson}(\lambda)\)</span>. Find the posterior distribution of <span class="math inline">\(\lambda\)</span> for the gamma prior distribution. Hint: the gamma distribution is the conjugate prior for the Poisson likelihood.</p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{Poisson likelihood: } f(x \mid \lambda) &amp;= \prod_{n = 1}^N \frac{\lambda^{x_n} e^{-\lambda}}{x_n!} \\
+&amp;= \displaystyle \left[ \frac{1}{\prod_{n = 1}^N x_n !} \right]e^{-N\lambda}\lambda^{\sum_{n = 1}^N x_n}
+\end{aligned}
+\]</span></p>
+<p><span class="math display">\[
+\text{Gamma prior: } f( \lambda; \alpha^*, \beta^*) = \frac{{\beta^*}^{\alpha^*}}{\Gamma(\alpha^*)} \lambda^{\alpha^* - 1} e^{-\beta^*\lambda}
+\]</span>
+To find the posterior, we multiply the likelihood times the prior and normalize. Because the gamma prior distribution is the conjugate prior for the Poisson likelihood, we know that the posterior will be a gamma distribution.</p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{Gamma posterior: } f( \lambda  \mid x) &amp;= \frac{\left( \displaystyle \left[ \frac{1}{\prod_{n = 1}^N x_n !} \right]e^{-N\lambda}\lambda^{\sum_{n = 1}^N x_n}\right) \times \left( \left[ \frac{{\beta^*}^{\alpha^*}}{\Gamma(\alpha^*)} \right] \lambda^{\alpha^* - 1} e^{-\beta^*\lambda}\right)}{C_1} \\
+\end{aligned}
+\]</span>
+Because <span class="math inline">\(x\)</span>, <span class="math inline">\(\alpha_*\)</span>, and <span class="math inline">\(\beta\)</span> are fixed, the terms in square brackets are constant, so we can safely consider those part of the normalizing constant.</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;= \frac{\left( \displaystyle  e^{-N\lambda}\lambda^{\sum_{n = 1}^N x_n}\right) \times \left( \lambda^{\alpha^* - 1} e^{-\beta^*\lambda}\right)}{C_2} \\
+\end{aligned}
+\]</span>
+Now we can collect the exponents with the same base.</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;= \frac{\left( \lambda^{\alpha^* - 1} \times \lambda^{\sum_{n = 1}^N x_n}\right) \times \left( \displaystyle  e^{-N\lambda} \times e^{-\beta^*\lambda} \right)}{C_2} \\
+&amp;= \frac{\lambda^{ \overbrace{\left[ \alpha^* + \sum_{n = 1}^N x_n \right]}^{\alpha^\prime} - 1}  e^{-\overbrace{[\beta^* + N]}^{\beta^\prime}\lambda} }{C_2} \\
+\end{aligned}
+\]</span></p>
+<p>We recognize this as <em>almost</em> a Gamma distribution with parameters <span class="math inline">\(\alpha^\prime = \alpha^* + \sum_{n = 1}^N x_n\)</span> and <span class="math inline">\(\beta^\prime = \beta^* + N\)</span>. Indeed, if <span class="math inline">\(\frac{1}{C_2} = \frac{{\beta^\prime}^{\alpha^\prime}}{\Gamma(\alpha^{\prime})}\)</span>, then we have exactly a gamma distribution.</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;= \frac{{\beta^\prime}^{\alpha^\prime}}{\Gamma(\alpha^{\prime})} \lambda^{ \alpha^\prime - 1}  e^{-\beta^\prime\lambda}, \text{where } \alpha^\prime = \alpha^* +  \sum_{n = 1}^N x_n \text{ and } \beta^\prime = \beta^* + N
+\end{aligned}
+\]</span></p>
+<p>Like the Bernoulli likelihood with the beta prior, the Poisson likelihood withe the gamma prior gives a nice result. We start with values parameters of the gamma distribution <span class="math inline">\(\alpha = \alpha^*\)</span> and <span class="math inline">\(\beta + \beta^*\)</span> so that the gamma prior distribution describes our prior beliefs about the parameters <span class="math inline">\(\lambda\)</span> of the Poisson distribution. Then we add the sum of the data <span class="math inline">\(x\)</span> to <span class="math inline">\(\alpha^*\)</span> and the number of samples <span class="math inline">\(N\)</span> to <span class="math inline">\(\beta^*\)</span> to obtain the parameters of the gamma posterior distribution.</p>
+<p>The code below shows the posterior distribution</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="week-2-bayesian-inference.html#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set see to make reproducible</span></span>
+<span id="cb21-2"><a href="week-2-bayesian-inference.html#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb21-3"><a href="week-2-bayesian-inference.html#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="week-2-bayesian-inference.html#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co"># prior parameters</span></span>
+<span id="cb21-5"><a href="week-2-bayesian-inference.html#cb21-5" aria-hidden="true" tabindex="-1"></a>alpha_prior <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb21-6"><a href="week-2-bayesian-inference.html#cb21-6" aria-hidden="true" tabindex="-1"></a>beta_prior <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb21-7"><a href="week-2-bayesian-inference.html#cb21-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-8"><a href="week-2-bayesian-inference.html#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="co"># create an &quot;unknown&quot; value of lambda to estimate</span></span>
+<span id="cb21-9"><a href="week-2-bayesian-inference.html#cb21-9" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb21-10"><a href="week-2-bayesian-inference.html#cb21-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-11"><a href="week-2-bayesian-inference.html#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="co"># generate a data set</span></span>
+<span id="cb21-12"><a href="week-2-bayesian-inference.html#cb21-12" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">5</span>  <span class="co"># number of samples</span></span>
+<span id="cb21-13"><a href="week-2-bayesian-inference.html#cb21-13" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rpois</span>(N, <span class="at">lambda =</span> lambda)</span>
+<span id="cb21-14"><a href="week-2-bayesian-inference.html#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(x)  <span class="co"># print the data set</span></span></code></pre></div>
+<pre><code>## [1] 0 2 2 2 4</code></pre>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="week-2-bayesian-inference.html#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior parameters</span></span>
+<span id="cb23-2"><a href="week-2-bayesian-inference.html#cb23-2" aria-hidden="true" tabindex="-1"></a>alpha_posterior <span class="ot">&lt;-</span> alpha_prior <span class="sc">+</span> <span class="fu">sum</span>(x)</span>
+<span id="cb23-3"><a href="week-2-bayesian-inference.html#cb23-3" aria-hidden="true" tabindex="-1"></a>beta_posterior <span class="ot">&lt;-</span> beta_prior <span class="sc">+</span> N</span>
+<span id="cb23-4"><a href="week-2-bayesian-inference.html#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="week-2-bayesian-inference.html#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co"># plot prior and posterior</span></span>
+<span id="cb23-6"><a href="week-2-bayesian-inference.html#cb23-6" aria-hidden="true" tabindex="-1"></a>gg_prior <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">5</span>) <span class="sc">+</span> </span>
+<span id="cb23-7"><a href="week-2-bayesian-inference.html#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dgamma, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">shape =</span> alpha_prior, <span class="at">rate =</span> beta_prior)) <span class="sc">+</span> </span>
+<span id="cb23-8"><a href="week-2-bayesian-inference.html#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;prior distribution&quot;</span>, <span class="at">x =</span> <span class="st">&quot;lambda&quot;</span>, <span class="at">y =</span> <span class="st">&quot;prior density&quot;</span>)</span>
+<span id="cb23-9"><a href="week-2-bayesian-inference.html#cb23-9" aria-hidden="true" tabindex="-1"></a>gg_posterior <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">5</span>) <span class="sc">+</span> </span>
+<span id="cb23-10"><a href="week-2-bayesian-inference.html#cb23-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dgamma, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">shape =</span> alpha_posterior, <span class="at">rate =</span> beta_posterior)) <span class="sc">+</span> </span>
+<span id="cb23-11"><a href="week-2-bayesian-inference.html#cb23-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;posterior distribution&quot;</span>, <span class="at">x =</span> <span class="st">&quot;lambda&quot;</span>, <span class="at">y =</span> <span class="st">&quot;posterior density&quot;</span>)</span>
+<span id="cb23-12"><a href="week-2-bayesian-inference.html#cb23-12" aria-hidden="true" tabindex="-1"></a>gg_prior <span class="sc">+</span> gg_posterior  <span class="co"># uses patchwork package</span></span></code></pre></div>
+<p><img src="02-01-bayes_files/figure-html/unnamed-chunk-7-1.png" width="768" /></p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="week-2-bayesian-inference.html#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior mean: alpha/beta</span></span>
+<span id="cb24-2"><a href="week-2-bayesian-inference.html#cb24-2" aria-hidden="true" tabindex="-1"></a>alpha_posterior<span class="sc">/</span>beta_posterior</span></code></pre></div>
+<pre><code>## [1] 1.625</code></pre>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="week-2-bayesian-inference.html#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior mode: (alpha - 1)/beta for alpha &gt; 1</span></span>
+<span id="cb26-2"><a href="week-2-bayesian-inference.html#cb26-2" aria-hidden="true" tabindex="-1"></a>(alpha_posterior <span class="sc">-</span> <span class="dv">1</span>)<span class="sc">/</span>beta_posterior</span></code></pre></div>
+<pre><code>## [1] 1.5</code></pre>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="week-2-bayesian-inference.html#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 90% credible interval</span></span>
+<span id="cb28-2"><a href="week-2-bayesian-inference.html#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qgamma</span>(<span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>), alpha_posterior, beta_posterior)</span></code></pre></div>
+<pre><code>## [1] 0.9611973 2.4303212</code></pre>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="week-2-bayesian-inference.html#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 95% credible interval</span></span>
+<span id="cb30-2"><a href="week-2-bayesian-inference.html#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qgamma</span>(<span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>), alpha_posterior, beta_posterior)</span></code></pre></div>
+<pre><code>## [1] 0.8652441 2.6201981</code></pre>
+<p>In the case of the posterior median, there is no closed-form solution, even though we know the form of the posterior. We can use simulation to obtain the median.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="week-2-bayesian-inference.html#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior median: no closed form, so simulate</span></span>
+<span id="cb32-2"><a href="week-2-bayesian-inference.html#cb32-2" aria-hidden="true" tabindex="-1"></a>post_sims <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(<span class="dv">1000</span>, alpha_posterior, beta_posterior)</span>
+<span id="cb32-3"><a href="week-2-bayesian-inference.html#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="fu">median</span>(post_sims)</span></code></pre></div>
+<pre><code>## [1] 1.59919</code></pre>
+</div>
+<div id="remarks-1" class="section level2 hasAnchor" number="2.4">
+<h2><span class="header-section-number">2.4</span> Remarks<a href="week-2-bayesian-inference.html#remarks-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Bayesian inference presents two difficulties.</p>
+<ol style="list-style-type: decimal">
+<li>Choosing a prior.
+<ol style="list-style-type: lower-alpha">
+<li>It can be hard to actually construct a prior distribution. It’s challenging when dealing with a single parameter. It becomes much more difficult when dealing with several or many parameters.</li>
+<li>Priors are subjective, so that one researcher’s prior might not work for another.</li>
+</ol></li>
+<li>Computing the posterior. Especially for many-parameter problems and non-conjugate priors, computing the posterior can be nearly intractable.</li>
+</ol>
+<p>However, there are several practical solutions to these difficulties.</p>
+<ol style="list-style-type: decimal">
+<li>Choosing a prior.
+<ol style="list-style-type: lower-alpha">
+<li>We can use a “uninformative” or constant prior. Sometimes, we can use an improper prior that doesn’t integrate to one, but places equal prior weight on all values.</li>
+<li>We can use an extremely diffuse prior. For example, if we wanted to estimate the average height in a population in inches, we might use a normal distribution centered at zero with an SD of 10,000. This prior says: “The average height is about zero, give or take 10,000 inches or so.”</li>
+<li>We can use an informative prior, but conduct careful robustness checks to assess whether the conclusions depend on the particular prior.</li>
+<li>We can use a weakly informative prior, that rules places meaningful prior weight on all the plausible values and little prior weight only on the most implausible values. As a guideline, you might create a weakly informative prior by doubling or tripling the SD of the informative prior.</li>
+</ol></li>
+<li>Computing the posterior.
+<ol style="list-style-type: lower-alpha">
+<li>While analytically deriving the posterior becomes intractable for most applied problems, it’s relatively easy to <em>sample</em> from the posterior distribution for many models.</li>
+<li>Algorithms like Gibbs samplers, MCMC, and HMC make this sampling procedure straightforward for a given model.</li>
+<li>Software such as Stan make sampling easy to set up and very fast. Post-processing R packages such as tidybayes make it each to work with the posterior simulations.</li>
+</ol></li>
+</ol>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="week-3-adding-predictors.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["adv-methods-notes.pdf", "adv-methods-notes.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
