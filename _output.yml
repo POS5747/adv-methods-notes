@@ -1,4 +1,5 @@
 bookdown::gitbook:
+  split_by: section    
   includes: 
     in_header: header.html
   css: style.css

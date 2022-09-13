@@ -1,7 +1,7 @@
 --- 
 title: 'Statistical Modeling: A Tools Approach'
 author: "Carlisle Rainey"
-date: "2022-09-08"
+date: "2022-09-13"
 site: bookdown::bookdown_site
 documentclass: book
 bibliography: [book.bib, packages.bib]

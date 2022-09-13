@@ -26,7 +26,7 @@ print(ml_est, digits = 2)
 ```
 
 ```
-##  [1] 0.040 0.040 0.080 0.053 0.047 0.053 0.047 0.053 0.053 0.073
+##  [1] 0.033 0.073 0.033 0.040 0.053 0.033 0.073 0.067 0.047 0.093
 ```
 
 As you can see, the ML estimates vary to from sample to sample--different data sets produce different ML estimates. We need a way to create a confidence interval that consistently captures $\theta$. 

@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>3.4 [Posterior] Predictive Distribution | Statistical Modeling: A Tools Approach</title>
+  <meta name="description" content="Lecture notes covering the key tools of regression modeling in political science." />
+  <meta name="generator" content="bookdown 0.25 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="3.4 [Posterior] Predictive Distribution | Statistical Modeling: A Tools Approach" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="Lecture notes covering the key tools of regression modeling in political science." />
+  <meta name="github-repo" content="pos5747/adv-methods-notes" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="3.4 [Posterior] Predictive Distribution | Statistical Modeling: A Tools Approach" />
+  
+  <meta name="twitter:description" content="Lecture notes covering the key tools of regression modeling in political science." />
+  
+
+<meta name="author" content="Carlisle Rainey" />
+
+
+<meta name="date" content="2022-09-13" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="poisson-model.html"/>
+<link rel="next" href="quantities-of-interest.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.10.0/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
+<script>
+    $(document).ready(function () {
+        process_solutions();
+    });
+    function process_solutions() {
+        $("div.section[id^='solution']").each(function(i) {
+        var soln_wrapper_id = "cvxr_ex_" + i;
+        var solution_id = $(this).attr('id');
+        var button = $("<button onclick=\"toggle_solution('" + soln_wrapper_id + "')\">Show/Hide</button>");
+        var new_div = $("<div id='" + soln_wrapper_id + "' class='solution' style='display: none;'></div>");
+        var h = $(this).first();
+        var others = $(this).children().slice(1);
+        $(others).each(function() {
+            $(this).appendTo($(new_div));
+        });
+        $(button).insertAfter($(h));
+        $(new_div).insertAfter($(button));
+        })
+    }
+    function toggle_solution(el_id) {
+      $("#" + el_id).toggle();
+    } 
+</script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Advanced Methods Notes</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Week 1: Maximum Likelihood<span></span></a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="class-agenda.html"><a href="class-agenda.html"><i class="fa fa-check"></i><b>1.1</b> Class agenda<span></span></a></li>
+<li class="chapter" data-level="1.2" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html"><i class="fa fa-check"></i><b>1.2</b> Maximum Likelihood<span></span></a>
+<ul>
+<li class="chapter" data-level="1.2.1" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#example-bernoulli-distribution"><i class="fa fa-check"></i><b>1.2.1</b> Example: Bernoulli Distribution<span></span></a></li>
+<li class="chapter" data-level="1.2.2" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#example-poisson-distribution"><i class="fa fa-check"></i><b>1.2.2</b> Example: Poisson Distribution<span></span></a></li>
+<li class="chapter" data-level="1.2.3" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#remarks"><i class="fa fa-check"></i><b>1.2.3</b> Remarks<span></span></a></li>
+<li class="chapter" data-level="1.2.4" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#example-beta-distribution"><i class="fa fa-check"></i><b>1.2.4</b> Example: Beta Distribution<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="the-invariance-property.html"><a href="the-invariance-property.html"><i class="fa fa-check"></i><b>1.3</b> The Invariance Property<span></span></a>
+<ul>
+<li class="chapter" data-level="1.3.1" data-path="the-invariance-property.html"><a href="the-invariance-property.html#example-bernoulli-odds"><i class="fa fa-check"></i><b>1.3.1</b> Example: Bernoulli Odds<span></span></a></li>
+<li class="chapter" data-level="1.3.2" data-path="the-invariance-property.html"><a href="the-invariance-property.html#example-poisson-sd"><i class="fa fa-check"></i><b>1.3.2</b> Example: Poisson SD<span></span></a></li>
+<li class="chapter" data-level="1.3.3" data-path="the-invariance-property.html"><a href="the-invariance-property.html#example-beta-mean-and-variance"><i class="fa fa-check"></i><b>1.3.3</b> Example: Beta Mean and Variance<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="1.4" data-path="the-parametric-bootstrap.html"><a href="the-parametric-bootstrap.html"><i class="fa fa-check"></i><b>1.4</b> The Parametric Bootstrap<span></span></a>
+<ul>
+<li class="chapter" data-level="1.4.1" data-path="the-parametric-bootstrap.html"><a href="the-parametric-bootstrap.html#example-toothpaste-cap-problm"><i class="fa fa-check"></i><b>1.4.1</b> Example: Toothpaste Cap Problm<span></span></a></li>
+<li class="chapter" data-level="1.4.2" data-path="the-parametric-bootstrap.html"><a href="the-parametric-bootstrap.html#example-beta-distribution-1"><i class="fa fa-check"></i><b>1.4.2</b> Example: Beta Distribution<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="1.5" data-path="sampling-distribution.html"><a href="sampling-distribution.html"><i class="fa fa-check"></i><b>1.5</b> Sampling Distribution<span></span></a>
+<ul>
+<li class="chapter" data-level="1.5.1" data-path="sampling-distribution.html"><a href="sampling-distribution.html#example-the-toothpaste-cap-problem"><i class="fa fa-check"></i><b>1.5.1</b> Example: The Toothpaste Cap Problem<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="1.6" data-path="bias.html"><a href="bias.html"><i class="fa fa-check"></i><b>1.6</b> Bias<span></span></a>
+<ul>
+<li class="chapter" data-level="1.6.1" data-path="bias.html"><a href="bias.html#example-bernoulli-distribution-1"><i class="fa fa-check"></i><b>1.6.1</b> Example: Bernoulli Distribution<span></span></a></li>
+<li class="chapter" data-level="1.6.2" data-path="bias.html"><a href="bias.html#example-poisson-distribution-1"><i class="fa fa-check"></i><b>1.6.2</b> Example: Poisson Distribution<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="1.7" data-path="consistency.html"><a href="consistency.html"><i class="fa fa-check"></i><b>1.7</b> Consistency<span></span></a>
+<ul>
+<li class="chapter" data-level="1.7.1" data-path="consistency.html"><a href="consistency.html#example-illustrative"><i class="fa fa-check"></i><b>1.7.1</b> Example: Illustrative<span></span></a></li>
+<li class="chapter" data-level="1.7.2" data-path="consistency.html"><a href="consistency.html#example-bernoulli-odds-1"><i class="fa fa-check"></i><b>1.7.2</b> Example: Bernoulli Odds<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="1.8" data-path="predictive-distribution.html"><a href="predictive-distribution.html"><i class="fa fa-check"></i><b>1.8</b> Predictive Distribution<span></span></a>
+<ul>
+<li class="chapter" data-level="1.8.1" data-path="predictive-distribution.html"><a href="predictive-distribution.html#example-poisson-distribution-2"><i class="fa fa-check"></i><b>1.8.1</b> Example: Poisson Distribution<span></span></a></li>
+<li class="chapter" data-level="1.8.2" data-path="predictive-distribution.html"><a href="predictive-distribution.html#example-beta-distribution-2"><i class="fa fa-check"></i><b>1.8.2</b> Example: Beta Distribution<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="1.9" data-path="exercises.html"><a href="exercises.html"><i class="fa fa-check"></i><b>1.9</b> Exercises<span></span></a>
+<ul>
+<li class="chapter" data-level="1.9.1" data-path="exercises.html"><a href="exercises.html#questions-about-the-exponential-distribution"><i class="fa fa-check"></i><b>1.9.1</b> Questions About the Exponential Distribution<span></span></a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html"><i class="fa fa-check"></i><b>2</b> Week 2: Bayesian Inference<span></span></a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="bayesian-inference.html"><a href="bayesian-inference.html"><i class="fa fa-check"></i><b>2.1</b> Bayesian Inference<span></span></a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="bayesian-inference.html"><a href="bayesian-inference.html#mechanics"><i class="fa fa-check"></i><b>2.1.1</b> Mechanics<span></span></a></li>
+<li class="chapter" data-level="2.1.2" data-path="bayesian-inference.html"><a href="bayesian-inference.html#posterior-summaries"><i class="fa fa-check"></i><b>2.1.2</b> Posterior Summaries<span></span></a></li>
+<li class="chapter" data-level="2.1.3" data-path="bayesian-inference.html"><a href="bayesian-inference.html#posterior-simulation"><i class="fa fa-check"></i><b>2.1.3</b> Posterior Simulation<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="example-bernoulli.html"><a href="example-bernoulli.html"><i class="fa fa-check"></i><b>2.2</b> Example: Bernoulli<span></span></a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="example-bernoulli.html"><a href="example-bernoulli.html#likelihood"><i class="fa fa-check"></i><b>2.2.1</b> The Likelihood<span></span></a></li>
+<li class="chapter" data-level="2.2.2" data-path="example-bernoulli.html"><a href="example-bernoulli.html#the-prior"><i class="fa fa-check"></i><b>2.2.2</b> The Prior<span></span></a></li>
+<li class="chapter" data-level="2.2.3" data-path="example-bernoulli.html"><a href="example-bernoulli.html#the-posterior"><i class="fa fa-check"></i><b>2.2.3</b> The Posterior<span></span></a></li>
+<li class="chapter" data-level="2.2.4" data-path="example-bernoulli.html"><a href="example-bernoulli.html#point-estimates"><i class="fa fa-check"></i><b>2.2.4</b> Point Estimates<span></span></a></li>
+<li class="chapter" data-level="2.2.5" data-path="example-bernoulli.html"><a href="example-bernoulli.html#credible-interval"><i class="fa fa-check"></i><b>2.2.5</b> Credible Interval<span></span></a></li>
+<li class="chapter" data-level="2.2.6" data-path="example-bernoulli.html"><a href="example-bernoulli.html#simulation"><i class="fa fa-check"></i><b>2.2.6</b> Simulation<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="example-poisson-distribution-3.html"><a href="example-poisson-distribution-3.html"><i class="fa fa-check"></i><b>2.3</b> Example: Poisson Distribution<span></span></a></li>
+<li class="chapter" data-level="2.4" data-path="remarks-1.html"><a href="remarks-1.html"><i class="fa fa-check"></i><b>2.4</b> Remarks<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="week-3-adding-predictors.html"><a href="week-3-adding-predictors.html"><i class="fa fa-check"></i><b>3</b> Week 3: Adding Predictors<span></span></a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html"><i class="fa fa-check"></i><b>3.1</b> Review: The Normal Model<span></span></a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html#distribution"><i class="fa fa-check"></i><b>3.1.1</b> Distribution<span></span></a></li>
+<li class="chapter" data-level="3.1.2" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html#linear-predictor"><i class="fa fa-check"></i><b>3.1.2</b> Linear Predictor<span></span></a></li>
+<li class="chapter" data-level="3.1.3" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html#fitting-the-normal-linear-model"><i class="fa fa-check"></i><b>3.1.3</b> Fitting the Normal-Linear Model<span></span></a></li>
+<li class="chapter" data-level="3.1.4" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html#applied-example"><i class="fa fa-check"></i><b>3.1.4</b> Applied Example<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="bernoulli-model.html"><a href="bernoulli-model.html"><i class="fa fa-check"></i><b>3.2</b> Bernoulli Model<span></span></a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="bernoulli-model.html"><a href="bernoulli-model.html#the-linear-probability-model"><i class="fa fa-check"></i><b>3.2.1</b> The Linear Probability Model<span></span></a></li>
+<li class="chapter" data-level="3.2.2" data-path="bernoulli-model.html"><a href="bernoulli-model.html#the-logit-model"><i class="fa fa-check"></i><b>3.2.2</b> The Logit Model<span></span></a></li>
+<li class="chapter" data-level="3.2.3" data-path="bernoulli-model.html"><a href="bernoulli-model.html#fitting-a-logit-model"><i class="fa fa-check"></i><b>3.2.3</b> Fitting a Logit Model<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="poisson-model.html"><a href="poisson-model.html"><i class="fa fa-check"></i><b>3.3</b> Poisson Model<span></span></a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="poisson-model.html"><a href="poisson-model.html#predictive-distribution-1"><i class="fa fa-check"></i><b>3.3.1</b> Predictive Distribution<span></span></a></li>
+<li class="chapter" data-level="3.3.2" data-path="poisson-model.html"><a href="poisson-model.html#posterior-predictive-distribution"><i class="fa fa-check"></i><b>3.3.2</b> Posterior Predictive Distribution<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="posterior-predictive-distribution-1.html"><a href="posterior-predictive-distribution-1.html"><i class="fa fa-check"></i><b>3.4</b> [Posterior] Predictive Distribution<span></span></a>
+<ul>
+<li class="chapter" data-level="3.4.1" data-path="posterior-predictive-distribution-1.html"><a href="posterior-predictive-distribution-1.html#for-the-logit-model"><i class="fa fa-check"></i><b>3.4.1</b> … for the logit model<span></span></a></li>
+<li class="chapter" data-level="3.4.2" data-path="posterior-predictive-distribution-1.html"><a href="posterior-predictive-distribution-1.html#for-the-poisson-model"><i class="fa fa-check"></i><b>3.4.2</b> … for the Poisson model<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="quantities-of-interest.html"><a href="quantities-of-interest.html"><i class="fa fa-check"></i><b>3.5</b> Quantities of Interest<span></span></a>
+<ul>
+<li class="chapter" data-level="3.5.1" data-path="quantities-of-interest.html"><a href="quantities-of-interest.html#expected-value"><i class="fa fa-check"></i><b>3.5.1</b> Expected Value<span></span></a></li>
+<li class="chapter" data-level="3.5.2" data-path="quantities-of-interest.html"><a href="quantities-of-interest.html#first-difference"><i class="fa fa-check"></i><b>3.5.2</b> First Difference<span></span></a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="week-4-confidence-intervals.html"><a href="week-4-confidence-intervals.html"><i class="fa fa-check"></i><b>4</b> Week 4: Confidence Intervals<span></span></a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="the-parametric-bootstrap-1.html"><a href="the-parametric-bootstrap-1.html"><i class="fa fa-check"></i><b>4.1</b> The Parametric Bootstrap<span></span></a></li>
+<li class="chapter" data-level="4.2" data-path="the-nonparametric-bootstrap.html"><a href="the-nonparametric-bootstrap.html"><i class="fa fa-check"></i><b>4.2</b> The <em>Non</em>parametric Bootstrap<span></span></a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="the-nonparametric-bootstrap.html"><a href="the-nonparametric-bootstrap.html#example-coefficients-from-the-civilian-casualties-model"><i class="fa fa-check"></i><b>4.2.1</b> Example: Coefficients from the Civilian Casualties Model<span></span></a></li>
+<li class="chapter" data-level="4.2.2" data-path="the-nonparametric-bootstrap.html"><a href="the-nonparametric-bootstrap.html#example-first-difference-from-the-civilian-casualties-model"><i class="fa fa-check"></i><b>4.2.2</b> Example: First Difference from the Civilian Casualties Model<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html"><i class="fa fa-check"></i><b>4.3</b> Wald Confidence Intervals<span></span></a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html#curvature-in-a-single-dimmension"><i class="fa fa-check"></i><b>4.3.1</b> Curvature in a Single Dimmension<span></span></a></li>
+<li class="chapter" data-level="4.3.2" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html#curvature-in-a-multiple-dimmensions"><i class="fa fa-check"></i><b>4.3.2</b> Curvature in a Multiple Dimmensions<span></span></a></li>
+<li class="chapter" data-level="4.3.3" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html#from-curvature-to-confidence-intervals"><i class="fa fa-check"></i><b>4.3.3</b> From Curvature to Confidence Intervals<span></span></a></li>
+<li class="chapter" data-level="4.3.4" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html#final-notes"><i class="fa fa-check"></i><b>4.3.4</b> Final Notes<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="evaluating-confidence-intervals.html"><a href="evaluating-confidence-intervals.html"><i class="fa fa-check"></i><b>4.4</b> Evaluating Confidence Intervals<span></span></a>
+<ul>
+<li class="chapter" data-level="4.4.1" data-path="evaluating-confidence-intervals.html"><a href="evaluating-confidence-intervals.html#coverage"><i class="fa fa-check"></i><b>4.4.1</b> Coverage<span></span></a></li>
+<li class="chapter" data-level="4.4.2" data-path="evaluating-confidence-intervals.html"><a href="evaluating-confidence-intervals.html#monte-carlo-simulation-to-assess-coverage"><i class="fa fa-check"></i><b>4.4.2</b> Monte Carlo Simulation to Assess Coverage<span></span></a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistical Modeling: A Tools Approach</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="posterior-predictive-distribution-1" class="section level2 hasAnchor" number="3.4">
+<h2><span class="header-section-number">3.4</span> [Posterior] Predictive Distribution<a href="posterior-predictive-distribution-1.html#posterior-predictive-distribution-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>As with simple models without covariates, we can use the predictive distribution and the posterior predictive distribution to understand models <em>with</em> covariate. In fact, these tools become more valuable as the complexity of the model increases.</p>
+<div id="for-the-logit-model" class="section level3 hasAnchor" number="3.4.1">
+<h3><span class="header-section-number">3.4.1</span> … for the logit model<a href="posterior-predictive-distribution-1.html#for-the-logit-model" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb164"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb164-1"><a href="posterior-predictive-distribution-1.html#cb164-1" aria-hidden="true" tabindex="-1"></a>scobit <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">&quot;data/scobit.dta&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb164-2"><a href="posterior-predictive-distribution-1.html#cb164-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(newvote <span class="sc">!=</span> <span class="sc">-</span><span class="dv">1</span>) <span class="sc">%&gt;%</span>  <span class="co"># weird -1s in data; unsure if sufficient</span></span>
+<span id="cb164-3"><a href="posterior-predictive-distribution-1.html#cb164-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code></pre></div>
+<pre><code>## Rows: 99,676
+## Columns: 16
+## $ state    &lt;dbl&gt; 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 9…
+## $ vote     &lt;dbl&gt; 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2…
+## $ age      &lt;dbl&gt; 60, 80, 32, 25, 55, 63, 20, 53, 49, 27, 58, 56, 34, 34, 35, 3…
+## $ educ     &lt;dbl&gt; 13, 13, 13, 13, 11, 14, 11, 11, 13, 13, 11, 13, 19, 19, 15, 1…
+## $ citizen  &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+## $ rweight  &lt;dbl&gt; 207134, 215836, 184639, 184883, 168557, 179148, 181510, 19285…
+## $ south    &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+## $ gov      &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+## $ closing  &lt;dbl&gt; 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 2…
+## $ age2     &lt;dbl&gt; 3600, 6400, 1024, 625, 3025, 3969, 400, 2809, 2401, 729, 3364…
+## $ educ2    &lt;dbl&gt; 25, 25, 25, 25, 16, 36, 16, 16, 25, 25, 16, 25, 64, 64, 36, 2…
+## $ cloeduc  &lt;dbl&gt; 145, 145, 145, 145, 116, 174, 116, 116, 145, 145, 116, 145, 2…
+## $ cloeduc2 &lt;dbl&gt; 725, 725, 725, 725, 464, 1044, 464, 464, 725, 725, 464, 725, …
+## $ newvote  &lt;dbl&gt; 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0…
+## $ newage   &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+## $ neweduc  &lt;dbl&gt; 5, 5, 5, 5, 4, 6, 4, 4, 5, 5, 4, 5, 8, 8, 6, 5, 5, 3, 5, 1, 6…</code></pre>
+<div class="sourceCode" id="cb166"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb166-1"><a href="posterior-predictive-distribution-1.html#cb166-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> newvote <span class="sc">~</span> <span class="fu">poly</span>(neweduc, <span class="dv">2</span>, <span class="at">raw =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> closing <span class="sc">+</span> <span class="fu">poly</span>(age, <span class="dv">2</span>, <span class="at">raw =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> south <span class="sc">+</span> gov</span>
+<span id="cb166-2"><a href="posterior-predictive-distribution-1.html#cb166-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb166-3"><a href="posterior-predictive-distribution-1.html#cb166-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(f, <span class="at">data =</span> scobit, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>)</span>
+<span id="cb166-4"><a href="posterior-predictive-distribution-1.html#cb166-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb166-5"><a href="posterior-predictive-distribution-1.html#cb166-5" aria-hidden="true" tabindex="-1"></a><span class="co"># compute estimates of linear predictor and pi</span></span>
+<span id="cb166-6"><a href="posterior-predictive-distribution-1.html#cb166-6" aria-hidden="true" tabindex="-1"></a>linpred_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">type =</span> <span class="st">&quot;link&quot;</span>)  <span class="co"># on scale of linear predictor</span></span>
+<span id="cb166-7"><a href="posterior-predictive-distribution-1.html#cb166-7" aria-hidden="true" tabindex="-1"></a>pi_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)   <span class="co"># on probability scale</span></span>
+<span id="cb166-8"><a href="posterior-predictive-distribution-1.html#cb166-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb166-9"><a href="posterior-predictive-distribution-1.html#cb166-9" aria-hidden="true" tabindex="-1"></a><span class="co"># put observed data into a data frame with linpred and pi ests</span></span>
+<span id="cb166-10"><a href="posterior-predictive-distribution-1.html#cb166-10" aria-hidden="true" tabindex="-1"></a>observed_data <span class="ot">&lt;-</span> scobit <span class="sc">%&gt;%</span></span>
+<span id="cb166-11"><a href="posterior-predictive-distribution-1.html#cb166-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">type =</span> <span class="st">&quot;observed&quot;</span>, </span>
+<span id="cb166-12"><a href="posterior-predictive-distribution-1.html#cb166-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">linpred_hat =</span> linpred_hat, </span>
+<span id="cb166-13"><a href="posterior-predictive-distribution-1.html#cb166-13" aria-hidden="true" tabindex="-1"></a>         <span class="at">pi_hat =</span> pi_hat)</span>
+<span id="cb166-14"><a href="posterior-predictive-distribution-1.html#cb166-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb166-15"><a href="posterior-predictive-distribution-1.html#cb166-15" aria-hidden="true" tabindex="-1"></a><span class="co"># create data frames with simulated data from predictive distribution</span></span>
+<span id="cb166-16"><a href="posterior-predictive-distribution-1.html#cb166-16" aria-hidden="true" tabindex="-1"></a>sim_list <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb166-17"><a href="posterior-predictive-distribution-1.html#cb166-17" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) {</span>
+<span id="cb166-18"><a href="posterior-predictive-distribution-1.html#cb166-18" aria-hidden="true" tabindex="-1"></a>  y_tilde <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="fu">nrow</span>(observed_data), <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> pi_hat)</span>
+<span id="cb166-19"><a href="posterior-predictive-distribution-1.html#cb166-19" aria-hidden="true" tabindex="-1"></a>  sim_list[[i]] <span class="ot">&lt;-</span> observed_data <span class="sc">%&gt;%</span></span>
+<span id="cb166-20"><a href="posterior-predictive-distribution-1.html#cb166-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">newvote =</span> y_tilde, </span>
+<span id="cb166-21"><a href="posterior-predictive-distribution-1.html#cb166-21" aria-hidden="true" tabindex="-1"></a>           <span class="at">type =</span> <span class="fu">paste0</span>(<span class="st">&quot;simulated #&quot;</span>, i))</span>
+<span id="cb166-22"><a href="posterior-predictive-distribution-1.html#cb166-22" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb166-23"><a href="posterior-predictive-distribution-1.html#cb166-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb166-24"><a href="posterior-predictive-distribution-1.html#cb166-24" aria-hidden="true" tabindex="-1"></a><span class="co"># bind data together</span></span>
+<span id="cb166-25"><a href="posterior-predictive-distribution-1.html#cb166-25" aria-hidden="true" tabindex="-1"></a>gg_data <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(sim_list) <span class="sc">%&gt;%</span></span>
+<span id="cb166-26"><a href="posterior-predictive-distribution-1.html#cb166-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(observed_data) <span class="sc">%&gt;%</span></span>
+<span id="cb166-27"><a href="posterior-predictive-distribution-1.html#cb166-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code></pre></div>
+<pre><code>## Rows: 598,056
+## Columns: 19
+## $ state       &lt;dbl&gt; 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93…
+## $ vote        &lt;dbl&gt; 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2…
+## $ age         &lt;dbl&gt; 60, 80, 32, 25, 55, 63, 20, 53, 49, 27, 58, 56, 34, 34, 35…
+## $ educ        &lt;dbl&gt; 13, 13, 13, 13, 11, 14, 11, 11, 13, 13, 11, 13, 19, 19, 15…
+## $ citizen     &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+## $ rweight     &lt;dbl&gt; 207134, 215836, 184639, 184883, 168557, 179148, 181510, 19…
+## $ south       &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+## $ gov         &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+## $ closing     &lt;dbl&gt; 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29…
+## $ age2        &lt;dbl&gt; 3600, 6400, 1024, 625, 3025, 3969, 400, 2809, 2401, 729, 3…
+## $ educ2       &lt;dbl&gt; 25, 25, 25, 25, 16, 36, 16, 16, 25, 25, 16, 25, 64, 64, 36…
+## $ cloeduc     &lt;dbl&gt; 145, 145, 145, 145, 116, 174, 116, 116, 145, 145, 116, 145…
+## $ cloeduc2    &lt;dbl&gt; 725, 725, 725, 725, 464, 1044, 464, 464, 725, 725, 464, 72…
+## $ newvote     &lt;dbl&gt; 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0…
+## $ newage      &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+## $ neweduc     &lt;dbl&gt; 5, 5, 5, 5, 4, 6, 4, 4, 5, 5, 4, 5, 8, 8, 6, 5, 5, 3, 5, 1…
+## $ type        &lt;chr&gt; &quot;simulated #1&quot;, &quot;simulated #1&quot;, &quot;simulated #1&quot;, &quot;simulated…
+## $ linpred_hat &lt;dbl&gt; 1.35582513, 1.33800426, 0.27569097, -0.19579006, 0.7610264…
+## $ pi_hat      &lt;dbl&gt; 0.7950803, 0.7921616, 0.5684895, 0.4512082, 0.6815766, 0.8…</code></pre>
+<div class="sourceCode" id="cb168"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb168-1"><a href="posterior-predictive-distribution-1.html#cb168-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot fake and obs data against linear predictor.</span></span>
+<span id="cb168-2"><a href="posterior-predictive-distribution-1.html#cb168-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(gg_data, <span class="fu">aes</span>(<span class="at">x =</span> linpred_hat, <span class="at">y =</span> newvote)) <span class="sc">+</span> </span>
+<span id="cb168-3"><a href="posterior-predictive-distribution-1.html#cb168-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">height =</span> <span class="fl">0.05</span>, <span class="at">alpha =</span> <span class="fl">0.01</span>, <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="fl">0.3</span>) <span class="sc">+</span> </span>
+<span id="cb168-4"><a href="posterior-predictive-distribution-1.html#cb168-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(type)) <span class="sc">+</span> </span>
+<span id="cb168-5"><a href="posterior-predictive-distribution-1.html#cb168-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>()</span></code></pre></div>
+<pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
+<p><img src="03-04-predictive-distributions_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<div class="sourceCode" id="cb170"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb170-1"><a href="posterior-predictive-distribution-1.html#cb170-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot fake and obs data against age.</span></span>
+<span id="cb170-2"><a href="posterior-predictive-distribution-1.html#cb170-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(gg_data, <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> newvote)) <span class="sc">+</span> </span>
+<span id="cb170-3"><a href="posterior-predictive-distribution-1.html#cb170-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">height =</span> <span class="fl">0.05</span>, <span class="at">alpha =</span> <span class="fl">0.01</span>, <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="fl">0.3</span>) <span class="sc">+</span> </span>
+<span id="cb170-4"><a href="posterior-predictive-distribution-1.html#cb170-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(type)) <span class="sc">+</span> </span>
+<span id="cb170-5"><a href="posterior-predictive-distribution-1.html#cb170-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">se =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
+<p><img src="03-04-predictive-distributions_files/figure-html/unnamed-chunk-2-2.png" width="672" /></p>
+<p>This model, because we included a second-order polynomial for <code>age</code>, does a great job of picking up the nonlinear relationship between age and voting. If we replace the polynomial with a simple linear term, then the observed and predictive distributions show a stark dissimilarity.</p>
+<div class="sourceCode" id="cb172"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb172-1"><a href="posterior-predictive-distribution-1.html#cb172-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> newvote <span class="sc">~</span> <span class="fu">poly</span>(neweduc, <span class="dv">2</span>, <span class="at">raw =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> closing <span class="sc">+</span> age <span class="sc">+</span> south <span class="sc">+</span> gov</span>
+<span id="cb172-2"><a href="posterior-predictive-distribution-1.html#cb172-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(f, <span class="at">data =</span> scobit, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>)</span>
+<span id="cb172-3"><a href="posterior-predictive-distribution-1.html#cb172-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb172-4"><a href="posterior-predictive-distribution-1.html#cb172-4" aria-hidden="true" tabindex="-1"></a>observed_data <span class="ot">&lt;-</span> scobit <span class="sc">%&gt;%</span></span>
+<span id="cb172-5"><a href="posterior-predictive-distribution-1.html#cb172-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">type =</span> <span class="st">&quot;observed&quot;</span>, </span>
+<span id="cb172-6"><a href="posterior-predictive-distribution-1.html#cb172-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">linpred_hat =</span> <span class="fu">predict</span>(fit, <span class="at">type =</span> <span class="st">&quot;link&quot;</span>))</span>
+<span id="cb172-7"><a href="posterior-predictive-distribution-1.html#cb172-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb172-8"><a href="posterior-predictive-distribution-1.html#cb172-8" aria-hidden="true" tabindex="-1"></a>sim_list <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb172-9"><a href="posterior-predictive-distribution-1.html#cb172-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) {</span>
+<span id="cb172-10"><a href="posterior-predictive-distribution-1.html#cb172-10" aria-hidden="true" tabindex="-1"></a>  y_tilde <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="fu">nrow</span>(observed_data), <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">plogis</span>(observed_data<span class="sc">$</span>linpred_hat))</span>
+<span id="cb172-11"><a href="posterior-predictive-distribution-1.html#cb172-11" aria-hidden="true" tabindex="-1"></a>  sim_list[[i]] <span class="ot">&lt;-</span> observed_data <span class="sc">%&gt;%</span></span>
+<span id="cb172-12"><a href="posterior-predictive-distribution-1.html#cb172-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">newvote =</span> y_tilde, </span>
+<span id="cb172-13"><a href="posterior-predictive-distribution-1.html#cb172-13" aria-hidden="true" tabindex="-1"></a>           <span class="at">type =</span> <span class="fu">paste0</span>(<span class="st">&quot;simulated #&quot;</span>, i))</span>
+<span id="cb172-14"><a href="posterior-predictive-distribution-1.html#cb172-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb172-15"><a href="posterior-predictive-distribution-1.html#cb172-15" aria-hidden="true" tabindex="-1"></a>gg_data <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(sim_list) <span class="sc">%&gt;%</span></span>
+<span id="cb172-16"><a href="posterior-predictive-distribution-1.html#cb172-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(observed_data) <span class="sc">%&gt;%</span></span>
+<span id="cb172-17"><a href="posterior-predictive-distribution-1.html#cb172-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code></pre></div>
+<pre><code>## Rows: 598,056
+## Columns: 18
+## $ state       &lt;dbl&gt; 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93…
+## $ vote        &lt;dbl&gt; 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2…
+## $ age         &lt;dbl&gt; 60, 80, 32, 25, 55, 63, 20, 53, 49, 27, 58, 56, 34, 34, 35…
+## $ educ        &lt;dbl&gt; 13, 13, 13, 13, 11, 14, 11, 11, 13, 13, 11, 13, 19, 19, 15…
+## $ citizen     &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+## $ rweight     &lt;dbl&gt; 207134, 215836, 184639, 184883, 168557, 179148, 181510, 19…
+## $ south       &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+## $ gov         &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+## $ closing     &lt;dbl&gt; 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29…
+## $ age2        &lt;dbl&gt; 3600, 6400, 1024, 625, 3025, 3969, 400, 2809, 2401, 729, 3…
+## $ educ2       &lt;dbl&gt; 25, 25, 25, 25, 16, 36, 16, 16, 25, 25, 16, 25, 64, 64, 36…
+## $ cloeduc     &lt;dbl&gt; 145, 145, 145, 145, 116, 174, 116, 116, 145, 145, 116, 145…
+## $ cloeduc2    &lt;dbl&gt; 725, 725, 725, 725, 464, 1044, 464, 464, 725, 725, 464, 72…
+## $ newvote     &lt;dbl&gt; 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0…
+## $ newage      &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+## $ neweduc     &lt;dbl&gt; 5, 5, 5, 5, 4, 6, 4, 4, 5, 5, 4, 5, 8, 8, 6, 5, 5, 3, 5, 1…
+## $ type        &lt;chr&gt; &quot;simulated #1&quot;, &quot;simulated #1&quot;, &quot;simulated #1&quot;, &quot;simulated…
+## $ linpred_hat &lt;dbl&gt; 1.227725576, 1.973989420, 0.182956194, -0.078236152, 0.510…</code></pre>
+<div class="sourceCode" id="cb174"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb174-1"><a href="posterior-predictive-distribution-1.html#cb174-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(gg_data, <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> newvote)) <span class="sc">+</span> </span>
+<span id="cb174-2"><a href="posterior-predictive-distribution-1.html#cb174-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">height =</span> <span class="fl">0.05</span>, <span class="at">alpha =</span> <span class="fl">0.01</span>, <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="fl">0.3</span>) <span class="sc">+</span> </span>
+<span id="cb174-3"><a href="posterior-predictive-distribution-1.html#cb174-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(type)) <span class="sc">+</span> </span>
+<span id="cb174-4"><a href="posterior-predictive-distribution-1.html#cb174-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">se =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
+<p><img src="03-04-predictive-distributions_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>We can do this same thing with Stan. However, working with the posterior simulations can be tricky. I use tidybayes <code>add_predicted_draws()</code> function along with some clever pivoting to get the data ready for <code>ggplot()</code>.</p>
+<div class="sourceCode" id="cb176"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb176-1"><a href="posterior-predictive-distribution-1.html#cb176-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstanarm); <span class="fu">options</span>(<span class="at">mc.cores =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span></code></pre></div>
+<pre><code>## Loading required package: Rcpp</code></pre>
+<pre><code>## This is rstanarm version 2.21.1</code></pre>
+<pre><code>## - See https://mc-stan.org/rstanarm/articles/priors for changes to default priors!</code></pre>
+<pre><code>## - Default priors may change, so it&#39;s safest to specify priors, even if equivalent to the defaults.</code></pre>
+<pre><code>## - For execution on a local, multicore CPU with excess RAM we recommend calling</code></pre>
+<pre><code>##   options(mc.cores = parallel::detectCores())</code></pre>
+<div class="sourceCode" id="cb183"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb183-1"><a href="posterior-predictive-distribution-1.html#cb183-1" aria-hidden="true" tabindex="-1"></a>small_scobit <span class="ot">&lt;-</span> <span class="fu">sample_n</span>(scobit, <span class="dv">1000</span>)  <span class="co"># subsample b/c model is slow</span></span>
+<span id="cb183-2"><a href="posterior-predictive-distribution-1.html#cb183-2" aria-hidden="true" tabindex="-1"></a>stan_fit <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(f, <span class="at">data =</span> small_scobit, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb184-1"><a href="posterior-predictive-distribution-1.html#cb184-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidybayes)</span>
+<span id="cb184-2"><a href="posterior-predictive-distribution-1.html#cb184-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb184-3"><a href="posterior-predictive-distribution-1.html#cb184-3" aria-hidden="true" tabindex="-1"></a>ppd <span class="ot">&lt;-</span> small_scobit <span class="sc">%&gt;%</span></span>
+<span id="cb184-4"><a href="posterior-predictive-distribution-1.html#cb184-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_predicted_draws</span>(stan_fit, <span class="at">ndraws =</span> <span class="dv">8</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb184-5"><a href="posterior-predictive-distribution-1.html#cb184-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">.draw =</span> <span class="fu">paste0</span>(<span class="st">&quot;Draw #&quot;</span>, .draw)) <span class="sc">%&gt;%</span> </span>
+<span id="cb184-6"><a href="posterior-predictive-distribution-1.html#cb184-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> .draw, <span class="at">values_from =</span> .prediction) <span class="sc">%&gt;%</span></span>
+<span id="cb184-7"><a href="posterior-predictive-distribution-1.html#cb184-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">Observed</span><span class="st">`</span> <span class="ot">=</span> newvote) <span class="sc">%&gt;%</span> </span>
+<span id="cb184-8"><a href="posterior-predictive-distribution-1.html#cb184-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="st">`</span><span class="at">Draw #1</span><span class="st">`</span><span class="sc">:</span><span class="st">`</span><span class="at">Observed</span><span class="st">`</span>, <span class="at">names_to =</span> <span class="st">&quot;type&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;newvote2&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb184-9"><a href="posterior-predictive-distribution-1.html#cb184-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code></pre></div>
+<pre><code>## Rows: 9,000
+## Columns: 21
+## Groups: state, vote, age, educ, citizen, rweight, south, gov, closing, age2, educ2, cloeduc, cloeduc2, newvote, newage, neweduc, .row [1,000]
+## $ state      &lt;dbl&gt; 21, 21, 21, 21, 21, 21, 21, 21, 21, 82, 82, 82, 82, 82, 82,…
+## $ vote       &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,…
+## $ age        &lt;dbl&gt; 21, 21, 21, 21, 21, 21, 21, 21, 21, 24, 24, 24, 24, 24, 24,…
+## $ educ       &lt;dbl&gt; 16, 16, 16, 16, 16, 16, 16, 16, 16, 14, 14, 14, 14, 14, 14,…
+## $ citizen    &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,…
+## $ rweight    &lt;dbl&gt; 173190, 173190, 173190, 173190, 173190, 173190, 173190, 173…
+## $ south      &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+## $ gov        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+## $ closing    &lt;dbl&gt; 30, 30, 30, 30, 30, 30, 30, 30, 30, 10, 10, 10, 10, 10, 10,…
+## $ age2       &lt;dbl&gt; 441, 441, 441, 441, 441, 441, 441, 441, 441, 576, 576, 576,…
+## $ educ2      &lt;dbl&gt; 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36,…
+## $ cloeduc    &lt;dbl&gt; 180, 180, 180, 180, 180, 180, 180, 180, 180, 60, 60, 60, 60…
+## $ cloeduc2   &lt;dbl&gt; 1080, 1080, 1080, 1080, 1080, 1080, 1080, 1080, 1080, 360, …
+## $ newvote    &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+## $ newage     &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+## $ neweduc    &lt;dbl&gt; 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 5, 5,…
+## $ .row       &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3,…
+## $ .chain     &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ .iteration &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ type       &lt;chr&gt; &quot;Draw #1&quot;, &quot;Draw #2&quot;, &quot;Draw #3&quot;, &quot;Draw #4&quot;, &quot;Draw #5&quot;, &quot;Dra…
+## $ newvote2   &lt;dbl&gt; 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1,…</code></pre>
+<div class="sourceCode" id="cb186"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb186-1"><a href="posterior-predictive-distribution-1.html#cb186-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ppd, <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> newvote2)) <span class="sc">+</span> </span>
+<span id="cb186-2"><a href="posterior-predictive-distribution-1.html#cb186-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">height =</span> <span class="fl">0.15</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="fl">0.3</span>) <span class="sc">+</span> </span>
+<span id="cb186-3"><a href="posterior-predictive-distribution-1.html#cb186-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(type)) <span class="sc">+</span> </span>
+<span id="cb186-4"><a href="posterior-predictive-distribution-1.html#cb186-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">se =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
+<p><img src="03-04-predictive-distributions_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>
+<div id="for-the-poisson-model" class="section level3 hasAnchor" number="3.4.2">
+<h3><span class="header-section-number">3.4.2</span> … for the Poisson model<a href="posterior-predictive-distribution-1.html#for-the-poisson-model" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The code below repeated this exercise for the Poisson model using the HKS data.</p>
+<div class="sourceCode" id="cb188"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb188-1"><a href="posterior-predictive-distribution-1.html#cb188-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load hks data</span></span>
+<span id="cb188-2"><a href="posterior-predictive-distribution-1.html#cb188-2" aria-hidden="true" tabindex="-1"></a>hks <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/hks.csv&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb188-3"><a href="posterior-predictive-distribution-1.html#cb188-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span></code></pre></div>
+<pre><code>## Rows: 3972 Columns: 10
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## dbl (10): osvAll, troopLag, policeLag, militaryobserversLag, brv_AllLag, osv...
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<div class="sourceCode" id="cb190"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb190-1"><a href="posterior-predictive-distribution-1.html#cb190-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit poisson model</span></span>
+<span id="cb190-2"><a href="posterior-predictive-distribution-1.html#cb190-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> osvAll <span class="sc">~</span> troopLag <span class="sc">+</span> policeLag <span class="sc">+</span> militaryobserversLag <span class="sc">+</span> </span>
+<span id="cb190-3"><a href="posterior-predictive-distribution-1.html#cb190-3" aria-hidden="true" tabindex="-1"></a>  brv_AllLag <span class="sc">+</span> osvAllLagDum <span class="sc">+</span> incomp <span class="sc">+</span> epduration <span class="sc">+</span> </span>
+<span id="cb190-4"><a href="posterior-predictive-distribution-1.html#cb190-4" aria-hidden="true" tabindex="-1"></a>  lntpop</span>
+<span id="cb190-5"><a href="posterior-predictive-distribution-1.html#cb190-5" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(f, <span class="at">data =</span> hks, <span class="at">family =</span> poisson)</span>
+<span id="cb190-6"><a href="posterior-predictive-distribution-1.html#cb190-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb190-7"><a href="posterior-predictive-distribution-1.html#cb190-7" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate fake data from predictive distribution</span></span>
+<span id="cb190-8"><a href="posterior-predictive-distribution-1.html#cb190-8" aria-hidden="true" tabindex="-1"></a>observed_data <span class="ot">&lt;-</span> hks <span class="sc">%&gt;%</span></span>
+<span id="cb190-9"><a href="posterior-predictive-distribution-1.html#cb190-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">type =</span> <span class="st">&quot;observed&quot;</span>, </span>
+<span id="cb190-10"><a href="posterior-predictive-distribution-1.html#cb190-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">linpred_hat =</span> <span class="fu">predict</span>(fit, <span class="at">type =</span> <span class="st">&quot;link&quot;</span>))</span>
+<span id="cb190-11"><a href="posterior-predictive-distribution-1.html#cb190-11" aria-hidden="true" tabindex="-1"></a>sim_list <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb190-12"><a href="posterior-predictive-distribution-1.html#cb190-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) {</span>
+<span id="cb190-13"><a href="posterior-predictive-distribution-1.html#cb190-13" aria-hidden="true" tabindex="-1"></a>  sim_list[[i]] <span class="ot">&lt;-</span> observed_data <span class="sc">%&gt;%</span></span>
+<span id="cb190-14"><a href="posterior-predictive-distribution-1.html#cb190-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">osvAll =</span> <span class="fu">rpois</span>(<span class="fu">nrow</span>(observed_data), </span>
+<span id="cb190-15"><a href="posterior-predictive-distribution-1.html#cb190-15" aria-hidden="true" tabindex="-1"></a>                          <span class="at">lambda =</span> <span class="fu">exp</span>(observed_data<span class="sc">$</span>linpred_hat)),</span>
+<span id="cb190-16"><a href="posterior-predictive-distribution-1.html#cb190-16" aria-hidden="true" tabindex="-1"></a>           <span class="at">type =</span> <span class="fu">paste0</span>(<span class="st">&quot;simulated #&quot;</span>, i))</span>
+<span id="cb190-17"><a href="posterior-predictive-distribution-1.html#cb190-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb190-18"><a href="posterior-predictive-distribution-1.html#cb190-18" aria-hidden="true" tabindex="-1"></a>gg_data <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(sim_list) <span class="sc">%&gt;%</span></span>
+<span id="cb190-19"><a href="posterior-predictive-distribution-1.html#cb190-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(observed_data) <span class="sc">%&gt;%</span></span>
+<span id="cb190-20"><a href="posterior-predictive-distribution-1.html#cb190-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code></pre></div>
+<pre><code>## Rows: 22,476
+## Columns: 12
+## $ osvAll               &lt;dbl&gt; 282, 309, 1160, 284, 424, 201, 182, 203, 174, 181…
+## $ troopLag             &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+## $ policeLag            &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+## $ militaryobserversLag &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+## $ brv_AllLag           &lt;dbl&gt; 0, 138, 2428, 30, 850, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+## $ osvAllLagDum         &lt;dbl&gt; 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+## $ incomp               &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…
+## $ epduration           &lt;dbl&gt; 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 1…
+## $ lntpop               &lt;dbl&gt; 10.88525, 10.88525, 10.88525, 10.88525, 10.88525,…
+## $ conflict_id          &lt;dbl&gt; 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 7…
+## $ type                 &lt;chr&gt; &quot;simulated #1&quot;, &quot;simulated #1&quot;, &quot;simulated #1&quot;, &quot;…
+## $ linpred_hat          &lt;dbl&gt; 5.701372, 5.756500, 7.017963, 5.651498, 6.088931,…</code></pre>
+<div class="sourceCode" id="cb192"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb192-1"><a href="posterior-predictive-distribution-1.html#cb192-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot fake and observed data against linear predictor</span></span>
+<span id="cb192-2"><a href="posterior-predictive-distribution-1.html#cb192-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(gg_data, <span class="fu">aes</span>(<span class="at">x =</span> linpred_hat, <span class="at">y =</span> osvAll <span class="sc">+</span> <span class="dv">1</span>)) <span class="sc">+</span> </span>
+<span id="cb192-3"><a href="posterior-predictive-distribution-1.html#cb192-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.1</span>, <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="fl">0.3</span>) <span class="sc">+</span> </span>
+<span id="cb192-4"><a href="posterior-predictive-distribution-1.html#cb192-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(type)) <span class="sc">+</span> </span>
+<span id="cb192-5"><a href="posterior-predictive-distribution-1.html#cb192-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>()</span></code></pre></div>
+<p><img src="03-04-predictive-distributions_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<div class="sourceCode" id="cb193"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb193-1"><a href="posterior-predictive-distribution-1.html#cb193-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot fake and observed data against number of troops</span></span>
+<span id="cb193-2"><a href="posterior-predictive-distribution-1.html#cb193-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(gg_data, <span class="fu">aes</span>(<span class="at">x =</span> troopLag, <span class="at">y =</span> osvAll <span class="sc">+</span> <span class="dv">1</span>)) <span class="sc">+</span> </span>
+<span id="cb193-3"><a href="posterior-predictive-distribution-1.html#cb193-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="fl">0.3</span>) <span class="sc">+</span> </span>
+<span id="cb193-4"><a href="posterior-predictive-distribution-1.html#cb193-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(type)) <span class="sc">+</span> </span>
+<span id="cb193-5"><a href="posterior-predictive-distribution-1.html#cb193-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span> </span>
+<span id="cb193-6"><a href="posterior-predictive-distribution-1.html#cb193-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">se =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
+<p><img src="03-04-predictive-distributions_files/figure-html/unnamed-chunk-6-2.png" width="672" /></p>
+<p>And below is code to work with the posterior predictive distribution.</p>
+<div class="sourceCode" id="cb195"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb195-1"><a href="posterior-predictive-distribution-1.html#cb195-1" aria-hidden="true" tabindex="-1"></a>stan_fit <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(f, <span class="at">data =</span> hks, <span class="at">family =</span> <span class="st">&quot;poisson&quot;</span>, <span class="at">chains =</span> <span class="dv">1</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb196"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb196-1"><a href="posterior-predictive-distribution-1.html#cb196-1" aria-hidden="true" tabindex="-1"></a>ppd <span class="ot">&lt;-</span> hks <span class="sc">%&gt;%</span></span>
+<span id="cb196-2"><a href="posterior-predictive-distribution-1.html#cb196-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_predicted_draws</span>(stan_fit, <span class="at">ndraws =</span> <span class="dv">8</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb196-3"><a href="posterior-predictive-distribution-1.html#cb196-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">.draw =</span> <span class="fu">paste0</span>(<span class="st">&quot;Draw #&quot;</span>, .draw)) <span class="sc">%&gt;%</span> </span>
+<span id="cb196-4"><a href="posterior-predictive-distribution-1.html#cb196-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> .draw, <span class="at">values_from =</span> .prediction) <span class="sc">%&gt;%</span></span>
+<span id="cb196-5"><a href="posterior-predictive-distribution-1.html#cb196-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">Observed</span><span class="st">`</span> <span class="ot">=</span> osvAll) <span class="sc">%&gt;%</span> </span>
+<span id="cb196-6"><a href="posterior-predictive-distribution-1.html#cb196-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="st">`</span><span class="at">Draw #1</span><span class="st">`</span><span class="sc">:</span><span class="st">`</span><span class="at">Observed</span><span class="st">`</span>, <span class="at">names_to =</span> <span class="st">&quot;type&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;osvAll2&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb196-7"><a href="posterior-predictive-distribution-1.html#cb196-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code></pre></div>
+<pre><code>## Rows: 33,714
+## Columns: 15
+## Groups: osvAll, troopLag, policeLag, militaryobserversLag, brv_AllLag, osvAllLagDum, incomp, epduration, lntpop, conflict_id, .row [3,746]
+## $ osvAll               &lt;dbl&gt; 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1, 1, 1, 1, 1, 1, 1…
+## $ troopLag             &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+## $ policeLag            &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+## $ militaryobserversLag &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+## $ brv_AllLag           &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 138, 138, 138, 138, 13…
+## $ osvAllLagDum         &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+## $ incomp               &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…
+## $ epduration           &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3…
+## $ lntpop               &lt;dbl&gt; 10.88525, 10.88525, 10.88525, 10.88525, 10.88525,…
+## $ conflict_id          &lt;dbl&gt; 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 7…
+## $ .row                 &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2…
+## $ .chain               &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+## $ .iteration           &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+## $ type                 &lt;chr&gt; &quot;Draw #1&quot;, &quot;Draw #2&quot;, &quot;Draw #3&quot;, &quot;Draw #4&quot;, &quot;Draw…
+## $ osvAll2              &lt;dbl&gt; 325, 276, 278, 303, 324, 311, 275, 270, 4, 332, 3…</code></pre>
+<div class="sourceCode" id="cb198"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb198-1"><a href="posterior-predictive-distribution-1.html#cb198-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ppd, <span class="fu">aes</span>(<span class="at">x =</span> troopLag, <span class="at">y =</span> osvAll2 <span class="sc">+</span> <span class="dv">1</span>)) <span class="sc">+</span> </span>
+<span id="cb198-2"><a href="posterior-predictive-distribution-1.html#cb198-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="fl">0.3</span>) <span class="sc">+</span> </span>
+<span id="cb198-3"><a href="posterior-predictive-distribution-1.html#cb198-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(type)) <span class="sc">+</span> </span>
+<span id="cb198-4"><a href="posterior-predictive-distribution-1.html#cb198-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> </span>
+<span id="cb198-5"><a href="posterior-predictive-distribution-1.html#cb198-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>()</span></code></pre></div>
+<pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
+<p><img src="03-04-predictive-distributions_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="poisson-model.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="quantities-of-interest.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["adv-methods-notes.pdf", "adv-methods-notes.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
