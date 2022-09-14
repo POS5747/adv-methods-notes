@@ -3,12 +3,88 @@
 
 This week, we expand our confidence interval toolkit. We have three core methods:
 
+
 1. parametric bootstrap, which can be used directly for coefficients or quantities of interest.
 1. nonparametric bootstrap, which can be used directly for coefficients or quantities of interest.
 1. Wald confidence interval for coefficients, extended to quantities of interest using the delta method.
 
 
 
+## Coverage
+
+Before we discuss these three intervals, let's review how we **evaluate** intervals. How do we know if a particular method works well? 
+
+We evaluate confidence intervals in terms of their coverage: a $100(1 - \alpha)\%$ confidence interval, should capture the parameter $100(1 - \alpha)\%$ of the time under repeated sampling. That is, if we imagine repeating the study over-and-over (in the usual frequentist sense), then $100(1 - \alpha)\%$ of the confidence intervals contain the true parameter.
+
+As an example, let's consider the usual 90% confidence interval for the mean: 95% CI = $[\text{avg}(y) - 1.64 \times \hat{\text{SE}}, \text{avg}(y) + 1.64 \times \hat{\text{SE}}]$, where $\hat{\text{SE}} = \frac{\text{SD}(y)}{\sqrt{n}}$. We learned in an earlier class that this interval should capture the population average in about 90% of repeated trials. For out purposes, the "population average" refers to the mean parameter of some probability distribution.
+
+Let's let the unknown distribution be $Y \sim \text{Poisson}(\lambda = 10)$. The "population" mean hear is $E(Y) = \lambda = 10$. Now let's use a Monte Carlo simulation to evaluate this particular interval. For this study, let's use a small sample size of 15 observations.
+
+
+```r
+# number of MC simulations (i.e., repeated trials)
+n_mc_sims <- 10000
+
+# contains for lower and upper bounds of 90% cis
+lwr <- numeric(n_mc_sims)
+upr <- numeric(n_mc_sims)
+
+# mc simulations
+for (i in 1:n_mc_sims) {
+  y <- rpois(15, lambda = 10)
+  se_hat <- sd(y)/sqrt(length(y))
+  lwr[i] <- mean(y) - 1.64*se_hat
+  upr[i] <- mean(y) + 1.64*se_hat
+}
+
+# combine results into a data frame
+mc_sims <- tibble(iteration = 1:n_mc_sims,
+                  lwr, upr) %>%
+  mutate(captured = lwr < 10 & upr > 10)
+
+# compute the proportion of simulations that capture the parameter
+mean(mc_sims$captured)
+```
+
+```
+## [1] 0.8729
+```
+
+This simulation demonstrates that this simple $z$-interval captures the parameter $\lambda = 10$ in about 87% of repeated samples. This interval is *slightly* too narrow, because we should really use the $t$-interval here due to the small sample size. 
+
+The simulation below shows that this interval has better coverage (i.e., closer to 90%).
+
+
+```r
+# number of MC simulations (i.e., repeated trials)
+n_mc_sims <- 10000
+
+# contains for lower and upper bounds of 90% cis
+lwr <- numeric(n_mc_sims)
+upr <- numeric(n_mc_sims)
+
+# mc simulations
+for (i in 1:n_mc_sims) {
+  y <- rpois(15, lambda = 10)
+  se_hat <- sd(y)/sqrt(length(y))
+  lwr[i] <- mean(y) - qt(.95, df = length(y) - 1)*se_hat
+  upr[i] <- mean(y) + qt(.95, df = length(y) - 1)*se_hat
+}
+
+# combine results into a data frame
+mc_sims <- tibble(iteration = 1:n_mc_sims,
+                  lwr, upr) %>%
+  mutate(captured = lwr < 10 & upr > 10)
+
+# compute the proportion of simulations that capture the parameter
+mean(mc_sims$captured)
+```
+
+```
+## [1] 0.8985
+```
+
+With this criterion in mind, let's consider three types of confidence intervals that we can use in the context of maximum likelihood estimation.
 
 ## The Parametric Bootstrap
 
@@ -22,260 +98,135 @@ To do compute a confidence interval using the parametric bootstrap, do the follo
 
 The parametric bootstrap is a powerful, general tool to obtain confidence intervals for estimates from parametric models, *but it relies heavily on the parametric assumptions*.
 
-## The *Non*parametric Bootstrap
+We can evaluate the parametric bootstrap using a similar Monte Carlo approach. However, this can be **confusing** because we have two types of simulation happening.
 
-The nonparametric bootstrap works similarly to the parametric bootstrap. But rather than simulate a new outcome from the fitted parametric distribution, we sample (with replacement) a new data set from the observed data set (of the same size).
+1. Monte Carlo simulation to evaluate the CI. We're having our computer conduct the same "study" over and over to compute the long-run, frequentist properties of the CI.
+2. Parametric bootstrap to compute each CI. To compute each CI, we're simulating many fake outcome variables $y^{bs}$ from the fitted parametric distribution and refitting the model to obtain new estimates $\hat{\beta}^{bs}$ that we then summarize to find a single CI.
 
-Suppose a data set $D$ with $N$ rows. To do compute a confidence interval using the *non*parametric bootstrap, do the following: 
-
-1. Sample $N$ rows with replacement from $D$ to create a single bootstrap data set $D^{bs}$. 
-1. Re-compute the estimate of interest $\hat{\theta}^{\text{bs}}$ or $\hat{\tau}^{\text{bs}}$ using the bootstrap data set $D^{bs}$ (rather than the observed data set $D$).
-1. Repeat 1 and 2 many times (say 2,000) to obtain many bootstrap estimates. To obtain the 95% confidence interval, take the 2.5th and 97.5th percentiles of the estimates. In general, to obtain a $100(1 - \alpha)\%$ confidence interval, $\frac{\alpha}{2}$th and $(1 - \frac{\alpha}{2})$th percentiles. This is known as the percentile method.
-
-**Important**: The parametric bootstrap obtains a single bootstrap data set by simulated a new outcome from the fitted parametric distribution. The *non*parametric bootstrap creates a single bootstrap data set by sampling from the data set with replacement.
-
-### Example: Coefficients from the Civilian Casualties Model
+To start, let's create the data-generating process or "probability model" or population. The data are Bernoulli and the model is logit. 
 
 
 ```r
-# load hks data
-hks <- read_csv("data/hks.csv") %>%
-  na.omit()
+# model parameters
+n <- 50
+b0 <- 1
+b1 <- 1
+b2 <- -0.5
 
-# fit poisson regression model
-f <- osvAll ~ troopLag + policeLag + militaryobserversLag + 
-  brv_AllLag + osvAllLagDum + incomp + epduration + 
-  lntpop
+# data
+x1 <- rnorm(n, mean = 0, sd = 0.5)
+x2 <- rbinom(n, size = 1, prob = 0.5)
 
-# fit poisson regression model
-fit <- glm(f, data = hks, family = poisson)
-texreg::screenreg(fit)
+# probability of success; Pr(y | x)
+Xb <- b0 + b1*x1 + b2*x2
+p <- plogis(Xb)
 ```
 
-```
-## 
-## =====================================
-##                       Model 1        
-## -------------------------------------
-## (Intercept)                 -3.58 ***
-##                             (0.04)   
-## troopLag                    -0.17 ***
-##                             (0.00)   
-## policeLag                   -3.27 ***
-##                             (0.02)   
-## militaryobserversLag         8.10 ***
-##                             (0.01)   
-## brv_AllLag                   0.00 ***
-##                             (0.00)   
-## osvAllLagDum                 0.29 ***
-##                             (0.00)   
-## incomp                       3.49 ***
-##                             (0.02)   
-## epduration                  -0.02 ***
-##                             (0.00)   
-## lntpop                       0.19 ***
-##                             (0.00)   
-## -------------------------------------
-## AIC                    2139137.24    
-## BIC                    2139193.29    
-## Log Likelihood        -1069559.62    
-## Deviance               2134800.81    
-## Num. obs.                 3746       
-## =====================================
-## *** p < 0.001; ** p < 0.01; * p < 0.05
-```
-
-First, for comparison, let's using the familiar parametric bootstrap.
+Now let's simulate *just one* "observed" data set and compute the confidence intervals for that data set using the parametric bootstrap.
 
 
 ```r
+# simulate *one* sample and compute the 90% ci using parametric bs
+y_obs <- rbinom(n, size = 1, prob = p)
+data <- data.frame(y_obs, x1, x2)
+fit <- glm(y_obs ~ x1 + x2, data = data, family = binomial)
+
 # parametric bs for coefficients
-n_bs <- 2000
+n_bs <- 100  # should be 2000 or more
 coef_bs <- matrix(nrow = n_bs, ncol = length(coef(fit)))
 names(coef_bs) <- names(coef(fit))
 for (i in 1:n_bs) {
-  lambda_hat <- predict(fit, type = "response")
-  y_bs <- rpois(length(lambda_hat), lambda = lambda_hat)
+  p_hat <- predict(fit, type = "response")
+  y_bs <- rbinom(length(p_hat), size = 1, prob = p_hat)
   fit_bs <- update(fit, formula = y_bs ~ .)
   coef_bs[i, ] <- coef(fit_bs)
 }
 
-# compute the 2.5th and 97.5th percentiles
-cis <- apply(coef_bs, 2, quantile, probs = c(0.05, 0.95)); cis
+# compute quantiles
+apply(coef_bs, 2, quantile, probs = c(0.05, 0.95))
 ```
 
 ```
-##          [,1]       [,2]      [,3]     [,4]         [,5]      [,6]     [,7]
-## 5%  -3.648905 -0.1727587 -3.313038 8.079748 0.0005466775 0.2833877 3.456882
-## 95% -3.507212 -0.1668689 -3.231353 8.120237 0.0005744973 0.2993519 3.515683
-##            [,8]      [,9]
-## 5%  -0.02236245 0.1858287
-## 95% -0.02210370 0.1928710
+##         [,1]     [,2]        [,3]
+## 5%  1.344434 0.938166 -3.66211932
+## 95% 5.119518 4.598202 -0.01051164
 ```
 
-```r
-# put the cis into a nice little data frame for use later
-pbs_ci_df <- tibble(var = names(coef(fit)),
-                est = coef(fit),
-                lwr = cis["5%", ],
-                upr = cis["95%", ], 
-                type = "Parametric Bootstrap")
-```
-
-Now let's use the nonparametric bootstrap. The *two* changed lines are flagged with comments
+Now let's simulate *many* "observed" data sets and compute the confidence intervals for each using the parametric bootstrap.
 
 
 ```r
-# nonparametric bs for coefficients
-n_bs <- 2000  
-coef_bs <- matrix(nrow = n_bs, ncol = length(coef(fit)))
-names(coef_bs) <- names(coef(fit))
-for (i in 1:n_bs) {
-  bs_data <- sample_n(hks, size = nrow(hks), replace = TRUE)  # sample from hks w/ repl.
-  fit_bs <- update(fit, data = bs_data)                       # fit same model on resampled data
-  coef_bs[i, ] <- coef(fit_bs)
+n_mc_sims <- 25
+ci_list <- list()
+for (i in 1:n_mc_sims) {
+  # simulate the "observed" data for one "study"
+  y_obs <- rbinom(n, size = 1, prob = p)
+  data <- data.frame(y_obs, x1, x2)
+  fit <- glm(y_obs ~ x1 + x2, data = data, family = binomial)
+  
+  # parametric bs for coefficients
+  n_bs <- 25  # should be 2000 or more
+  coef_bs <- matrix(nrow = n_bs, ncol = length(coef(fit)))
+  colnames(coef_bs) <- names(coef(fit))
+  for (j in 1:n_bs) {
+    p_hat <- predict(fit, type = "response")
+    y_bs <- rbinom(length(p_hat), size = 1, prob = p_hat)
+    fit_bs <- update(fit, formula = y_bs ~ .)
+    coef_bs[j, ] <- coef(fit_bs)
+  }
+  
+  # compute quantiles
+  cis <- apply(coef_bs, 2, quantile, probs = c(0.05, 0.95))
+  
+  # put results into data frame
+  ci_list[[i]] <- tibble(coef_name = colnames(cis),
+                         true = c(b0, b1, b2),
+                  lwr = cis["5%", ],
+                  upr = cis["95%", ], 
+                  bs_id = i)
 }
-cis <- apply(coef_bs, 2, quantile, probs = c(0.05, 0.95)); cis
-```
 
-```
-##           [,1]        [,2]       [,3]        [,4]          [,5]      [,6]
-## 5%  -14.350891 -0.37187824 -7.7067660 -0.06160276 -0.0005164898 -1.797595
-## 95%   4.956865  0.04922113 -0.9367626 19.69600066  0.0023359469  2.597889
-##         [,7]        [,8]       [,9]
-## 5%  2.204795 -0.03801708 -0.5847749
-## 95% 4.206496 -0.00695016  1.0876191
-```
+ci_df <- bind_rows(ci_list)
 
-```r
-nbs_ci_df <- tibble(var = names(coef(fit)),
-                est = coef(fit),
-                lwr = cis["5%", ],
-                upr = cis["95%", ], 
-                type = "Nonparametric Bootstrap")
-```
-
-Now let's compare the estimates.
-
-
-```r
-# combined the two dfs w/ the cis into a single df
-ci_df <- bind_rows(pbs_ci_df, nbs_ci_df)
-
-# plots the coefficient estimates and cis
-ggplot(ci_df, aes(x = est, xmin = lwr, xmax = upr,
-                  y = var, color = type)) + 
-  geom_errorbarh(position = position_dodge(width = .4), height = 0) + 
-  geom_point(position = position_dodge(width = .4))
-```
-
-<img src="04-01-parametric-bootstrap_files/figure-html/unnamed-chunk-5-1.png" width="384" />
-
-We could also make a little table.
-
-
-```r
 ci_df %>%
-  mutate(ci_chr = paste0("[", scales::number(lwr, 0.001), ", ", scales::number(upr, 0.001), "]"), 
-         est_chr = scales::number(est, 0.001)) %>%
-  select(var, est_chr, ci_chr, type) %>%
-  pivot_wider(names_from = type, values_from = ci_chr) %>%
-  rename(`Variable` = var, `Coefficient Estimate` = est_chr) %>%
-  kableExtra::kable(format = "markdown")
+  mutate(captured = lwr < true & upr > true)
 ```
 
+```
+## # A tibble: 75 × 6
+##    coef_name    true    lwr    upr bs_id captured
+##    <chr>       <dbl>  <dbl>  <dbl> <int> <lgl>   
+##  1 (Intercept)   1    0.422  2.17      1 TRUE    
+##  2 x1            1    0.623  4.30      1 TRUE    
+##  3 x2           -0.5 -3.29  -0.521     1 FALSE   
+##  4 (Intercept)   1    0.658  3.03      2 TRUE    
+##  5 x1            1   -0.463  1.62      2 TRUE    
+##  6 x2           -0.5 -3.06   0.492     2 TRUE    
+##  7 (Intercept)   1    0.219  1.51      3 TRUE    
+##  8 x1            1   -0.429  1.52      3 TRUE    
+##  9 x2           -0.5 -1.18   0.957     3 TRUE    
+## 10 (Intercept)   1    1.25   3.00      4 FALSE   
+## # … with 65 more rows
+```
 
+### Example: Toothpaste Cap Problm
 
-|Variable             |Coefficient Estimate |Parametric Bootstrap |Nonparametric Bootstrap |
-|:--------------------|:--------------------|:--------------------|:-----------------------|
-|(Intercept)          |-3.579               |[-3.649, -3.507]     |[-14.351, 4.957]        |
-|troopLag             |-0.170               |[-0.173, -0.167]     |[-0.372, 0.049]         |
-|policeLag            |-3.272               |[-3.313, -3.231]     |[-7.707, -0.937]        |
-|militaryobserversLag |8.100                |[8.080, 8.120]       |[-0.062, 19.696]        |
-|brv_AllLag           |0.001                |[0.001, 0.001]       |[-0.001, 0.002]         |
-|osvAllLagDum         |0.291                |[0.283, 0.299]       |[-1.798, 2.598]         |
-|incomp               |3.486                |[3.457, 3.516]       |[2.205, 4.206]          |
-|epduration           |-0.022               |[-0.022, -0.022]     |[-0.038, -0.007]        |
-|lntpop               |0.189                |[0.186, 0.193]       |[-0.585, 1.088]         |
-
-### Example: First Difference from the Civilian Casualties Model
+The code below implements the parametric bootstrap for the toothpaste cap problem. For 2,000 iterations, it draws 150 observations from $Y \sim \text{Bernoulli}(\hat{\pi} = \frac{8}{150})$. For each iteration, it computes the ML estimate of $\pi$ for the bootstrapped data set. Then it computes the percentiles to obtain the confidence interval.
 
 
 ```r
-# load hks data
-hks <- read_csv("data/hks.csv") %>%
-  na.omit()
-
-# fit poisson regression model
-f <- osvAll ~ troopLag + policeLag + militaryobserversLag + 
-  brv_AllLag + osvAllLagDum + incomp + epduration + 
-  lntpop
-fit <- glm(f, data = hks, family = poisson)
-
-# compute qi using the invariance property
-X_lo <- tibble(troopLag = 0,
-               policeLag = 0, 
-               militaryobserversLag = 0, 
-               brv_AllLag = 0,
-               osvAllLagDum = 0, 
-               incomp = 2,
-               epduration = 46,
-               lntpop = 9.19)
-lambda_hat_lo <- predict(fit, newdata = X_lo, type = "response")
-X_hi <- mutate(X_lo, troopLag = 29.209)
-lambda_hat_hi <- predict(fit, newdata = X_hi, type = "response")
-fd_hat <- lambda_hat_hi - lambda_hat_lo; fd_hat
-```
-
-```
-##         1 
-## -60.57989
-```
-
-Now let's get a 90% confidence interval for the first difference using the **parametric bootstrap**.
-
-
-```r
-# parametric bs for coefficients
-n_bs <- 1000
-fd_bs <- numeric(n_bs)
-names(coef_bs) <- names(coef(fit))
+n_bs <- 2000
+bs_est <- numeric(n_bs)  # a container for the estimates
 for (i in 1:n_bs) {
-  lambda_hat <- predict(fit, type = "response")
-  y_bs <- rpois(length(lambda_hat),  lambda = lambda_hat)
-  fit_bs <- update(fit, formula = y_bs ~ .)
-  lh_lo_bs <- predict(fit_bs, newdata = X_lo, type = "response")
-  lh_hi_bs <- predict(fit_bs, newdata = X_hi, type = "response")
-  fd_bs[i] <- lh_hi_bs - lh_lo_bs
+  bs_y <- rbinom(150, size = 1, prob = 8/150)
+  bs_est[i] <- mean(bs_y)
 }
-quantile(fd_bs, probs = c(0.05, 0.95))
+print(quantile(bs_est, probs = c(0.025, 0.975)), digits = 2)  # 95% ci
 ```
 
 ```
-##        5%       95% 
-## -60.94003 -60.24634
+##  2.5% 97.5% 
+## 0.020 0.093
 ```
 
-Now let's get a 90% confidence interval for the first difference using the **nonarametric bootstrap**.
-
-
-```r
-# nonparametric bs for coefficients
-n_bs <- 1000
-fd_bs <- numeric(n_bs)
-names(coef_bs) <- names(coef(fit))
-for (i in 1:n_bs) {
-  bs_data <- sample_n(hks, size = nrow(hks), replace = TRUE)  # sample from hks w/ repl.
-  fit_bs <- update(fit, data = bs_data)                       # fit same model on resampled data
-  lh_lo_bs <- predict(fit_bs, newdata = X_lo, type = "response")
-  lh_hi_bs <- predict(fit_bs, newdata = X_hi, type = "response")
-  fd_bs[i] <- lh_hi_bs - lh_lo_bs
-}
-quantile(fd_bs, probs = c(0.05, 0.95))
-```
-
-```
-##        5%       95% 
-## -95.27135  39.66416
-```
-
+We leave an evaluation of this confidence interval (i.e., Does it capture $\theta$ 95% of the time?) to later in the semester.

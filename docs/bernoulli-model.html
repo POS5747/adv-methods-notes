@@ -6,10 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>3.2 Bernoulli Model | Statistical Modeling: A Tools Approach</title>
   <meta name="description" content="Lecture notes covering the key tools of regression modeling in political science." />
-  <meta name="generator" content="bookdown 0.25 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
 
   <meta property="og:title" content="3.2 Bernoulli Model | Statistical Modeling: A Tools Approach" />
   <meta property="og:type" content="book" />
+  
   
   <meta property="og:description" content="Lecture notes covering the key tools of regression modeling in political science." />
   <meta name="github-repo" content="pos5747/adv-methods-notes" />
@@ -32,6 +33,7 @@
   
 <link rel="prev" href="review-the-normal-model.html"/>
 <link rel="next" href="poisson-model.html"/>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -49,14 +51,13 @@
 
 
 
-<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
-<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
-<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
 <script src="libs/plotly-binding-4.10.0/plotly.js"></script>
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
-<link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
-<script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<link href="libs/crosstalk-1.1.1/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.1.1/js/crosstalk.min.js"></script>
 <link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
 <script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
 <script>
@@ -166,121 +167,116 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="./">Advanced Methods Notes</a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Week 1: Maximum Likelihood<span></span></a>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Week 1: Maximum Likelihood</a>
 <ul>
-<li class="chapter" data-level="1.1" data-path="class-agenda.html"><a href="class-agenda.html"><i class="fa fa-check"></i><b>1.1</b> Class agenda<span></span></a></li>
-<li class="chapter" data-level="1.2" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html"><i class="fa fa-check"></i><b>1.2</b> Maximum Likelihood<span></span></a>
+<li class="chapter" data-level="1.1" data-path="class-agenda.html"><a href="class-agenda.html"><i class="fa fa-check"></i><b>1.1</b> Class agenda</a></li>
+<li class="chapter" data-level="1.2" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html"><i class="fa fa-check"></i><b>1.2</b> Maximum Likelihood</a>
 <ul>
-<li class="chapter" data-level="1.2.1" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#example-bernoulli-distribution"><i class="fa fa-check"></i><b>1.2.1</b> Example: Bernoulli Distribution<span></span></a></li>
-<li class="chapter" data-level="1.2.2" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#example-poisson-distribution"><i class="fa fa-check"></i><b>1.2.2</b> Example: Poisson Distribution<span></span></a></li>
-<li class="chapter" data-level="1.2.3" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#remarks"><i class="fa fa-check"></i><b>1.2.3</b> Remarks<span></span></a></li>
-<li class="chapter" data-level="1.2.4" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#example-beta-distribution"><i class="fa fa-check"></i><b>1.2.4</b> Example: Beta Distribution<span></span></a></li>
+<li class="chapter" data-level="1.2.1" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#example-bernoulli-distribution"><i class="fa fa-check"></i><b>1.2.1</b> Example: Bernoulli Distribution</a></li>
+<li class="chapter" data-level="1.2.2" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#example-poisson-distribution"><i class="fa fa-check"></i><b>1.2.2</b> Example: Poisson Distribution</a></li>
+<li class="chapter" data-level="1.2.3" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#remarks"><i class="fa fa-check"></i><b>1.2.3</b> Remarks</a></li>
+<li class="chapter" data-level="1.2.4" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#example-beta-distribution"><i class="fa fa-check"></i><b>1.2.4</b> Example: Beta Distribution</a></li>
 </ul></li>
-<li class="chapter" data-level="1.3" data-path="the-invariance-property.html"><a href="the-invariance-property.html"><i class="fa fa-check"></i><b>1.3</b> The Invariance Property<span></span></a>
+<li class="chapter" data-level="1.3" data-path="the-invariance-property.html"><a href="the-invariance-property.html"><i class="fa fa-check"></i><b>1.3</b> The Invariance Property</a>
 <ul>
-<li class="chapter" data-level="1.3.1" data-path="the-invariance-property.html"><a href="the-invariance-property.html#example-bernoulli-odds"><i class="fa fa-check"></i><b>1.3.1</b> Example: Bernoulli Odds<span></span></a></li>
-<li class="chapter" data-level="1.3.2" data-path="the-invariance-property.html"><a href="the-invariance-property.html#example-poisson-sd"><i class="fa fa-check"></i><b>1.3.2</b> Example: Poisson SD<span></span></a></li>
-<li class="chapter" data-level="1.3.3" data-path="the-invariance-property.html"><a href="the-invariance-property.html#example-beta-mean-and-variance"><i class="fa fa-check"></i><b>1.3.3</b> Example: Beta Mean and Variance<span></span></a></li>
+<li class="chapter" data-level="1.3.1" data-path="the-invariance-property.html"><a href="the-invariance-property.html#example-bernoulli-odds"><i class="fa fa-check"></i><b>1.3.1</b> Example: Bernoulli Odds</a></li>
+<li class="chapter" data-level="1.3.2" data-path="the-invariance-property.html"><a href="the-invariance-property.html#example-poisson-sd"><i class="fa fa-check"></i><b>1.3.2</b> Example: Poisson SD</a></li>
+<li class="chapter" data-level="1.3.3" data-path="the-invariance-property.html"><a href="the-invariance-property.html#example-beta-mean-and-variance"><i class="fa fa-check"></i><b>1.3.3</b> Example: Beta Mean and Variance</a></li>
 </ul></li>
-<li class="chapter" data-level="1.4" data-path="the-parametric-bootstrap.html"><a href="the-parametric-bootstrap.html"><i class="fa fa-check"></i><b>1.4</b> The Parametric Bootstrap<span></span></a>
+<li class="chapter" data-level="1.4" data-path="the-parametric-bootstrap.html"><a href="the-parametric-bootstrap.html"><i class="fa fa-check"></i><b>1.4</b> The Parametric Bootstrap</a>
 <ul>
-<li class="chapter" data-level="1.4.1" data-path="the-parametric-bootstrap.html"><a href="the-parametric-bootstrap.html#example-toothpaste-cap-problm"><i class="fa fa-check"></i><b>1.4.1</b> Example: Toothpaste Cap Problm<span></span></a></li>
-<li class="chapter" data-level="1.4.2" data-path="the-parametric-bootstrap.html"><a href="the-parametric-bootstrap.html#example-beta-distribution-1"><i class="fa fa-check"></i><b>1.4.2</b> Example: Beta Distribution<span></span></a></li>
+<li class="chapter" data-level="1.4.1" data-path="the-parametric-bootstrap.html"><a href="the-parametric-bootstrap.html#example-toothpaste-cap-problm"><i class="fa fa-check"></i><b>1.4.1</b> Example: Toothpaste Cap Problm</a></li>
+<li class="chapter" data-level="1.4.2" data-path="the-parametric-bootstrap.html"><a href="the-parametric-bootstrap.html#example-beta-distribution-1"><i class="fa fa-check"></i><b>1.4.2</b> Example: Beta Distribution</a></li>
 </ul></li>
-<li class="chapter" data-level="1.5" data-path="sampling-distribution.html"><a href="sampling-distribution.html"><i class="fa fa-check"></i><b>1.5</b> Sampling Distribution<span></span></a>
+<li class="chapter" data-level="1.5" data-path="sampling-distribution.html"><a href="sampling-distribution.html"><i class="fa fa-check"></i><b>1.5</b> Sampling Distribution</a>
 <ul>
-<li class="chapter" data-level="1.5.1" data-path="sampling-distribution.html"><a href="sampling-distribution.html#example-the-toothpaste-cap-problem"><i class="fa fa-check"></i><b>1.5.1</b> Example: The Toothpaste Cap Problem<span></span></a></li>
+<li class="chapter" data-level="1.5.1" data-path="sampling-distribution.html"><a href="sampling-distribution.html#example-the-toothpaste-cap-problem"><i class="fa fa-check"></i><b>1.5.1</b> Example: The Toothpaste Cap Problem</a></li>
 </ul></li>
-<li class="chapter" data-level="1.6" data-path="bias.html"><a href="bias.html"><i class="fa fa-check"></i><b>1.6</b> Bias<span></span></a>
+<li class="chapter" data-level="1.6" data-path="bias.html"><a href="bias.html"><i class="fa fa-check"></i><b>1.6</b> Bias</a>
 <ul>
-<li class="chapter" data-level="1.6.1" data-path="bias.html"><a href="bias.html#example-bernoulli-distribution-1"><i class="fa fa-check"></i><b>1.6.1</b> Example: Bernoulli Distribution<span></span></a></li>
-<li class="chapter" data-level="1.6.2" data-path="bias.html"><a href="bias.html#example-poisson-distribution-1"><i class="fa fa-check"></i><b>1.6.2</b> Example: Poisson Distribution<span></span></a></li>
+<li class="chapter" data-level="1.6.1" data-path="bias.html"><a href="bias.html#example-bernoulli-distribution-1"><i class="fa fa-check"></i><b>1.6.1</b> Example: Bernoulli Distribution</a></li>
+<li class="chapter" data-level="1.6.2" data-path="bias.html"><a href="bias.html#example-poisson-distribution-1"><i class="fa fa-check"></i><b>1.6.2</b> Example: Poisson Distribution</a></li>
 </ul></li>
-<li class="chapter" data-level="1.7" data-path="consistency.html"><a href="consistency.html"><i class="fa fa-check"></i><b>1.7</b> Consistency<span></span></a>
+<li class="chapter" data-level="1.7" data-path="consistency.html"><a href="consistency.html"><i class="fa fa-check"></i><b>1.7</b> Consistency</a>
 <ul>
-<li class="chapter" data-level="1.7.1" data-path="consistency.html"><a href="consistency.html#example-illustrative"><i class="fa fa-check"></i><b>1.7.1</b> Example: Illustrative<span></span></a></li>
-<li class="chapter" data-level="1.7.2" data-path="consistency.html"><a href="consistency.html#example-bernoulli-odds-1"><i class="fa fa-check"></i><b>1.7.2</b> Example: Bernoulli Odds<span></span></a></li>
+<li class="chapter" data-level="1.7.1" data-path="consistency.html"><a href="consistency.html#example-illustrative"><i class="fa fa-check"></i><b>1.7.1</b> Example: Illustrative</a></li>
+<li class="chapter" data-level="1.7.2" data-path="consistency.html"><a href="consistency.html#example-bernoulli-odds-1"><i class="fa fa-check"></i><b>1.7.2</b> Example: Bernoulli Odds</a></li>
 </ul></li>
-<li class="chapter" data-level="1.8" data-path="predictive-distribution.html"><a href="predictive-distribution.html"><i class="fa fa-check"></i><b>1.8</b> Predictive Distribution<span></span></a>
+<li class="chapter" data-level="1.8" data-path="predictive-distribution.html"><a href="predictive-distribution.html"><i class="fa fa-check"></i><b>1.8</b> Predictive Distribution</a>
 <ul>
-<li class="chapter" data-level="1.8.1" data-path="predictive-distribution.html"><a href="predictive-distribution.html#example-poisson-distribution-2"><i class="fa fa-check"></i><b>1.8.1</b> Example: Poisson Distribution<span></span></a></li>
-<li class="chapter" data-level="1.8.2" data-path="predictive-distribution.html"><a href="predictive-distribution.html#example-beta-distribution-2"><i class="fa fa-check"></i><b>1.8.2</b> Example: Beta Distribution<span></span></a></li>
-</ul></li>
-<li class="chapter" data-level="1.9" data-path="exercises.html"><a href="exercises.html"><i class="fa fa-check"></i><b>1.9</b> Exercises<span></span></a>
-<ul>
-<li class="chapter" data-level="1.9.1" data-path="exercises.html"><a href="exercises.html#questions-about-the-exponential-distribution"><i class="fa fa-check"></i><b>1.9.1</b> Questions About the Exponential Distribution<span></span></a></li>
+<li class="chapter" data-level="1.8.1" data-path="predictive-distribution.html"><a href="predictive-distribution.html#example-poisson-distribution-2"><i class="fa fa-check"></i><b>1.8.1</b> Example: Poisson Distribution</a></li>
+<li class="chapter" data-level="1.8.2" data-path="predictive-distribution.html"><a href="predictive-distribution.html#example-beta-distribution-2"><i class="fa fa-check"></i><b>1.8.2</b> Example: Beta Distribution</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html"><i class="fa fa-check"></i><b>2</b> Week 2: Bayesian Inference<span></span></a>
+<li class="chapter" data-level="2" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html"><i class="fa fa-check"></i><b>2</b> Week 2: Bayesian Inference</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="bayesian-inference.html"><a href="bayesian-inference.html"><i class="fa fa-check"></i><b>2.1</b> Bayesian Inference<span></span></a>
+<li class="chapter" data-level="2.1" data-path="bayesian-inference.html"><a href="bayesian-inference.html"><i class="fa fa-check"></i><b>2.1</b> Bayesian Inference</a>
 <ul>
-<li class="chapter" data-level="2.1.1" data-path="bayesian-inference.html"><a href="bayesian-inference.html#mechanics"><i class="fa fa-check"></i><b>2.1.1</b> Mechanics<span></span></a></li>
-<li class="chapter" data-level="2.1.2" data-path="bayesian-inference.html"><a href="bayesian-inference.html#posterior-summaries"><i class="fa fa-check"></i><b>2.1.2</b> Posterior Summaries<span></span></a></li>
-<li class="chapter" data-level="2.1.3" data-path="bayesian-inference.html"><a href="bayesian-inference.html#posterior-simulation"><i class="fa fa-check"></i><b>2.1.3</b> Posterior Simulation<span></span></a></li>
+<li class="chapter" data-level="2.1.1" data-path="bayesian-inference.html"><a href="bayesian-inference.html#mechanics"><i class="fa fa-check"></i><b>2.1.1</b> Mechanics</a></li>
+<li class="chapter" data-level="2.1.2" data-path="bayesian-inference.html"><a href="bayesian-inference.html#posterior-summaries"><i class="fa fa-check"></i><b>2.1.2</b> Posterior Summaries</a></li>
+<li class="chapter" data-level="2.1.3" data-path="bayesian-inference.html"><a href="bayesian-inference.html#posterior-simulation"><i class="fa fa-check"></i><b>2.1.3</b> Posterior Simulation</a></li>
 </ul></li>
-<li class="chapter" data-level="2.2" data-path="example-bernoulli.html"><a href="example-bernoulli.html"><i class="fa fa-check"></i><b>2.2</b> Example: Bernoulli<span></span></a>
+<li class="chapter" data-level="2.2" data-path="example-bernoulli.html"><a href="example-bernoulli.html"><i class="fa fa-check"></i><b>2.2</b> Example: Bernoulli</a>
 <ul>
-<li class="chapter" data-level="2.2.1" data-path="example-bernoulli.html"><a href="example-bernoulli.html#likelihood"><i class="fa fa-check"></i><b>2.2.1</b> The Likelihood<span></span></a></li>
-<li class="chapter" data-level="2.2.2" data-path="example-bernoulli.html"><a href="example-bernoulli.html#the-prior"><i class="fa fa-check"></i><b>2.2.2</b> The Prior<span></span></a></li>
-<li class="chapter" data-level="2.2.3" data-path="example-bernoulli.html"><a href="example-bernoulli.html#the-posterior"><i class="fa fa-check"></i><b>2.2.3</b> The Posterior<span></span></a></li>
-<li class="chapter" data-level="2.2.4" data-path="example-bernoulli.html"><a href="example-bernoulli.html#point-estimates"><i class="fa fa-check"></i><b>2.2.4</b> Point Estimates<span></span></a></li>
-<li class="chapter" data-level="2.2.5" data-path="example-bernoulli.html"><a href="example-bernoulli.html#credible-interval"><i class="fa fa-check"></i><b>2.2.5</b> Credible Interval<span></span></a></li>
-<li class="chapter" data-level="2.2.6" data-path="example-bernoulli.html"><a href="example-bernoulli.html#simulation"><i class="fa fa-check"></i><b>2.2.6</b> Simulation<span></span></a></li>
+<li class="chapter" data-level="2.2.1" data-path="example-bernoulli.html"><a href="example-bernoulli.html#likelihood"><i class="fa fa-check"></i><b>2.2.1</b> The Likelihood</a></li>
+<li class="chapter" data-level="2.2.2" data-path="example-bernoulli.html"><a href="example-bernoulli.html#the-prior"><i class="fa fa-check"></i><b>2.2.2</b> The Prior</a></li>
+<li class="chapter" data-level="2.2.3" data-path="example-bernoulli.html"><a href="example-bernoulli.html#the-posterior"><i class="fa fa-check"></i><b>2.2.3</b> The Posterior</a></li>
+<li class="chapter" data-level="2.2.4" data-path="example-bernoulli.html"><a href="example-bernoulli.html#point-estimates"><i class="fa fa-check"></i><b>2.2.4</b> Point Estimates</a></li>
+<li class="chapter" data-level="2.2.5" data-path="example-bernoulli.html"><a href="example-bernoulli.html#credible-interval"><i class="fa fa-check"></i><b>2.2.5</b> Credible Interval</a></li>
+<li class="chapter" data-level="2.2.6" data-path="example-bernoulli.html"><a href="example-bernoulli.html#simulation"><i class="fa fa-check"></i><b>2.2.6</b> Simulation</a></li>
 </ul></li>
-<li class="chapter" data-level="2.3" data-path="example-poisson-distribution-3.html"><a href="example-poisson-distribution-3.html"><i class="fa fa-check"></i><b>2.3</b> Example: Poisson Distribution<span></span></a></li>
-<li class="chapter" data-level="2.4" data-path="remarks-1.html"><a href="remarks-1.html"><i class="fa fa-check"></i><b>2.4</b> Remarks<span></span></a></li>
+<li class="chapter" data-level="2.3" data-path="example-poisson-distribution-3.html"><a href="example-poisson-distribution-3.html"><i class="fa fa-check"></i><b>2.3</b> Example: Poisson Distribution</a></li>
+<li class="chapter" data-level="2.4" data-path="remarks-1.html"><a href="remarks-1.html"><i class="fa fa-check"></i><b>2.4</b> Remarks</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="week-3-adding-predictors.html"><a href="week-3-adding-predictors.html"><i class="fa fa-check"></i><b>3</b> Week 3: Adding Predictors<span></span></a>
+<li class="chapter" data-level="3" data-path="week-3-adding-predictors.html"><a href="week-3-adding-predictors.html"><i class="fa fa-check"></i><b>3</b> Week 3: Adding Predictors</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html"><i class="fa fa-check"></i><b>3.1</b> Review: The Normal Model<span></span></a>
+<li class="chapter" data-level="3.1" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html"><i class="fa fa-check"></i><b>3.1</b> Review: The Normal Model</a>
 <ul>
-<li class="chapter" data-level="3.1.1" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html#distribution"><i class="fa fa-check"></i><b>3.1.1</b> Distribution<span></span></a></li>
-<li class="chapter" data-level="3.1.2" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html#linear-predictor"><i class="fa fa-check"></i><b>3.1.2</b> Linear Predictor<span></span></a></li>
-<li class="chapter" data-level="3.1.3" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html#fitting-the-normal-linear-model"><i class="fa fa-check"></i><b>3.1.3</b> Fitting the Normal-Linear Model<span></span></a></li>
-<li class="chapter" data-level="3.1.4" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html#applied-example"><i class="fa fa-check"></i><b>3.1.4</b> Applied Example<span></span></a></li>
+<li class="chapter" data-level="3.1.1" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html#distribution"><i class="fa fa-check"></i><b>3.1.1</b> Distribution</a></li>
+<li class="chapter" data-level="3.1.2" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html#linear-predictor"><i class="fa fa-check"></i><b>3.1.2</b> Linear Predictor</a></li>
+<li class="chapter" data-level="3.1.3" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html#fitting-the-normal-linear-model"><i class="fa fa-check"></i><b>3.1.3</b> Fitting the Normal-Linear Model</a></li>
+<li class="chapter" data-level="3.1.4" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html#applied-example"><i class="fa fa-check"></i><b>3.1.4</b> Applied Example</a></li>
 </ul></li>
-<li class="chapter" data-level="3.2" data-path="bernoulli-model.html"><a href="bernoulli-model.html"><i class="fa fa-check"></i><b>3.2</b> Bernoulli Model<span></span></a>
+<li class="chapter" data-level="3.2" data-path="bernoulli-model.html"><a href="bernoulli-model.html"><i class="fa fa-check"></i><b>3.2</b> Bernoulli Model</a>
 <ul>
-<li class="chapter" data-level="3.2.1" data-path="bernoulli-model.html"><a href="bernoulli-model.html#the-linear-probability-model"><i class="fa fa-check"></i><b>3.2.1</b> The Linear Probability Model<span></span></a></li>
-<li class="chapter" data-level="3.2.2" data-path="bernoulli-model.html"><a href="bernoulli-model.html#the-logit-model"><i class="fa fa-check"></i><b>3.2.2</b> The Logit Model<span></span></a></li>
-<li class="chapter" data-level="3.2.3" data-path="bernoulli-model.html"><a href="bernoulli-model.html#fitting-a-logit-model"><i class="fa fa-check"></i><b>3.2.3</b> Fitting a Logit Model<span></span></a></li>
+<li class="chapter" data-level="3.2.1" data-path="bernoulli-model.html"><a href="bernoulli-model.html#the-linear-probability-model"><i class="fa fa-check"></i><b>3.2.1</b> The Linear Probability Model</a></li>
+<li class="chapter" data-level="3.2.2" data-path="bernoulli-model.html"><a href="bernoulli-model.html#the-logit-model"><i class="fa fa-check"></i><b>3.2.2</b> The Logit Model</a></li>
+<li class="chapter" data-level="3.2.3" data-path="bernoulli-model.html"><a href="bernoulli-model.html#fitting-a-logit-model"><i class="fa fa-check"></i><b>3.2.3</b> Fitting a Logit Model</a></li>
 </ul></li>
-<li class="chapter" data-level="3.3" data-path="poisson-model.html"><a href="poisson-model.html"><i class="fa fa-check"></i><b>3.3</b> Poisson Model<span></span></a>
+<li class="chapter" data-level="3.3" data-path="poisson-model.html"><a href="poisson-model.html"><i class="fa fa-check"></i><b>3.3</b> Poisson Model</a>
 <ul>
-<li class="chapter" data-level="3.3.1" data-path="poisson-model.html"><a href="poisson-model.html#predictive-distribution-1"><i class="fa fa-check"></i><b>3.3.1</b> Predictive Distribution<span></span></a></li>
-<li class="chapter" data-level="3.3.2" data-path="poisson-model.html"><a href="poisson-model.html#posterior-predictive-distribution"><i class="fa fa-check"></i><b>3.3.2</b> Posterior Predictive Distribution<span></span></a></li>
+<li class="chapter" data-level="3.3.1" data-path="poisson-model.html"><a href="poisson-model.html#predictive-distribution-1"><i class="fa fa-check"></i><b>3.3.1</b> Predictive Distribution</a></li>
+<li class="chapter" data-level="3.3.2" data-path="poisson-model.html"><a href="poisson-model.html#posterior-predictive-distribution"><i class="fa fa-check"></i><b>3.3.2</b> Posterior Predictive Distribution</a></li>
 </ul></li>
-<li class="chapter" data-level="3.4" data-path="posterior-predictive-distribution-1.html"><a href="posterior-predictive-distribution-1.html"><i class="fa fa-check"></i><b>3.4</b> [Posterior] Predictive Distribution<span></span></a>
+<li class="chapter" data-level="3.4" data-path="posterior-predictive-distribution-1.html"><a href="posterior-predictive-distribution-1.html"><i class="fa fa-check"></i><b>3.4</b> [Posterior] Predictive Distribution</a>
 <ul>
-<li class="chapter" data-level="3.4.1" data-path="posterior-predictive-distribution-1.html"><a href="posterior-predictive-distribution-1.html#for-the-logit-model"><i class="fa fa-check"></i><b>3.4.1</b> … for the logit model<span></span></a></li>
-<li class="chapter" data-level="3.4.2" data-path="posterior-predictive-distribution-1.html"><a href="posterior-predictive-distribution-1.html#for-the-poisson-model"><i class="fa fa-check"></i><b>3.4.2</b> … for the Poisson model<span></span></a></li>
+<li class="chapter" data-level="3.4.1" data-path="posterior-predictive-distribution-1.html"><a href="posterior-predictive-distribution-1.html#for-the-logit-model"><i class="fa fa-check"></i><b>3.4.1</b> … for the logit model</a></li>
+<li class="chapter" data-level="3.4.2" data-path="posterior-predictive-distribution-1.html"><a href="posterior-predictive-distribution-1.html#for-the-poisson-model"><i class="fa fa-check"></i><b>3.4.2</b> … for the Poisson model</a></li>
 </ul></li>
-<li class="chapter" data-level="3.5" data-path="quantities-of-interest.html"><a href="quantities-of-interest.html"><i class="fa fa-check"></i><b>3.5</b> Quantities of Interest<span></span></a>
+<li class="chapter" data-level="3.5" data-path="quantities-of-interest.html"><a href="quantities-of-interest.html"><i class="fa fa-check"></i><b>3.5</b> Quantities of Interest</a>
 <ul>
-<li class="chapter" data-level="3.5.1" data-path="quantities-of-interest.html"><a href="quantities-of-interest.html#expected-value"><i class="fa fa-check"></i><b>3.5.1</b> Expected Value<span></span></a></li>
-<li class="chapter" data-level="3.5.2" data-path="quantities-of-interest.html"><a href="quantities-of-interest.html#first-difference"><i class="fa fa-check"></i><b>3.5.2</b> First Difference<span></span></a></li>
+<li class="chapter" data-level="3.5.1" data-path="quantities-of-interest.html"><a href="quantities-of-interest.html#expected-value"><i class="fa fa-check"></i><b>3.5.1</b> Expected Value</a></li>
+<li class="chapter" data-level="3.5.2" data-path="quantities-of-interest.html"><a href="quantities-of-interest.html#first-difference"><i class="fa fa-check"></i><b>3.5.2</b> First Difference</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="week-4-confidence-intervals.html"><a href="week-4-confidence-intervals.html"><i class="fa fa-check"></i><b>4</b> Week 4: Confidence Intervals<span></span></a>
+<li class="chapter" data-level="4" data-path="week-4-confidence-intervals.html"><a href="week-4-confidence-intervals.html"><i class="fa fa-check"></i><b>4</b> Week 4: Confidence Intervals</a>
 <ul>
-<li class="chapter" data-level="4.1" data-path="the-parametric-bootstrap-1.html"><a href="the-parametric-bootstrap-1.html"><i class="fa fa-check"></i><b>4.1</b> The Parametric Bootstrap<span></span></a></li>
-<li class="chapter" data-level="4.2" data-path="the-nonparametric-bootstrap.html"><a href="the-nonparametric-bootstrap.html"><i class="fa fa-check"></i><b>4.2</b> The <em>Non</em>parametric Bootstrap<span></span></a>
+<li class="chapter" data-level="4.1" data-path="coverage.html"><a href="coverage.html"><i class="fa fa-check"></i><b>4.1</b> Coverage</a></li>
+<li class="chapter" data-level="4.2" data-path="the-parametric-bootstrap-1.html"><a href="the-parametric-bootstrap-1.html"><i class="fa fa-check"></i><b>4.2</b> The Parametric Bootstrap</a>
 <ul>
-<li class="chapter" data-level="4.2.1" data-path="the-nonparametric-bootstrap.html"><a href="the-nonparametric-bootstrap.html#example-coefficients-from-the-civilian-casualties-model"><i class="fa fa-check"></i><b>4.2.1</b> Example: Coefficients from the Civilian Casualties Model<span></span></a></li>
-<li class="chapter" data-level="4.2.2" data-path="the-nonparametric-bootstrap.html"><a href="the-nonparametric-bootstrap.html#example-first-difference-from-the-civilian-casualties-model"><i class="fa fa-check"></i><b>4.2.2</b> Example: First Difference from the Civilian Casualties Model<span></span></a></li>
+<li class="chapter" data-level="4.2.1" data-path="the-parametric-bootstrap-1.html"><a href="the-parametric-bootstrap-1.html#example-toothpaste-cap-problm-1"><i class="fa fa-check"></i><b>4.2.1</b> Example: Toothpaste Cap Problm</a></li>
 </ul></li>
-<li class="chapter" data-level="4.3" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html"><i class="fa fa-check"></i><b>4.3</b> Wald Confidence Intervals<span></span></a>
+<li class="chapter" data-level="4.3" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html"><i class="fa fa-check"></i><b>4.3</b> Wald Confidence Intervals</a>
 <ul>
-<li class="chapter" data-level="4.3.1" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html#curvature-in-a-single-dimmension"><i class="fa fa-check"></i><b>4.3.1</b> Curvature in a Single Dimmension<span></span></a></li>
-<li class="chapter" data-level="4.3.2" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html#curvature-in-a-multiple-dimmensions"><i class="fa fa-check"></i><b>4.3.2</b> Curvature in a Multiple Dimmensions<span></span></a></li>
-<li class="chapter" data-level="4.3.3" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html#from-curvature-to-confidence-intervals"><i class="fa fa-check"></i><b>4.3.3</b> From Curvature to Confidence Intervals<span></span></a></li>
-<li class="chapter" data-level="4.3.4" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html#final-notes"><i class="fa fa-check"></i><b>4.3.4</b> Final Notes<span></span></a></li>
+<li class="chapter" data-level="4.3.1" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html#curvature-in-a-single-dimmension"><i class="fa fa-check"></i><b>4.3.1</b> Curvature in a Single Dimmension</a></li>
+<li class="chapter" data-level="4.3.2" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html#curvature-in-a-multiple-dimmensions"><i class="fa fa-check"></i><b>4.3.2</b> Curvature in a Multiple Dimmensions</a></li>
+<li class="chapter" data-level="4.3.3" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html#from-curvature-to-confidence-intervals"><i class="fa fa-check"></i><b>4.3.3</b> From Curvature to Confidence Intervals</a></li>
+<li class="chapter" data-level="4.3.4" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html#final-notes"><i class="fa fa-check"></i><b>4.3.4</b> Final Notes</a></li>
 </ul></li>
-<li class="chapter" data-level="4.4" data-path="evaluating-confidence-intervals.html"><a href="evaluating-confidence-intervals.html"><i class="fa fa-check"></i><b>4.4</b> Evaluating Confidence Intervals<span></span></a>
+<li class="chapter" data-level="4.4" data-path="evaluating-confidence-intervals.html"><a href="evaluating-confidence-intervals.html"><i class="fa fa-check"></i><b>4.4</b> Evaluating Confidence Intervals</a>
 <ul>
-<li class="chapter" data-level="4.4.1" data-path="evaluating-confidence-intervals.html"><a href="evaluating-confidence-intervals.html#coverage"><i class="fa fa-check"></i><b>4.4.1</b> Coverage<span></span></a></li>
-<li class="chapter" data-level="4.4.2" data-path="evaluating-confidence-intervals.html"><a href="evaluating-confidence-intervals.html#monte-carlo-simulation-to-assess-coverage"><i class="fa fa-check"></i><b>4.4.2</b> Monte Carlo Simulation to Assess Coverage<span></span></a></li>
+<li class="chapter" data-level="4.4.1" data-path="evaluating-confidence-intervals.html"><a href="evaluating-confidence-intervals.html#coverage-1"><i class="fa fa-check"></i><b>4.4.1</b> Coverage</a></li>
+<li class="chapter" data-level="4.4.2" data-path="evaluating-confidence-intervals.html"><a href="evaluating-confidence-intervals.html#monte-carlo-simulation-to-assess-coverage"><i class="fa fa-check"></i><b>4.4.2</b> Monte Carlo Simulation to Assess Coverage</a></li>
 </ul></li>
 </ul></li>
 <li class="divider"></li>
@@ -303,8 +299,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="bernoulli-model" class="section level2 hasAnchor" number="3.2">
-<h2><span class="header-section-number">3.2</span> Bernoulli Model<a href="bernoulli-model.html#bernoulli-model" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="bernoulli-model" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Bernoulli Model</h2>
 <p>In the case of the normal model, we used <span class="math inline">\(y_i \sim N(\mu_i, \sigma^2)\)</span>, where <span class="math inline">\(\mu_i = X_i\beta\)</span>. The normal model does a great job with roughly continuous outcomes like ENEP.</p>
 <p>But sometimes we care about <strong>binary outcomes</strong>.</p>
 <ul>
@@ -314,8 +310,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>This allows us to talk about the “probability of an event” (e.g., the probability of war, etc)</li>
 </ul>
 <p>The normal model cannot describe a binary outcome well. But it doesn’t make much conceptual sense to model 0s and 1s as following a normal distribution.</p>
-<div id="the-linear-probability-model" class="section level3 hasAnchor" number="3.2.1">
-<h3><span class="header-section-number">3.2.1</span> The Linear Probability Model<a href="bernoulli-model.html#the-linear-probability-model" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="the-linear-probability-model" class="section level3" number="3.2.1">
+<h3><span class="header-section-number">3.2.1</span> The Linear Probability Model</h3>
 <p>We can use the linear model (i.e., OLS) with binary outcome variables.</p>
 <ul>
 <li>Recall that we the linear model is represented by the equation <span class="math inline">\(E(y_i) = X_i\beta\)</span>.</li>
@@ -378,8 +374,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb129"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb129-1"><a href="bernoulli-model.html#cb129-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pp_check</span>(stan_fit)</span></code></pre></div>
 <p><img src="03-02-bernoulli-model_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 </div>
-<div id="the-logit-model" class="section level3 hasAnchor" number="3.2.2">
-<h3><span class="header-section-number">3.2.2</span> The Logit Model<a href="bernoulli-model.html#the-logit-model" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="the-logit-model" class="section level3" number="3.2.2">
+<h3><span class="header-section-number">3.2.2</span> The Logit Model</h3>
 <p>As an initial effort to handle the “non-normal” distribution of the data, we might then use the Bernoulli model <span class="math inline">\(y_i \sim \text{Bernoulli}(\pi_i)\)</span>, where <span class="math inline">\(\pi_i = X_i\beta\)</span>. However, this has a <em>big</em> problem that can make the approach unworkable: <span class="math inline">\(X_i\beta\)</span> might be less than zero or greater than one.</p>
 <p>To address bounds of <span class="math inline">\(\pi_i\)</span> and <span class="math inline">\(X_i\beta\)</span>, we are going to introduce a new concept called the “inverse link function.” Many of the “disadvantages” of the LPM above follow from the fact that the linear predictor is unbounded. For the normal model, the inverse link function is <strong>not necessary</strong> because the parameter of interest <span class="math inline">\(\mu\)</span> is unbounded and maps to the entire real line. But for other models, the key parameter has a restricted domain. In the case of the Bernoulli distribution, <span class="math inline">\(\pi_i \in [0, 1] \subset \mathbb{R}\)</span>.</p>
 <p>The idea of the inverse link function is to wrap around the linear predictor and force its values into the desired domain.</p>
@@ -399,10 +395,10 @@ y_i \sim \text{Bernoulli}(\pi_i)\text{, where } \pi_i = \text{logit}^{-1}(X_i\be
 \]</span></p>
 <p>We can fit this model using maximum likelihood or posterior simulation.</p>
 </div>
-<div id="fitting-a-logit-model" class="section level3 hasAnchor" number="3.2.3">
-<h3><span class="header-section-number">3.2.3</span> Fitting a Logit Model<a href="bernoulli-model.html#fitting-a-logit-model" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div id="with-optim" class="section level4 hasAnchor" number="3.2.3.1">
-<h4><span class="header-section-number">3.2.3.1</span> With <code>optim()</code><a href="bernoulli-model.html#with-optim" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="fitting-a-logit-model" class="section level3" number="3.2.3">
+<h3><span class="header-section-number">3.2.3</span> Fitting a Logit Model</h3>
+<div id="with-optim" class="section level4" number="3.2.3.1">
+<h4><span class="header-section-number">3.2.3.1</span> With <code>optim()</code></h4>
 <p>To develop the log-likelihood of the logit model, we start with the Bernoulli likelihood from Week 1.</p>
 <p><span class="math display">\[
 f(y; \beta) = L(\beta) = \prod_{i = 1}^{N}\pi_i^{y_i} (1 - \pi_i)^{(1 - y_i)}\text{, where } \pi_i = \text{logit}^{-1}(X_i\beta)
@@ -452,8 +448,8 @@ We can program this into R for use in <code>optim()</code>.</p>
 ##                         south                           gov 
 ##                 -0.1904026537                  0.0052717028</code></pre>
 </div>
-<div id="with-glm" class="section level4 hasAnchor" number="3.2.3.2">
-<h4><span class="header-section-number">3.2.3.2</span> With <code>glm()</code><a href="bernoulli-model.html#with-glm" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="with-glm" class="section level4" number="3.2.3.2">
+<h4><span class="header-section-number">3.2.3.2</span> With <code>glm()</code></h4>
 <div class="sourceCode" id="cb137"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb137-1"><a href="bernoulli-model.html#cb137-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(f, <span class="at">data =</span> scobit, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>)</span>
 <span id="cb137-2"><a href="bernoulli-model.html#cb137-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(fit)</span></code></pre></div>
 <pre><code>##                   (Intercept) poly(neweduc, 2, raw = TRUE)1 
@@ -465,8 +461,8 @@ We can program this into R for use in <code>optim()</code>.</p>
 ##                         south                           gov 
 ##                 -0.1904026537                  0.0052717028</code></pre>
 </div>
-<div id="with-stan" class="section level4 hasAnchor" number="3.2.3.3">
-<h4><span class="header-section-number">3.2.3.3</span> With Stan<a href="bernoulli-model.html#with-stan" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="with-stan" class="section level4" number="3.2.3.3">
+<h4><span class="header-section-number">3.2.3.3</span> With Stan</h4>
 <div class="sourceCode" id="cb139"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb139-1"><a href="bernoulli-model.html#cb139-1" aria-hidden="true" tabindex="-1"></a>small_scobit <span class="ot">&lt;-</span> <span class="fu">sample_n</span>(scobit, <span class="dv">1000</span>)</span>
 <span id="cb139-2"><a href="bernoulli-model.html#cb139-2" aria-hidden="true" tabindex="-1"></a>stan_fit <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(f, <span class="at">data =</span> small_scobit, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>)</span></code></pre></div>
 <div class="sourceCode" id="cb140"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb140-1"><a href="bernoulli-model.html#cb140-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(stan_fit)</span></code></pre></div>
@@ -484,33 +480,33 @@ We can program this into R for use in <code>optim()</code>.</p>
 ## 
 ## Estimates:
 ##                                 mean   sd   10%   50%   90%
-## (Intercept)                   -4.2    0.9 -5.3  -4.2  -3.1 
-## poly(neweduc, 2, raw = TRUE)1  0.3    0.3 -0.1   0.3   0.6 
-## poly(neweduc, 2, raw = TRUE)2  0.0    0.0  0.0   0.0   0.1 
+## (Intercept)                   -3.4    0.9 -4.5  -3.4  -2.3 
+## poly(neweduc, 2, raw = TRUE)1 -0.1    0.3 -0.4  -0.1   0.3 
+## poly(neweduc, 2, raw = TRUE)2  0.1    0.0  0.0   0.1   0.1 
 ## closing                        0.0    0.0  0.0   0.0   0.0 
 ## poly(age, 2, raw = TRUE)1      0.1    0.0  0.1   0.1   0.1 
 ## poly(age, 2, raw = TRUE)2      0.0    0.0  0.0   0.0   0.0 
-## south                         -0.2    0.2 -0.4  -0.2   0.0 
-## gov                            0.5    0.2  0.2   0.5   0.7 
+## south                         -0.3    0.2 -0.5  -0.3  -0.1 
+## gov                           -0.1    0.2 -0.3  -0.1   0.2 
 ## 
 ## Fit Diagnostics:
 ##            mean   sd   10%   50%   90%
-## mean_PPD 0.7    0.0  0.6   0.7   0.7  
+## mean_PPD 0.7    0.0  0.7   0.7   0.7  
 ## 
 ## The mean_ppd is the sample average posterior predictive distribution of the outcome variable (for details see help(&#39;summary.stanreg&#39;)).
 ## 
 ## MCMC diagnostics
 ##                               mcse Rhat n_eff
-## (Intercept)                   0.0  1.0  2824 
-## poly(neweduc, 2, raw = TRUE)1 0.0  1.0  2691 
-## poly(neweduc, 2, raw = TRUE)2 0.0  1.0  2640 
-## closing                       0.0  1.0  4161 
-## poly(age, 2, raw = TRUE)1     0.0  1.0  2395 
-## poly(age, 2, raw = TRUE)2     0.0  1.0  2393 
-## south                         0.0  1.0  4324 
-## gov                           0.0  1.0  3897 
-## mean_PPD                      0.0  1.0  4337 
-## log-posterior                 0.1  1.0  1525 
+## (Intercept)                   0.0  1.0  2781 
+## poly(neweduc, 2, raw = TRUE)1 0.0  1.0  2314 
+## poly(neweduc, 2, raw = TRUE)2 0.0  1.0  2260 
+## closing                       0.0  1.0  3897 
+## poly(age, 2, raw = TRUE)1     0.0  1.0  2502 
+## poly(age, 2, raw = TRUE)2     0.0  1.0  2495 
+## south                         0.0  1.0  3961 
+## gov                           0.0  1.0  3869 
+## mean_PPD                      0.0  1.0  3970 
+## log-posterior                 0.0  1.0  1752 
 ## 
 ## For each parameter, mcse is Monte Carlo standard error, n_eff is a crude measure of effective sample size, and Rhat is the potential scale reduction factor on split chains (at convergence Rhat=1).</code></pre>
 

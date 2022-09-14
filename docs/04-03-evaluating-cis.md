@@ -43,7 +43,7 @@ mean(mc_sims$captured)
 ```
 
 ```
-## [1] 0.8778
+## [1] 0.8705
 ```
 
 This simulation demonstrates that this simple interval captures the parameter $\lambda = 10$ in about 90% of repeated samples. This interval is *slightly* too narrow, because we should really use the $t$-interval here due to the small sample size. 
@@ -77,7 +77,7 @@ mean(mc_sims$captured)
 ```
 
 ```
-## [1] 0.9007
+## [1] 0.9006
 ```
 
 With this criterion in mind, let's consider three types of confidence intervals that we can use in the context of maximum likelihood estimation.
@@ -127,21 +127,15 @@ for (i in 1:n_bs) {
   fit_bs <- update(fit, formula = y_bs ~ .)
   coef_bs[i, ] <- coef(fit_bs)
 }
-```
 
-```
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-```
-
-```r
 # compute quantiles
 apply(coef_bs, 2, quantile, probs = c(0.05, 0.95))
 ```
 
 ```
-##          [,1]      [,2]      [,3]
-## 5%  0.0653404 0.3208437 -1.942856
-## 95% 2.6722922 3.2788048  1.012872
+##         [,1]      [,2]       [,3]
+## 5%  0.118692 0.6931094 -1.6490587
+## 95% 1.652776 3.5511826  0.6393434
 ```
 
 Now let's simulate *many* "observed" data sets and compute the confidence intervals for each using the parametric bootstrap.
@@ -175,57 +169,7 @@ for (i in 1:n_mc_sims) {
                   upr = cis["95%", ], 
                   bs_id = i)
 }
-```
 
-```
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-```
-
-```r
 # combine the intervals for the many "studies" in a single data frame
 ci_df <- bind_rows(ci_list)
 
@@ -240,9 +184,9 @@ ci_df %>%
 ## # A tibble: 3 × 2
 ##   coef_name   coverage
 ##   <chr>          <dbl>
-## 1 (Intercept)     0.82
-## 2 x1              0.85
-## 3 x2              0.84
+## 1 (Intercept)     0.83
+## 2 x1              0.89
+## 3 x2              0.87
 ```
 
 Thus the parametric bootstrap works well, the coverage is about 90%. But notice that we know the parametric model here, because we created the "observed" data ourselves and matched the GDP exactly with the parametric bootstrap. 

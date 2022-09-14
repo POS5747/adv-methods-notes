@@ -304,6 +304,6 @@ Compare these confidence intervals to the parametric and nonparametric intervals
 
 ### Final Notes
 
-- The Wald confidence interval does not easily extend to quantities of interest. It turns out that their is a way, called the "delta method." It's a bit tedious and not necessary since we have other methods. But I'll mention it here: "the delta method."
+- The Wald confidence interval does not easily extend to quantities of interest. It turns out that their is a way, called the "delta method." It's a bit tedious and not necessary since we have other methods. But I'll mention it here: "the delta method." King, Tomz, and Wittenberg (2001) give us an easy alternative to the delta method; we'll see their method in a couple of weeks.
 - If you use `optim()` to find the ML estimates, then you can have it return the observed information matrix $\mathcal{I}(\hat{\theta})$ to you by supplying the argument `hession = TRUE` to `optim()`. `optim()` returns a list; the component named `"hessian"` is the Hessian matrix. You simple need to find the inverse of the negative of the Hessian to obtain the estimated variance matrix. Something like `est <- optim(..., hessian = TRUE)` followed by `var_hat <- solve(-est$hessian)`.
 

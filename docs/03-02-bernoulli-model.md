@@ -259,33 +259,33 @@ summary(stan_fit)
 ## 
 ## Estimates:
 ##                                 mean   sd   10%   50%   90%
-## (Intercept)                   -4.2    0.9 -5.3  -4.2  -3.1 
-## poly(neweduc, 2, raw = TRUE)1  0.3    0.3 -0.1   0.3   0.6 
-## poly(neweduc, 2, raw = TRUE)2  0.0    0.0  0.0   0.0   0.1 
+## (Intercept)                   -3.4    0.9 -4.5  -3.4  -2.3 
+## poly(neweduc, 2, raw = TRUE)1 -0.1    0.3 -0.4  -0.1   0.3 
+## poly(neweduc, 2, raw = TRUE)2  0.1    0.0  0.0   0.1   0.1 
 ## closing                        0.0    0.0  0.0   0.0   0.0 
 ## poly(age, 2, raw = TRUE)1      0.1    0.0  0.1   0.1   0.1 
 ## poly(age, 2, raw = TRUE)2      0.0    0.0  0.0   0.0   0.0 
-## south                         -0.2    0.2 -0.4  -0.2   0.0 
-## gov                            0.5    0.2  0.2   0.5   0.7 
+## south                         -0.3    0.2 -0.5  -0.3  -0.1 
+## gov                           -0.1    0.2 -0.3  -0.1   0.2 
 ## 
 ## Fit Diagnostics:
 ##            mean   sd   10%   50%   90%
-## mean_PPD 0.7    0.0  0.6   0.7   0.7  
+## mean_PPD 0.7    0.0  0.7   0.7   0.7  
 ## 
 ## The mean_ppd is the sample average posterior predictive distribution of the outcome variable (for details see help('summary.stanreg')).
 ## 
 ## MCMC diagnostics
 ##                               mcse Rhat n_eff
-## (Intercept)                   0.0  1.0  2824 
-## poly(neweduc, 2, raw = TRUE)1 0.0  1.0  2691 
-## poly(neweduc, 2, raw = TRUE)2 0.0  1.0  2640 
-## closing                       0.0  1.0  4161 
-## poly(age, 2, raw = TRUE)1     0.0  1.0  2395 
-## poly(age, 2, raw = TRUE)2     0.0  1.0  2393 
-## south                         0.0  1.0  4324 
-## gov                           0.0  1.0  3897 
-## mean_PPD                      0.0  1.0  4337 
-## log-posterior                 0.1  1.0  1525 
+## (Intercept)                   0.0  1.0  2781 
+## poly(neweduc, 2, raw = TRUE)1 0.0  1.0  2314 
+## poly(neweduc, 2, raw = TRUE)2 0.0  1.0  2260 
+## closing                       0.0  1.0  3897 
+## poly(age, 2, raw = TRUE)1     0.0  1.0  2502 
+## poly(age, 2, raw = TRUE)2     0.0  1.0  2495 
+## south                         0.0  1.0  3961 
+## gov                           0.0  1.0  3869 
+## mean_PPD                      0.0  1.0  3970 
+## log-posterior                 0.0  1.0  1752 
 ## 
 ## For each parameter, mcse is Monte Carlo standard error, n_eff is a crude measure of effective sample size, and Rhat is the potential scale reduction factor on split chains (at convergence Rhat=1).
 ```
