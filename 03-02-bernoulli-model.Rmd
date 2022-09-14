@@ -121,7 +121,8 @@ We can program this into R for use in `optim()`.
 
 ```{r}
 logit_ll <- function(beta, y, X) {
-  p <- plogis(X%*%beta)  # pi is special in R, so I use p
+  mu <- X%*%beta  # pi is special in R, so I use p
+  p <- exp(mu)/(1 + exp(mu))
   ll <- sum(y*log(p)) + sum((1 - y)*log(1 - p))
   return(ll)
 }
@@ -137,7 +138,10 @@ The tricky part about using `optim()` here is not the log-likelihood function, b
 
 ```{r}
 # create formula
-f <- newvote ~ poly(neweduc, 2, raw = TRUE) + closing + poly(age, 2, raw = TRUE) + south + gov
+st <- function(x) { arm::rescale(x) }
+f <- newvote ~ poly(st(neweduc), 2, raw = TRUE) + st(closing) + poly(st(age), 2, raw = TRUE) + st(south) + st(gov)
+#f <- newvote ~ poly(neweduc, 2, raw = TRUE) + closing + poly(age, 2, raw = TRUE) + south + gov
+
 
 # obtain the model matrix X
 mf <- model.frame(f, data = scobit)  # model frame
@@ -153,11 +157,20 @@ Then we can use `optim()`.
 # for some reason, this isn't converging
 par_start <- c(-3, rep(0, ncol(X) - 1))
 opt <- optim(par_start, fn = logit_ll, y = y, X = X, 
-      control = list(fnscale = -1))
+             method = "BFGS",
+      control = list(fnscale = -1, reltol = .Machine$double.eps))
 opt$par
 
 # test w/ same X and y; works
 coef(glm.fit(X, y, family = binomial()))
+
+# try optimx
+library(optimx)
+
+optx <- optimx(par_start, fn = logit_ll, y = y, X = X, 
+             method = c("BFGS", "Nelder-Mead", "CG"),
+      control = list(fnscale = -1, reltol = .Machine$double.eps, maxit = 1000))
+optx
 ```
 
 #### With `glm()`

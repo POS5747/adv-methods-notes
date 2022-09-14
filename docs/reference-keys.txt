@@ -75,3 +75,4 @@ coverage-1
 monte-carlo-simulation-to-assess-coverage
 a-simple-example
 the-parametric-bootstrap-2
+url-your-book-url-like-httpsbookdown.orgyihuibookdown
