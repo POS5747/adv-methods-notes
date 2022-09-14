@@ -371,9 +371,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ol>
 <p>To start, let’s create the data-generating process or “probability model” or population. The data are Bernoulli and the model is logit.</p>
 <div class="sourceCode" id="cb231"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb231-1"><a href="evaluating-confidence-intervals.html#cb231-1" aria-hidden="true" tabindex="-1"></a><span class="co"># model parameters</span></span>
-<span id="cb231-2"><a href="evaluating-confidence-intervals.html#cb231-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">50</span></span>
-<span id="cb231-3"><a href="evaluating-confidence-intervals.html#cb231-3" aria-hidden="true" tabindex="-1"></a>b0 <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb231-4"><a href="evaluating-confidence-intervals.html#cb231-4" aria-hidden="true" tabindex="-1"></a>b1 <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb231-2"><a href="evaluating-confidence-intervals.html#cb231-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb231-3"><a href="evaluating-confidence-intervals.html#cb231-3" aria-hidden="true" tabindex="-1"></a>b0 <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb231-4"><a href="evaluating-confidence-intervals.html#cb231-4" aria-hidden="true" tabindex="-1"></a>b1 <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
 <span id="cb231-5"><a href="evaluating-confidence-intervals.html#cb231-5" aria-hidden="true" tabindex="-1"></a>b2 <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.5</span></span>
 <span id="cb231-6"><a href="evaluating-confidence-intervals.html#cb231-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb231-7"><a href="evaluating-confidence-intervals.html#cb231-7" aria-hidden="true" tabindex="-1"></a><span class="co"># data</span></span>
@@ -402,52 +402,54 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb232-16"><a href="evaluating-confidence-intervals.html#cb232-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb232-17"><a href="evaluating-confidence-intervals.html#cb232-17" aria-hidden="true" tabindex="-1"></a><span class="co"># compute quantiles</span></span>
 <span id="cb232-18"><a href="evaluating-confidence-intervals.html#cb232-18" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(coef_bs, <span class="dv">2</span>, quantile, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>))</span></code></pre></div>
-<pre><code>##         [,1]      [,2]       [,3]
-## 5%  0.118692 0.6931094 -1.6490587
-## 95% 1.652776 3.5511826  0.6393434</code></pre>
+<pre><code>##           [,1]      [,2]        [,3]
+## 5%  -0.6790475 0.9415808 -1.37164658
+## 95%  0.3439898 2.7477924  0.09866435</code></pre>
 <p>Now let’s simulate <em>many</em> “observed” data sets and compute the confidence intervals for each using the parametric bootstrap.</p>
-<div class="sourceCode" id="cb234"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb234-1"><a href="evaluating-confidence-intervals.html#cb234-1" aria-hidden="true" tabindex="-1"></a><span class="co"># do a monte carlo simulation to compute the coverage for parmeteric bs</span></span>
-<span id="cb234-2"><a href="evaluating-confidence-intervals.html#cb234-2" aria-hidden="true" tabindex="-1"></a>n_mc_sims <span class="ot">&lt;-</span> <span class="dv">100</span></span>
-<span id="cb234-3"><a href="evaluating-confidence-intervals.html#cb234-3" aria-hidden="true" tabindex="-1"></a>ci_list <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb234-4"><a href="evaluating-confidence-intervals.html#cb234-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_mc_sims) {</span>
-<span id="cb234-5"><a href="evaluating-confidence-intervals.html#cb234-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate the &quot;observed&quot; data for one &quot;study&quot;</span></span>
-<span id="cb234-6"><a href="evaluating-confidence-intervals.html#cb234-6" aria-hidden="true" tabindex="-1"></a>  y_obs <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> p)</span>
-<span id="cb234-7"><a href="evaluating-confidence-intervals.html#cb234-7" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(y_obs, x1, x2)</span>
-<span id="cb234-8"><a href="evaluating-confidence-intervals.html#cb234-8" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(y_obs <span class="sc">~</span> x1 <span class="sc">+</span> x2, <span class="at">data =</span> data, <span class="at">family =</span> binomial)</span>
-<span id="cb234-9"><a href="evaluating-confidence-intervals.html#cb234-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># parametric bs for coefficients</span></span>
-<span id="cb234-10"><a href="evaluating-confidence-intervals.html#cb234-10" aria-hidden="true" tabindex="-1"></a>  n_bs <span class="ot">&lt;-</span> <span class="dv">100</span>  <span class="co"># should be 2000 or more</span></span>
-<span id="cb234-11"><a href="evaluating-confidence-intervals.html#cb234-11" aria-hidden="true" tabindex="-1"></a>  coef_bs <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">nrow =</span> n_bs, <span class="at">ncol =</span> <span class="fu">length</span>(<span class="fu">coef</span>(fit)))</span>
-<span id="cb234-12"><a href="evaluating-confidence-intervals.html#cb234-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(coef_bs) <span class="ot">&lt;-</span> <span class="fu">names</span>(<span class="fu">coef</span>(fit))</span>
-<span id="cb234-13"><a href="evaluating-confidence-intervals.html#cb234-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_bs) {</span>
-<span id="cb234-14"><a href="evaluating-confidence-intervals.html#cb234-14" aria-hidden="true" tabindex="-1"></a>    p_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
-<span id="cb234-15"><a href="evaluating-confidence-intervals.html#cb234-15" aria-hidden="true" tabindex="-1"></a>    y_bs <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="fu">length</span>(p_hat), <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> p_hat)</span>
-<span id="cb234-16"><a href="evaluating-confidence-intervals.html#cb234-16" aria-hidden="true" tabindex="-1"></a>    fit_bs <span class="ot">&lt;-</span> <span class="fu">update</span>(fit, <span class="at">formula =</span> y_bs <span class="sc">~</span> .)</span>
-<span id="cb234-17"><a href="evaluating-confidence-intervals.html#cb234-17" aria-hidden="true" tabindex="-1"></a>    coef_bs[j, ] <span class="ot">&lt;-</span> <span class="fu">coef</span>(fit_bs)</span>
-<span id="cb234-18"><a href="evaluating-confidence-intervals.html#cb234-18" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb234-19"><a href="evaluating-confidence-intervals.html#cb234-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># compute quantiles</span></span>
-<span id="cb234-20"><a href="evaluating-confidence-intervals.html#cb234-20" aria-hidden="true" tabindex="-1"></a>  cis <span class="ot">&lt;-</span> <span class="fu">apply</span>(coef_bs, <span class="dv">2</span>, quantile, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>))</span>
-<span id="cb234-21"><a href="evaluating-confidence-intervals.html#cb234-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># put cis into data frame; these are the intervals for a single &quot;study&quot;</span></span>
-<span id="cb234-22"><a href="evaluating-confidence-intervals.html#cb234-22" aria-hidden="true" tabindex="-1"></a>  ci_list[[i]] <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">coef_name =</span> <span class="fu">colnames</span>(cis),</span>
-<span id="cb234-23"><a href="evaluating-confidence-intervals.html#cb234-23" aria-hidden="true" tabindex="-1"></a>                         <span class="at">true =</span> <span class="fu">c</span>(b0, b1, b2),</span>
-<span id="cb234-24"><a href="evaluating-confidence-intervals.html#cb234-24" aria-hidden="true" tabindex="-1"></a>                  <span class="at">lwr =</span> cis[<span class="st">&quot;5%&quot;</span>, ],</span>
-<span id="cb234-25"><a href="evaluating-confidence-intervals.html#cb234-25" aria-hidden="true" tabindex="-1"></a>                  <span class="at">upr =</span> cis[<span class="st">&quot;95%&quot;</span>, ], </span>
-<span id="cb234-26"><a href="evaluating-confidence-intervals.html#cb234-26" aria-hidden="true" tabindex="-1"></a>                  <span class="at">bs_id =</span> i)</span>
-<span id="cb234-27"><a href="evaluating-confidence-intervals.html#cb234-27" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb234-28"><a href="evaluating-confidence-intervals.html#cb234-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb234-29"><a href="evaluating-confidence-intervals.html#cb234-29" aria-hidden="true" tabindex="-1"></a><span class="co"># combine the intervals for the many &quot;studies&quot; in a single data frame</span></span>
-<span id="cb234-30"><a href="evaluating-confidence-intervals.html#cb234-30" aria-hidden="true" tabindex="-1"></a>ci_df <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(ci_list)</span>
-<span id="cb234-31"><a href="evaluating-confidence-intervals.html#cb234-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb234-32"><a href="evaluating-confidence-intervals.html#cb234-32" aria-hidden="true" tabindex="-1"></a><span class="co"># compute the coverage for each parameter</span></span>
-<span id="cb234-33"><a href="evaluating-confidence-intervals.html#cb234-33" aria-hidden="true" tabindex="-1"></a>ci_df <span class="sc">%&gt;%</span></span>
-<span id="cb234-34"><a href="evaluating-confidence-intervals.html#cb234-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">captured =</span> lwr <span class="sc">&lt;</span> true <span class="sc">&amp;</span> upr <span class="sc">&gt;</span> true) <span class="sc">%&gt;%</span></span>
-<span id="cb234-35"><a href="evaluating-confidence-intervals.html#cb234-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(coef_name) <span class="sc">%&gt;%</span></span>
-<span id="cb234-36"><a href="evaluating-confidence-intervals.html#cb234-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">coverage =</span> <span class="fu">mean</span>(captured))</span></code></pre></div>
-<pre><code>## # A tibble: 3 × 2
-##   coef_name   coverage
-##   &lt;chr&gt;          &lt;dbl&gt;
-## 1 (Intercept)     0.83
-## 2 x1              0.89
-## 3 x2              0.87</code></pre>
+<div class="sourceCode" id="cb234"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb234-1"><a href="evaluating-confidence-intervals.html#cb234-1" aria-hidden="true" tabindex="-1"></a><span class="co"># do a monte carlo simulation to compute the coverage for parametric bs</span></span>
+<span id="cb234-2"><a href="evaluating-confidence-intervals.html#cb234-2" aria-hidden="true" tabindex="-1"></a><span class="co"># note: this is not *at all* optimized for speed</span></span>
+<span id="cb234-3"><a href="evaluating-confidence-intervals.html#cb234-3" aria-hidden="true" tabindex="-1"></a>n_mc_sims <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb234-4"><a href="evaluating-confidence-intervals.html#cb234-4" aria-hidden="true" tabindex="-1"></a>ci_list <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb234-5"><a href="evaluating-confidence-intervals.html#cb234-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_mc_sims) {</span>
+<span id="cb234-6"><a href="evaluating-confidence-intervals.html#cb234-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate the &quot;observed&quot; data for one &quot;study&quot;</span></span>
+<span id="cb234-7"><a href="evaluating-confidence-intervals.html#cb234-7" aria-hidden="true" tabindex="-1"></a>  y_obs <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> p)</span>
+<span id="cb234-8"><a href="evaluating-confidence-intervals.html#cb234-8" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(y_obs, x1, x2)</span>
+<span id="cb234-9"><a href="evaluating-confidence-intervals.html#cb234-9" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(y_obs <span class="sc">~</span> x1 <span class="sc">+</span> x2, <span class="at">data =</span> data, <span class="at">family =</span> binomial)</span>
+<span id="cb234-10"><a href="evaluating-confidence-intervals.html#cb234-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># parametric bs for coefficients</span></span>
+<span id="cb234-11"><a href="evaluating-confidence-intervals.html#cb234-11" aria-hidden="true" tabindex="-1"></a>  n_bs <span class="ot">&lt;-</span> <span class="dv">100</span>  <span class="co"># should be 2000 or more</span></span>
+<span id="cb234-12"><a href="evaluating-confidence-intervals.html#cb234-12" aria-hidden="true" tabindex="-1"></a>  coef_bs <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">nrow =</span> n_bs, <span class="at">ncol =</span> <span class="fu">length</span>(<span class="fu">coef</span>(fit)))</span>
+<span id="cb234-13"><a href="evaluating-confidence-intervals.html#cb234-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(coef_bs) <span class="ot">&lt;-</span> <span class="fu">names</span>(<span class="fu">coef</span>(fit))</span>
+<span id="cb234-14"><a href="evaluating-confidence-intervals.html#cb234-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_bs) {</span>
+<span id="cb234-15"><a href="evaluating-confidence-intervals.html#cb234-15" aria-hidden="true" tabindex="-1"></a>    p_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
+<span id="cb234-16"><a href="evaluating-confidence-intervals.html#cb234-16" aria-hidden="true" tabindex="-1"></a>    y_bs <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="fu">length</span>(p_hat), <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> p_hat)</span>
+<span id="cb234-17"><a href="evaluating-confidence-intervals.html#cb234-17" aria-hidden="true" tabindex="-1"></a>    fit_bs <span class="ot">&lt;-</span> <span class="fu">update</span>(fit, <span class="at">formula =</span> y_bs <span class="sc">~</span> .)</span>
+<span id="cb234-18"><a href="evaluating-confidence-intervals.html#cb234-18" aria-hidden="true" tabindex="-1"></a>    coef_bs[j, ] <span class="ot">&lt;-</span> <span class="fu">coef</span>(fit_bs)</span>
+<span id="cb234-19"><a href="evaluating-confidence-intervals.html#cb234-19" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb234-20"><a href="evaluating-confidence-intervals.html#cb234-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># compute quantiles</span></span>
+<span id="cb234-21"><a href="evaluating-confidence-intervals.html#cb234-21" aria-hidden="true" tabindex="-1"></a>  cis <span class="ot">&lt;-</span> <span class="fu">apply</span>(coef_bs, <span class="dv">2</span>, quantile, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>))</span>
+<span id="cb234-22"><a href="evaluating-confidence-intervals.html#cb234-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># put cis into data frame; these are the intervals for a single &quot;study&quot;</span></span>
+<span id="cb234-23"><a href="evaluating-confidence-intervals.html#cb234-23" aria-hidden="true" tabindex="-1"></a>  ci_list[[i]] <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">coef_name =</span> <span class="fu">colnames</span>(cis),</span>
+<span id="cb234-24"><a href="evaluating-confidence-intervals.html#cb234-24" aria-hidden="true" tabindex="-1"></a>                         <span class="at">true =</span> <span class="fu">c</span>(b0, b1, b2),</span>
+<span id="cb234-25"><a href="evaluating-confidence-intervals.html#cb234-25" aria-hidden="true" tabindex="-1"></a>                  <span class="at">lwr =</span> cis[<span class="st">&quot;5%&quot;</span>, ],</span>
+<span id="cb234-26"><a href="evaluating-confidence-intervals.html#cb234-26" aria-hidden="true" tabindex="-1"></a>                  <span class="at">upr =</span> cis[<span class="st">&quot;95%&quot;</span>, ], </span>
+<span id="cb234-27"><a href="evaluating-confidence-intervals.html#cb234-27" aria-hidden="true" tabindex="-1"></a>                  <span class="at">bs_id =</span> i)</span>
+<span id="cb234-28"><a href="evaluating-confidence-intervals.html#cb234-28" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb234-29"><a href="evaluating-confidence-intervals.html#cb234-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb234-30"><a href="evaluating-confidence-intervals.html#cb234-30" aria-hidden="true" tabindex="-1"></a><span class="co"># combine the intervals for the many &quot;studies&quot; in a single data frame</span></span>
+<span id="cb234-31"><a href="evaluating-confidence-intervals.html#cb234-31" aria-hidden="true" tabindex="-1"></a>ci_df <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(ci_list)</span>
+<span id="cb234-32"><a href="evaluating-confidence-intervals.html#cb234-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb234-33"><a href="evaluating-confidence-intervals.html#cb234-33" aria-hidden="true" tabindex="-1"></a><span class="co"># compute the coverage for each parameter</span></span>
+<span id="cb234-34"><a href="evaluating-confidence-intervals.html#cb234-34" aria-hidden="true" tabindex="-1"></a>ci_df <span class="sc">%&gt;%</span></span>
+<span id="cb234-35"><a href="evaluating-confidence-intervals.html#cb234-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">captured =</span> lwr <span class="sc">&lt;</span> true <span class="sc">&amp;</span> upr <span class="sc">&gt;</span> true) <span class="sc">%&gt;%</span></span>
+<span id="cb234-36"><a href="evaluating-confidence-intervals.html#cb234-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(coef_name) <span class="sc">%&gt;%</span></span>
+<span id="cb234-37"><a href="evaluating-confidence-intervals.html#cb234-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">coverage =</span> <span class="fu">mean</span>(captured), </span>
+<span id="cb234-38"><a href="evaluating-confidence-intervals.html#cb234-38" aria-hidden="true" tabindex="-1"></a>            <span class="at">se_hat =</span> <span class="fu">sd</span>(captured)<span class="sc">/</span><span class="fu">sqrt</span>(<span class="fu">n</span>()))</span></code></pre></div>
+<pre><code>## # A tibble: 3 × 3
+##   coef_name   coverage se_hat
+##   &lt;chr&gt;          &lt;dbl&gt;  &lt;dbl&gt;
+## 1 (Intercept)     0.83 0.0378
+## 2 x1              0.87 0.0338
+## 3 x2              0.82 0.0386</code></pre>
 <p>Thus the parametric bootstrap works well, the coverage is about 90%. But notice that we know the parametric model here, because we created the “observed” data ourselves and matched the GDP exactly with the parametric bootstrap.</p>
 
 </div>

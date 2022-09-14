@@ -317,7 +317,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb38-5"><a href="sampling-distribution.html#cb38-5" aria-hidden="true" tabindex="-1"></a>  ml_est[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(y)</span>
 <span id="cb38-6"><a href="sampling-distribution.html#cb38-6" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb38-7"><a href="sampling-distribution.html#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(ml_est, <span class="at">digits =</span> <span class="dv">2</span>)</span></code></pre></div>
-<pre><code>##  [1] 0.047 0.033 0.040 0.040 0.040 0.053 0.053 0.053 0.047 0.040</code></pre>
+<pre><code>##  [1] 0.060 0.073 0.053 0.080 0.053 0.033 0.067 0.047 0.027 0.053</code></pre>
 <p>As you can see, the ML estimates vary to from sample to sample–different data sets produce different ML estimates. We need a way to create a confidence interval that consistently captures <span class="math inline">\(\theta\)</span>.</p>
 <p>If we repeat the simulations a large number of times, we can see an accuracy picture of the sampling distribution via histogram.</p>
 <div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="sampling-distribution.html#cb40-1" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">10000</span></span>

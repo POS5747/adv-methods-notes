@@ -94,9 +94,9 @@ To start, let's create the data-generating process or "probability model" or pop
 
 ```r
 # model parameters
-n <- 50
-b0 <- 1
-b1 <- 1
+n <- 100
+b0 <- 0
+b1 <- 0.5
 b2 <- -0.5
 
 # data
@@ -133,16 +133,17 @@ apply(coef_bs, 2, quantile, probs = c(0.05, 0.95))
 ```
 
 ```
-##         [,1]      [,2]       [,3]
-## 5%  0.118692 0.6931094 -1.6490587
-## 95% 1.652776 3.5511826  0.6393434
+##           [,1]      [,2]        [,3]
+## 5%  -0.6790475 0.9415808 -1.37164658
+## 95%  0.3439898 2.7477924  0.09866435
 ```
 
 Now let's simulate *many* "observed" data sets and compute the confidence intervals for each using the parametric bootstrap.
 
 
 ```r
-# do a monte carlo simulation to compute the coverage for parmeteric bs
+# do a monte carlo simulation to compute the coverage for parametric bs
+# note: this is not *at all* optimized for speed
 n_mc_sims <- 100
 ci_list <- list()
 for (i in 1:n_mc_sims) {
@@ -177,16 +178,17 @@ ci_df <- bind_rows(ci_list)
 ci_df %>%
   mutate(captured = lwr < true & upr > true) %>%
   group_by(coef_name) %>%
-  summarize(coverage = mean(captured))
+  summarize(coverage = mean(captured), 
+            se_hat = sd(captured)/sqrt(n()))
 ```
 
 ```
-## # A tibble: 3 × 2
-##   coef_name   coverage
-##   <chr>          <dbl>
-## 1 (Intercept)     0.83
-## 2 x1              0.89
-## 3 x2              0.87
+## # A tibble: 3 × 3
+##   coef_name   coverage se_hat
+##   <chr>          <dbl>  <dbl>
+## 1 (Intercept)     0.83 0.0378
+## 2 x1              0.87 0.0338
+## 3 x2              0.82 0.0386
 ```
 
 Thus the parametric bootstrap works well, the coverage is about 90%. But notice that we know the parametric model here, because we created the "observed" data ourselves and matched the GDP exactly with the parametric bootstrap. 

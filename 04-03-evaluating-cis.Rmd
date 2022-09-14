@@ -85,9 +85,9 @@ To start, let's create the data-generating process or "probability model" or pop
 
 ```{r}
 # model parameters
-n <- 50
-b0 <- 1
-b1 <- 1
+n <- 100
+b0 <- 0
+b1 <- 0.5
 b2 <- -0.5
 
 # data
@@ -125,7 +125,8 @@ apply(coef_bs, 2, quantile, probs = c(0.05, 0.95))
 Now let's simulate *many* "observed" data sets and compute the confidence intervals for each using the parametric bootstrap.
 
 ```{r, cache = TRUE}
-# do a monte carlo simulation to compute the coverage for parmeteric bs
+# do a monte carlo simulation to compute the coverage for parametric bs
+# note: this is not *at all* optimized for speed
 n_mc_sims <- 100
 ci_list <- list()
 for (i in 1:n_mc_sims) {
@@ -134,7 +135,7 @@ for (i in 1:n_mc_sims) {
   data <- data.frame(y_obs, x1, x2)
   fit <- glm(y_obs ~ x1 + x2, data = data, family = binomial)
   # parametric bs for coefficients
-  n_bs <- 100  # should be 2000 or more
+  n_bs <- 2000  # should be 2000 or more
   coef_bs <- matrix(nrow = n_bs, ncol = length(coef(fit)))
   colnames(coef_bs) <- names(coef(fit))
   for (j in 1:n_bs) {
@@ -160,7 +161,8 @@ ci_df <- bind_rows(ci_list)
 ci_df %>%
   mutate(captured = lwr < true & upr > true) %>%
   group_by(coef_name) %>%
-  summarize(coverage = mean(captured))
+  summarize(coverage = mean(captured), 
+            se_hat = sd(captured)/sqrt(n()))
 ```
 
 Thus the parametric bootstrap works well, the coverage is about 90%. But notice that we know the parametric model here, because we created the "observed" data ourselves and matched the GDP exactly with the parametric bootstrap. 
