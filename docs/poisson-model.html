@@ -6,11 +6,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>3.3 Poisson Model | Statistical Modeling: A Tools Approach</title>
   <meta name="description" content="Lecture notes covering the key tools of regression modeling in political science." />
-  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.25 and GitBook 2.6.7" />
 
   <meta property="og:title" content="3.3 Poisson Model | Statistical Modeling: A Tools Approach" />
   <meta property="og:type" content="book" />
-  
   
   <meta property="og:description" content="Lecture notes covering the key tools of regression modeling in political science." />
   <meta name="github-repo" content="pos5747/adv-methods-notes" />
@@ -24,7 +23,7 @@
 <meta name="author" content="Carlisle Rainey" />
 
 
-<meta name="date" content="2022-09-13" />
+<meta name="date" content="2022-09-14" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +32,6 @@
   
 <link rel="prev" href="bernoulli-model.html"/>
 <link rel="next" href="posterior-predictive-distribution-1.html"/>
-<script src="libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -51,13 +49,14 @@
 
 
 
-<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
-<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 <script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
 <script src="libs/plotly-binding-4.10.0/plotly.js"></script>
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
-<link href="libs/crosstalk-1.1.1/css/crosstalk.css" rel="stylesheet" />
-<script src="libs/crosstalk-1.1.1/js/crosstalk.min.js"></script>
+<link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
 <link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
 <script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
 <script>
@@ -167,116 +166,117 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="./">Advanced Methods Notes</a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Week 1: Maximum Likelihood</a>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Week 1: Maximum Likelihood<span></span></a>
 <ul>
-<li class="chapter" data-level="1.1" data-path="class-agenda.html"><a href="class-agenda.html"><i class="fa fa-check"></i><b>1.1</b> Class agenda</a></li>
-<li class="chapter" data-level="1.2" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html"><i class="fa fa-check"></i><b>1.2</b> Maximum Likelihood</a>
+<li class="chapter" data-level="1.1" data-path="class-agenda.html"><a href="class-agenda.html"><i class="fa fa-check"></i><b>1.1</b> Class agenda<span></span></a></li>
+<li class="chapter" data-level="1.2" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html"><i class="fa fa-check"></i><b>1.2</b> Maximum Likelihood<span></span></a>
 <ul>
-<li class="chapter" data-level="1.2.1" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#example-bernoulli-distribution"><i class="fa fa-check"></i><b>1.2.1</b> Example: Bernoulli Distribution</a></li>
-<li class="chapter" data-level="1.2.2" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#example-poisson-distribution"><i class="fa fa-check"></i><b>1.2.2</b> Example: Poisson Distribution</a></li>
-<li class="chapter" data-level="1.2.3" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#remarks"><i class="fa fa-check"></i><b>1.2.3</b> Remarks</a></li>
-<li class="chapter" data-level="1.2.4" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#example-beta-distribution"><i class="fa fa-check"></i><b>1.2.4</b> Example: Beta Distribution</a></li>
+<li class="chapter" data-level="1.2.1" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#example-bernoulli-distribution"><i class="fa fa-check"></i><b>1.2.1</b> Example: Bernoulli Distribution<span></span></a></li>
+<li class="chapter" data-level="1.2.2" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#example-poisson-distribution"><i class="fa fa-check"></i><b>1.2.2</b> Example: Poisson Distribution<span></span></a></li>
+<li class="chapter" data-level="1.2.3" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#remarks"><i class="fa fa-check"></i><b>1.2.3</b> Remarks<span></span></a></li>
+<li class="chapter" data-level="1.2.4" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#example-beta-distribution"><i class="fa fa-check"></i><b>1.2.4</b> Example: Beta Distribution<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="1.3" data-path="the-invariance-property.html"><a href="the-invariance-property.html"><i class="fa fa-check"></i><b>1.3</b> The Invariance Property</a>
+<li class="chapter" data-level="1.3" data-path="the-invariance-property.html"><a href="the-invariance-property.html"><i class="fa fa-check"></i><b>1.3</b> The Invariance Property<span></span></a>
 <ul>
-<li class="chapter" data-level="1.3.1" data-path="the-invariance-property.html"><a href="the-invariance-property.html#example-bernoulli-odds"><i class="fa fa-check"></i><b>1.3.1</b> Example: Bernoulli Odds</a></li>
-<li class="chapter" data-level="1.3.2" data-path="the-invariance-property.html"><a href="the-invariance-property.html#example-poisson-sd"><i class="fa fa-check"></i><b>1.3.2</b> Example: Poisson SD</a></li>
-<li class="chapter" data-level="1.3.3" data-path="the-invariance-property.html"><a href="the-invariance-property.html#example-beta-mean-and-variance"><i class="fa fa-check"></i><b>1.3.3</b> Example: Beta Mean and Variance</a></li>
+<li class="chapter" data-level="1.3.1" data-path="the-invariance-property.html"><a href="the-invariance-property.html#example-bernoulli-odds"><i class="fa fa-check"></i><b>1.3.1</b> Example: Bernoulli Odds<span></span></a></li>
+<li class="chapter" data-level="1.3.2" data-path="the-invariance-property.html"><a href="the-invariance-property.html#example-poisson-sd"><i class="fa fa-check"></i><b>1.3.2</b> Example: Poisson SD<span></span></a></li>
+<li class="chapter" data-level="1.3.3" data-path="the-invariance-property.html"><a href="the-invariance-property.html#example-beta-mean-and-variance"><i class="fa fa-check"></i><b>1.3.3</b> Example: Beta Mean and Variance<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="1.4" data-path="the-parametric-bootstrap.html"><a href="the-parametric-bootstrap.html"><i class="fa fa-check"></i><b>1.4</b> The Parametric Bootstrap</a>
+<li class="chapter" data-level="1.4" data-path="the-parametric-bootstrap.html"><a href="the-parametric-bootstrap.html"><i class="fa fa-check"></i><b>1.4</b> The Parametric Bootstrap<span></span></a>
 <ul>
-<li class="chapter" data-level="1.4.1" data-path="the-parametric-bootstrap.html"><a href="the-parametric-bootstrap.html#example-toothpaste-cap-problm"><i class="fa fa-check"></i><b>1.4.1</b> Example: Toothpaste Cap Problm</a></li>
-<li class="chapter" data-level="1.4.2" data-path="the-parametric-bootstrap.html"><a href="the-parametric-bootstrap.html#example-beta-distribution-1"><i class="fa fa-check"></i><b>1.4.2</b> Example: Beta Distribution</a></li>
+<li class="chapter" data-level="1.4.1" data-path="the-parametric-bootstrap.html"><a href="the-parametric-bootstrap.html#example-toothpaste-cap-problm"><i class="fa fa-check"></i><b>1.4.1</b> Example: Toothpaste Cap Problm<span></span></a></li>
+<li class="chapter" data-level="1.4.2" data-path="the-parametric-bootstrap.html"><a href="the-parametric-bootstrap.html#example-beta-distribution-1"><i class="fa fa-check"></i><b>1.4.2</b> Example: Beta Distribution<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="1.5" data-path="sampling-distribution.html"><a href="sampling-distribution.html"><i class="fa fa-check"></i><b>1.5</b> Sampling Distribution</a>
+<li class="chapter" data-level="1.5" data-path="sampling-distribution.html"><a href="sampling-distribution.html"><i class="fa fa-check"></i><b>1.5</b> Sampling Distribution<span></span></a>
 <ul>
-<li class="chapter" data-level="1.5.1" data-path="sampling-distribution.html"><a href="sampling-distribution.html#example-the-toothpaste-cap-problem"><i class="fa fa-check"></i><b>1.5.1</b> Example: The Toothpaste Cap Problem</a></li>
+<li class="chapter" data-level="1.5.1" data-path="sampling-distribution.html"><a href="sampling-distribution.html#example-the-toothpaste-cap-problem"><i class="fa fa-check"></i><b>1.5.1</b> Example: The Toothpaste Cap Problem<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="1.6" data-path="bias.html"><a href="bias.html"><i class="fa fa-check"></i><b>1.6</b> Bias</a>
+<li class="chapter" data-level="1.6" data-path="bias.html"><a href="bias.html"><i class="fa fa-check"></i><b>1.6</b> Bias<span></span></a>
 <ul>
-<li class="chapter" data-level="1.6.1" data-path="bias.html"><a href="bias.html#example-bernoulli-distribution-1"><i class="fa fa-check"></i><b>1.6.1</b> Example: Bernoulli Distribution</a></li>
-<li class="chapter" data-level="1.6.2" data-path="bias.html"><a href="bias.html#example-poisson-distribution-1"><i class="fa fa-check"></i><b>1.6.2</b> Example: Poisson Distribution</a></li>
+<li class="chapter" data-level="1.6.1" data-path="bias.html"><a href="bias.html#example-bernoulli-distribution-1"><i class="fa fa-check"></i><b>1.6.1</b> Example: Bernoulli Distribution<span></span></a></li>
+<li class="chapter" data-level="1.6.2" data-path="bias.html"><a href="bias.html#example-poisson-distribution-1"><i class="fa fa-check"></i><b>1.6.2</b> Example: Poisson Distribution<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="1.7" data-path="consistency.html"><a href="consistency.html"><i class="fa fa-check"></i><b>1.7</b> Consistency</a>
+<li class="chapter" data-level="1.7" data-path="consistency.html"><a href="consistency.html"><i class="fa fa-check"></i><b>1.7</b> Consistency<span></span></a>
 <ul>
-<li class="chapter" data-level="1.7.1" data-path="consistency.html"><a href="consistency.html#example-illustrative"><i class="fa fa-check"></i><b>1.7.1</b> Example: Illustrative</a></li>
-<li class="chapter" data-level="1.7.2" data-path="consistency.html"><a href="consistency.html#example-bernoulli-odds-1"><i class="fa fa-check"></i><b>1.7.2</b> Example: Bernoulli Odds</a></li>
+<li class="chapter" data-level="1.7.1" data-path="consistency.html"><a href="consistency.html#example-illustrative"><i class="fa fa-check"></i><b>1.7.1</b> Example: Illustrative<span></span></a></li>
+<li class="chapter" data-level="1.7.2" data-path="consistency.html"><a href="consistency.html#example-bernoulli-odds-1"><i class="fa fa-check"></i><b>1.7.2</b> Example: Bernoulli Odds<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="1.8" data-path="predictive-distribution.html"><a href="predictive-distribution.html"><i class="fa fa-check"></i><b>1.8</b> Predictive Distribution</a>
+<li class="chapter" data-level="1.8" data-path="predictive-distribution.html"><a href="predictive-distribution.html"><i class="fa fa-check"></i><b>1.8</b> Predictive Distribution<span></span></a>
 <ul>
-<li class="chapter" data-level="1.8.1" data-path="predictive-distribution.html"><a href="predictive-distribution.html#example-poisson-distribution-2"><i class="fa fa-check"></i><b>1.8.1</b> Example: Poisson Distribution</a></li>
-<li class="chapter" data-level="1.8.2" data-path="predictive-distribution.html"><a href="predictive-distribution.html#example-beta-distribution-2"><i class="fa fa-check"></i><b>1.8.2</b> Example: Beta Distribution</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="2" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html"><i class="fa fa-check"></i><b>2</b> Week 2: Bayesian Inference</a>
-<ul>
-<li class="chapter" data-level="2.1" data-path="bayesian-inference.html"><a href="bayesian-inference.html"><i class="fa fa-check"></i><b>2.1</b> Bayesian Inference</a>
-<ul>
-<li class="chapter" data-level="2.1.1" data-path="bayesian-inference.html"><a href="bayesian-inference.html#mechanics"><i class="fa fa-check"></i><b>2.1.1</b> Mechanics</a></li>
-<li class="chapter" data-level="2.1.2" data-path="bayesian-inference.html"><a href="bayesian-inference.html#posterior-summaries"><i class="fa fa-check"></i><b>2.1.2</b> Posterior Summaries</a></li>
-<li class="chapter" data-level="2.1.3" data-path="bayesian-inference.html"><a href="bayesian-inference.html#posterior-simulation"><i class="fa fa-check"></i><b>2.1.3</b> Posterior Simulation</a></li>
-</ul></li>
-<li class="chapter" data-level="2.2" data-path="example-bernoulli.html"><a href="example-bernoulli.html"><i class="fa fa-check"></i><b>2.2</b> Example: Bernoulli</a>
-<ul>
-<li class="chapter" data-level="2.2.1" data-path="example-bernoulli.html"><a href="example-bernoulli.html#likelihood"><i class="fa fa-check"></i><b>2.2.1</b> The Likelihood</a></li>
-<li class="chapter" data-level="2.2.2" data-path="example-bernoulli.html"><a href="example-bernoulli.html#the-prior"><i class="fa fa-check"></i><b>2.2.2</b> The Prior</a></li>
-<li class="chapter" data-level="2.2.3" data-path="example-bernoulli.html"><a href="example-bernoulli.html#the-posterior"><i class="fa fa-check"></i><b>2.2.3</b> The Posterior</a></li>
-<li class="chapter" data-level="2.2.4" data-path="example-bernoulli.html"><a href="example-bernoulli.html#point-estimates"><i class="fa fa-check"></i><b>2.2.4</b> Point Estimates</a></li>
-<li class="chapter" data-level="2.2.5" data-path="example-bernoulli.html"><a href="example-bernoulli.html#credible-interval"><i class="fa fa-check"></i><b>2.2.5</b> Credible Interval</a></li>
-<li class="chapter" data-level="2.2.6" data-path="example-bernoulli.html"><a href="example-bernoulli.html#simulation"><i class="fa fa-check"></i><b>2.2.6</b> Simulation</a></li>
-</ul></li>
-<li class="chapter" data-level="2.3" data-path="example-poisson-distribution-3.html"><a href="example-poisson-distribution-3.html"><i class="fa fa-check"></i><b>2.3</b> Example: Poisson Distribution</a></li>
-<li class="chapter" data-level="2.4" data-path="remarks-1.html"><a href="remarks-1.html"><i class="fa fa-check"></i><b>2.4</b> Remarks</a></li>
-</ul></li>
-<li class="chapter" data-level="3" data-path="week-3-adding-predictors.html"><a href="week-3-adding-predictors.html"><i class="fa fa-check"></i><b>3</b> Week 3: Adding Predictors</a>
-<ul>
-<li class="chapter" data-level="3.1" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html"><i class="fa fa-check"></i><b>3.1</b> Review: The Normal Model</a>
-<ul>
-<li class="chapter" data-level="3.1.1" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html#distribution"><i class="fa fa-check"></i><b>3.1.1</b> Distribution</a></li>
-<li class="chapter" data-level="3.1.2" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html#linear-predictor"><i class="fa fa-check"></i><b>3.1.2</b> Linear Predictor</a></li>
-<li class="chapter" data-level="3.1.3" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html#fitting-the-normal-linear-model"><i class="fa fa-check"></i><b>3.1.3</b> Fitting the Normal-Linear Model</a></li>
-<li class="chapter" data-level="3.1.4" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html#applied-example"><i class="fa fa-check"></i><b>3.1.4</b> Applied Example</a></li>
-</ul></li>
-<li class="chapter" data-level="3.2" data-path="bernoulli-model.html"><a href="bernoulli-model.html"><i class="fa fa-check"></i><b>3.2</b> Bernoulli Model</a>
-<ul>
-<li class="chapter" data-level="3.2.1" data-path="bernoulli-model.html"><a href="bernoulli-model.html#the-linear-probability-model"><i class="fa fa-check"></i><b>3.2.1</b> The Linear Probability Model</a></li>
-<li class="chapter" data-level="3.2.2" data-path="bernoulli-model.html"><a href="bernoulli-model.html#the-logit-model"><i class="fa fa-check"></i><b>3.2.2</b> The Logit Model</a></li>
-<li class="chapter" data-level="3.2.3" data-path="bernoulli-model.html"><a href="bernoulli-model.html#fitting-a-logit-model"><i class="fa fa-check"></i><b>3.2.3</b> Fitting a Logit Model</a></li>
-</ul></li>
-<li class="chapter" data-level="3.3" data-path="poisson-model.html"><a href="poisson-model.html"><i class="fa fa-check"></i><b>3.3</b> Poisson Model</a>
-<ul>
-<li class="chapter" data-level="3.3.1" data-path="poisson-model.html"><a href="poisson-model.html#predictive-distribution-1"><i class="fa fa-check"></i><b>3.3.1</b> Predictive Distribution</a></li>
-<li class="chapter" data-level="3.3.2" data-path="poisson-model.html"><a href="poisson-model.html#posterior-predictive-distribution"><i class="fa fa-check"></i><b>3.3.2</b> Posterior Predictive Distribution</a></li>
-</ul></li>
-<li class="chapter" data-level="3.4" data-path="posterior-predictive-distribution-1.html"><a href="posterior-predictive-distribution-1.html"><i class="fa fa-check"></i><b>3.4</b> [Posterior] Predictive Distribution</a>
-<ul>
-<li class="chapter" data-level="3.4.1" data-path="posterior-predictive-distribution-1.html"><a href="posterior-predictive-distribution-1.html#for-the-logit-model"><i class="fa fa-check"></i><b>3.4.1</b> … for the logit model</a></li>
-<li class="chapter" data-level="3.4.2" data-path="posterior-predictive-distribution-1.html"><a href="posterior-predictive-distribution-1.html#for-the-poisson-model"><i class="fa fa-check"></i><b>3.4.2</b> … for the Poisson model</a></li>
-</ul></li>
-<li class="chapter" data-level="3.5" data-path="quantities-of-interest.html"><a href="quantities-of-interest.html"><i class="fa fa-check"></i><b>3.5</b> Quantities of Interest</a>
-<ul>
-<li class="chapter" data-level="3.5.1" data-path="quantities-of-interest.html"><a href="quantities-of-interest.html#expected-value"><i class="fa fa-check"></i><b>3.5.1</b> Expected Value</a></li>
-<li class="chapter" data-level="3.5.2" data-path="quantities-of-interest.html"><a href="quantities-of-interest.html#first-difference"><i class="fa fa-check"></i><b>3.5.2</b> First Difference</a></li>
+<li class="chapter" data-level="1.8.1" data-path="predictive-distribution.html"><a href="predictive-distribution.html#example-poisson-distribution-2"><i class="fa fa-check"></i><b>1.8.1</b> Example: Poisson Distribution<span></span></a></li>
+<li class="chapter" data-level="1.8.2" data-path="predictive-distribution.html"><a href="predictive-distribution.html#example-beta-distribution-2"><i class="fa fa-check"></i><b>1.8.2</b> Example: Beta Distribution<span></span></a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="week-4-confidence-intervals.html"><a href="week-4-confidence-intervals.html"><i class="fa fa-check"></i><b>4</b> Week 4: Confidence Intervals</a>
+<li class="chapter" data-level="2" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html"><i class="fa fa-check"></i><b>2</b> Week 2: Bayesian Inference<span></span></a>
 <ul>
-<li class="chapter" data-level="4.1" data-path="coverage.html"><a href="coverage.html"><i class="fa fa-check"></i><b>4.1</b> Coverage</a></li>
-<li class="chapter" data-level="4.2" data-path="the-parametric-bootstrap-1.html"><a href="the-parametric-bootstrap-1.html"><i class="fa fa-check"></i><b>4.2</b> The Parametric Bootstrap</a>
+<li class="chapter" data-level="2.1" data-path="bayesian-inference.html"><a href="bayesian-inference.html"><i class="fa fa-check"></i><b>2.1</b> Bayesian Inference<span></span></a>
 <ul>
-<li class="chapter" data-level="4.2.1" data-path="the-parametric-bootstrap-1.html"><a href="the-parametric-bootstrap-1.html#example-toothpaste-cap-problm-1"><i class="fa fa-check"></i><b>4.2.1</b> Example: Toothpaste Cap Problm</a></li>
+<li class="chapter" data-level="2.1.1" data-path="bayesian-inference.html"><a href="bayesian-inference.html#mechanics"><i class="fa fa-check"></i><b>2.1.1</b> Mechanics<span></span></a></li>
+<li class="chapter" data-level="2.1.2" data-path="bayesian-inference.html"><a href="bayesian-inference.html#posterior-summaries"><i class="fa fa-check"></i><b>2.1.2</b> Posterior Summaries<span></span></a></li>
+<li class="chapter" data-level="2.1.3" data-path="bayesian-inference.html"><a href="bayesian-inference.html#posterior-simulation"><i class="fa fa-check"></i><b>2.1.3</b> Posterior Simulation<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="4.3" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html"><i class="fa fa-check"></i><b>4.3</b> Wald Confidence Intervals</a>
+<li class="chapter" data-level="2.2" data-path="example-bernoulli.html"><a href="example-bernoulli.html"><i class="fa fa-check"></i><b>2.2</b> Example: Bernoulli<span></span></a>
 <ul>
-<li class="chapter" data-level="4.3.1" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html#curvature-in-a-single-dimmension"><i class="fa fa-check"></i><b>4.3.1</b> Curvature in a Single Dimmension</a></li>
-<li class="chapter" data-level="4.3.2" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html#curvature-in-a-multiple-dimmensions"><i class="fa fa-check"></i><b>4.3.2</b> Curvature in a Multiple Dimmensions</a></li>
-<li class="chapter" data-level="4.3.3" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html#from-curvature-to-confidence-intervals"><i class="fa fa-check"></i><b>4.3.3</b> From Curvature to Confidence Intervals</a></li>
-<li class="chapter" data-level="4.3.4" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html#final-notes"><i class="fa fa-check"></i><b>4.3.4</b> Final Notes</a></li>
+<li class="chapter" data-level="2.2.1" data-path="example-bernoulli.html"><a href="example-bernoulli.html#likelihood"><i class="fa fa-check"></i><b>2.2.1</b> The Likelihood<span></span></a></li>
+<li class="chapter" data-level="2.2.2" data-path="example-bernoulli.html"><a href="example-bernoulli.html#the-prior"><i class="fa fa-check"></i><b>2.2.2</b> The Prior<span></span></a></li>
+<li class="chapter" data-level="2.2.3" data-path="example-bernoulli.html"><a href="example-bernoulli.html#the-posterior"><i class="fa fa-check"></i><b>2.2.3</b> The Posterior<span></span></a></li>
+<li class="chapter" data-level="2.2.4" data-path="example-bernoulli.html"><a href="example-bernoulli.html#point-estimates"><i class="fa fa-check"></i><b>2.2.4</b> Point Estimates<span></span></a></li>
+<li class="chapter" data-level="2.2.5" data-path="example-bernoulli.html"><a href="example-bernoulli.html#credible-interval"><i class="fa fa-check"></i><b>2.2.5</b> Credible Interval<span></span></a></li>
+<li class="chapter" data-level="2.2.6" data-path="example-bernoulli.html"><a href="example-bernoulli.html#simulation"><i class="fa fa-check"></i><b>2.2.6</b> Simulation<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="4.4" data-path="evaluating-confidence-intervals.html"><a href="evaluating-confidence-intervals.html"><i class="fa fa-check"></i><b>4.4</b> Evaluating Confidence Intervals</a>
+<li class="chapter" data-level="2.3" data-path="example-poisson-distribution-3.html"><a href="example-poisson-distribution-3.html"><i class="fa fa-check"></i><b>2.3</b> Example: Poisson Distribution<span></span></a></li>
+<li class="chapter" data-level="2.4" data-path="remarks-1.html"><a href="remarks-1.html"><i class="fa fa-check"></i><b>2.4</b> Remarks<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="week-3-adding-predictors.html"><a href="week-3-adding-predictors.html"><i class="fa fa-check"></i><b>3</b> Week 3: Adding Predictors<span></span></a>
 <ul>
-<li class="chapter" data-level="4.4.1" data-path="evaluating-confidence-intervals.html"><a href="evaluating-confidence-intervals.html#coverage-1"><i class="fa fa-check"></i><b>4.4.1</b> Coverage</a></li>
-<li class="chapter" data-level="4.4.2" data-path="evaluating-confidence-intervals.html"><a href="evaluating-confidence-intervals.html#monte-carlo-simulation-to-assess-coverage"><i class="fa fa-check"></i><b>4.4.2</b> Monte Carlo Simulation to Assess Coverage</a></li>
+<li class="chapter" data-level="3.1" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html"><i class="fa fa-check"></i><b>3.1</b> Review: The Normal Model<span></span></a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html#distribution"><i class="fa fa-check"></i><b>3.1.1</b> Distribution<span></span></a></li>
+<li class="chapter" data-level="3.1.2" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html#linear-predictor"><i class="fa fa-check"></i><b>3.1.2</b> Linear Predictor<span></span></a></li>
+<li class="chapter" data-level="3.1.3" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html#fitting-the-normal-linear-model"><i class="fa fa-check"></i><b>3.1.3</b> Fitting the Normal-Linear Model<span></span></a></li>
+<li class="chapter" data-level="3.1.4" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html#applied-example"><i class="fa fa-check"></i><b>3.1.4</b> Applied Example<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="bernoulli-model.html"><a href="bernoulli-model.html"><i class="fa fa-check"></i><b>3.2</b> Bernoulli Model<span></span></a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="bernoulli-model.html"><a href="bernoulli-model.html#the-linear-probability-model"><i class="fa fa-check"></i><b>3.2.1</b> The Linear Probability Model<span></span></a></li>
+<li class="chapter" data-level="3.2.2" data-path="bernoulli-model.html"><a href="bernoulli-model.html#the-logit-model"><i class="fa fa-check"></i><b>3.2.2</b> The Logit Model<span></span></a></li>
+<li class="chapter" data-level="3.2.3" data-path="bernoulli-model.html"><a href="bernoulli-model.html#fitting-a-logit-model"><i class="fa fa-check"></i><b>3.2.3</b> Fitting a Logit Model<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="poisson-model.html"><a href="poisson-model.html"><i class="fa fa-check"></i><b>3.3</b> Poisson Model<span></span></a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="poisson-model.html"><a href="poisson-model.html#predictive-distribution-1"><i class="fa fa-check"></i><b>3.3.1</b> Predictive Distribution<span></span></a></li>
+<li class="chapter" data-level="3.3.2" data-path="poisson-model.html"><a href="poisson-model.html#posterior-predictive-distribution"><i class="fa fa-check"></i><b>3.3.2</b> Posterior Predictive Distribution<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="posterior-predictive-distribution-1.html"><a href="posterior-predictive-distribution-1.html"><i class="fa fa-check"></i><b>3.4</b> [Posterior] Predictive Distribution<span></span></a>
+<ul>
+<li class="chapter" data-level="3.4.1" data-path="posterior-predictive-distribution-1.html"><a href="posterior-predictive-distribution-1.html#for-the-logit-model"><i class="fa fa-check"></i><b>3.4.1</b> … for the logit model<span></span></a></li>
+<li class="chapter" data-level="3.4.2" data-path="posterior-predictive-distribution-1.html"><a href="posterior-predictive-distribution-1.html#for-the-poisson-model"><i class="fa fa-check"></i><b>3.4.2</b> … for the Poisson model<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="quantities-of-interest.html"><a href="quantities-of-interest.html"><i class="fa fa-check"></i><b>3.5</b> Quantities of Interest<span></span></a>
+<ul>
+<li class="chapter" data-level="3.5.1" data-path="quantities-of-interest.html"><a href="quantities-of-interest.html#expected-value"><i class="fa fa-check"></i><b>3.5.1</b> Expected Value<span></span></a></li>
+<li class="chapter" data-level="3.5.2" data-path="quantities-of-interest.html"><a href="quantities-of-interest.html#first-difference"><i class="fa fa-check"></i><b>3.5.2</b> First Difference<span></span></a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="week-4-confidence-intervals.html"><a href="week-4-confidence-intervals.html"><i class="fa fa-check"></i><b>4</b> Week 4: Confidence Intervals<span></span></a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="the-parametric-bootstrap-1.html"><a href="the-parametric-bootstrap-1.html"><i class="fa fa-check"></i><b>4.1</b> The Parametric Bootstrap<span></span></a></li>
+<li class="chapter" data-level="4.2" data-path="the-nonparametric-bootstrap.html"><a href="the-nonparametric-bootstrap.html"><i class="fa fa-check"></i><b>4.2</b> The <em>Non</em>parametric Bootstrap<span></span></a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="the-nonparametric-bootstrap.html"><a href="the-nonparametric-bootstrap.html#example-coefficients-from-the-civilian-casualties-model"><i class="fa fa-check"></i><b>4.2.1</b> Example: Coefficients from the Civilian Casualties Model<span></span></a></li>
+<li class="chapter" data-level="4.2.2" data-path="the-nonparametric-bootstrap.html"><a href="the-nonparametric-bootstrap.html#example-first-difference-from-the-civilian-casualties-model"><i class="fa fa-check"></i><b>4.2.2</b> Example: First Difference from the Civilian Casualties Model<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html"><i class="fa fa-check"></i><b>4.3</b> Wald Confidence Intervals<span></span></a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html#curvature-in-a-single-dimmension"><i class="fa fa-check"></i><b>4.3.1</b> Curvature in a Single Dimmension<span></span></a></li>
+<li class="chapter" data-level="4.3.2" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html#curvature-in-a-multiple-dimmensions"><i class="fa fa-check"></i><b>4.3.2</b> Curvature in a Multiple Dimmensions<span></span></a></li>
+<li class="chapter" data-level="4.3.3" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html#from-curvature-to-confidence-intervals"><i class="fa fa-check"></i><b>4.3.3</b> From Curvature to Confidence Intervals<span></span></a></li>
+<li class="chapter" data-level="4.3.4" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html#final-notes"><i class="fa fa-check"></i><b>4.3.4</b> Final Notes<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="evaluating-confidence-intervals.html"><a href="evaluating-confidence-intervals.html"><i class="fa fa-check"></i><b>4.4</b> Evaluating Confidence Intervals<span></span></a>
+<ul>
+<li class="chapter" data-level="4.4.1" data-path="evaluating-confidence-intervals.html"><a href="evaluating-confidence-intervals.html#coverage"><i class="fa fa-check"></i><b>4.4.1</b> Coverage<span></span></a></li>
+<li class="chapter" data-level="4.4.2" data-path="evaluating-confidence-intervals.html"><a href="evaluating-confidence-intervals.html#monte-carlo-simulation-to-assess-coverage"><i class="fa fa-check"></i><b>4.4.2</b> Monte Carlo Simulation to Assess Coverage<span></span></a></li>
 </ul></li>
 </ul></li>
 <li class="divider"></li>
@@ -299,8 +299,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="poisson-model" class="section level2" number="3.3">
-<h2><span class="header-section-number">3.3</span> Poisson Model</h2>
+<div id="poisson-model" class="section level2 hasAnchor" number="3.3">
+<h2><span class="header-section-number">3.3</span> Poisson Model<a href="poisson-model.html#poisson-model" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>We’ve now got two models:</p>
 <p><span class="math display">\[
 y_i \sim N(\mu_i, \sigma^2)\text{, where } \mu_i = X_i\beta
@@ -320,16 +320,16 @@ y_i \sim f(\theta_i)\text{, where } \theta_i = g^{-1}(X_i\beta).
 y_i \sim \text{Poisson}(\lambda_i)\text{, where } \lambda_i = e^{X_i\beta}.
 \]</span></p>
 <p>We can program the log-likelihood function into R for use in <code>optim()</code>.</p>
-<div class="sourceCode" id="cb142"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb142-1"><a href="poisson-model.html#cb142-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create log-likelihood</span></span>
-<span id="cb142-2"><a href="poisson-model.html#cb142-2" aria-hidden="true" tabindex="-1"></a>poisson_ll <span class="ot">&lt;-</span> <span class="cf">function</span>(beta, y, X) {</span>
-<span id="cb142-3"><a href="poisson-model.html#cb142-3" aria-hidden="true" tabindex="-1"></a>  lambda <span class="ot">&lt;-</span> <span class="fu">exp</span>(X<span class="sc">%*%</span>beta)</span>
-<span id="cb142-4"><a href="poisson-model.html#cb142-4" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">dpois</span>(y, <span class="at">lambda =</span> lambda, <span class="at">log =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb142-5"><a href="poisson-model.html#cb142-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(ll)</span>
-<span id="cb142-6"><a href="poisson-model.html#cb142-6" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb142-7"><a href="poisson-model.html#cb142-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb142-8"><a href="poisson-model.html#cb142-8" aria-hidden="true" tabindex="-1"></a><span class="co"># load hks data</span></span>
-<span id="cb142-9"><a href="poisson-model.html#cb142-9" aria-hidden="true" tabindex="-1"></a>hks <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/hks.csv&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb142-10"><a href="poisson-model.html#cb142-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb141"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb141-1"><a href="poisson-model.html#cb141-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create log-likelihood</span></span>
+<span id="cb141-2"><a href="poisson-model.html#cb141-2" aria-hidden="true" tabindex="-1"></a>poisson_ll <span class="ot">&lt;-</span> <span class="cf">function</span>(beta, y, X) {</span>
+<span id="cb141-3"><a href="poisson-model.html#cb141-3" aria-hidden="true" tabindex="-1"></a>  lambda <span class="ot">&lt;-</span> <span class="fu">exp</span>(X<span class="sc">%*%</span>beta)</span>
+<span id="cb141-4"><a href="poisson-model.html#cb141-4" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">dpois</span>(y, <span class="at">lambda =</span> lambda, <span class="at">log =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb141-5"><a href="poisson-model.html#cb141-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(ll)</span>
+<span id="cb141-6"><a href="poisson-model.html#cb141-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb141-7"><a href="poisson-model.html#cb141-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb141-8"><a href="poisson-model.html#cb141-8" aria-hidden="true" tabindex="-1"></a><span class="co"># load hks data</span></span>
+<span id="cb141-9"><a href="poisson-model.html#cb141-9" aria-hidden="true" tabindex="-1"></a>hks <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/hks.csv&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb141-10"><a href="poisson-model.html#cb141-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span></code></pre></div>
 <pre><code>## Rows: 3972 Columns: 10
 ## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
@@ -337,27 +337,27 @@ y_i \sim \text{Poisson}(\lambda_i)\text{, where } \lambda_i = e^{X_i\beta}.
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<div class="sourceCode" id="cb144"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb144-1"><a href="poisson-model.html#cb144-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create X and y</span></span>
-<span id="cb144-2"><a href="poisson-model.html#cb144-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> osvAll <span class="sc">~</span> troopLag <span class="sc">+</span> policeLag <span class="sc">+</span> militaryobserversLag <span class="sc">+</span> </span>
-<span id="cb144-3"><a href="poisson-model.html#cb144-3" aria-hidden="true" tabindex="-1"></a>  brv_AllLag <span class="sc">+</span> osvAllLagDum <span class="sc">+</span> incomp <span class="sc">+</span> epduration <span class="sc">+</span> </span>
-<span id="cb144-4"><a href="poisson-model.html#cb144-4" aria-hidden="true" tabindex="-1"></a>  lntpop</span>
-<span id="cb144-5"><a href="poisson-model.html#cb144-5" aria-hidden="true" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(f, <span class="at">data =</span> hks)  <span class="co"># model frame</span></span>
-<span id="cb144-6"><a href="poisson-model.html#cb144-6" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(f, mf)          <span class="co"># model matrix X</span></span>
-<span id="cb144-7"><a href="poisson-model.html#cb144-7" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">model.response</span>(mf)           <span class="co"># outcome variable y</span></span>
-<span id="cb144-8"><a href="poisson-model.html#cb144-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb144-9"><a href="poisson-model.html#cb144-9" aria-hidden="true" tabindex="-1"></a>par_start <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(X))</span>
-<span id="cb144-10"><a href="poisson-model.html#cb144-10" aria-hidden="true" tabindex="-1"></a><span class="co"># this poisson model is so bad that optim has a bit of trouble </span></span>
-<span id="cb144-11"><a href="poisson-model.html#cb144-11" aria-hidden="true" tabindex="-1"></a><span class="co"># intutitively, there&#39;s a single outlier that basically makes</span></span>
-<span id="cb144-12"><a href="poisson-model.html#cb144-12" aria-hidden="true" tabindex="-1"></a><span class="co"># all poissons nearly impossible.</span></span>
-<span id="cb144-13"><a href="poisson-model.html#cb144-13" aria-hidden="true" tabindex="-1"></a>opt <span class="ot">&lt;-</span> <span class="fu">optim</span>(par_start, <span class="at">fn =</span> poisson_ll, <span class="at">y =</span> y, <span class="at">X =</span> X, </span>
-<span id="cb144-14"><a href="poisson-model.html#cb144-14" aria-hidden="true" tabindex="-1"></a>             <span class="at">control =</span> <span class="fu">list</span>(<span class="at">fnscale =</span> <span class="sc">-</span><span class="dv">1</span>))</span>
-<span id="cb144-15"><a href="poisson-model.html#cb144-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb144-16"><a href="poisson-model.html#cb144-16" aria-hidden="true" tabindex="-1"></a>opt<span class="sc">$</span>par</span></code></pre></div>
+<div class="sourceCode" id="cb143"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb143-1"><a href="poisson-model.html#cb143-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create X and y</span></span>
+<span id="cb143-2"><a href="poisson-model.html#cb143-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> osvAll <span class="sc">~</span> troopLag <span class="sc">+</span> policeLag <span class="sc">+</span> militaryobserversLag <span class="sc">+</span> </span>
+<span id="cb143-3"><a href="poisson-model.html#cb143-3" aria-hidden="true" tabindex="-1"></a>  brv_AllLag <span class="sc">+</span> osvAllLagDum <span class="sc">+</span> incomp <span class="sc">+</span> epduration <span class="sc">+</span> </span>
+<span id="cb143-4"><a href="poisson-model.html#cb143-4" aria-hidden="true" tabindex="-1"></a>  lntpop</span>
+<span id="cb143-5"><a href="poisson-model.html#cb143-5" aria-hidden="true" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(f, <span class="at">data =</span> hks)  <span class="co"># model frame</span></span>
+<span id="cb143-6"><a href="poisson-model.html#cb143-6" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(f, mf)          <span class="co"># model matrix X</span></span>
+<span id="cb143-7"><a href="poisson-model.html#cb143-7" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">model.response</span>(mf)           <span class="co"># outcome variable y</span></span>
+<span id="cb143-8"><a href="poisson-model.html#cb143-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb143-9"><a href="poisson-model.html#cb143-9" aria-hidden="true" tabindex="-1"></a>par_start <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(X))</span>
+<span id="cb143-10"><a href="poisson-model.html#cb143-10" aria-hidden="true" tabindex="-1"></a><span class="co"># this poisson model is so bad that optim has a bit of trouble </span></span>
+<span id="cb143-11"><a href="poisson-model.html#cb143-11" aria-hidden="true" tabindex="-1"></a><span class="co"># intutitively, there&#39;s a single outlier that basically makes</span></span>
+<span id="cb143-12"><a href="poisson-model.html#cb143-12" aria-hidden="true" tabindex="-1"></a><span class="co"># all poissons nearly impossible.</span></span>
+<span id="cb143-13"><a href="poisson-model.html#cb143-13" aria-hidden="true" tabindex="-1"></a>opt <span class="ot">&lt;-</span> <span class="fu">optim</span>(par_start, <span class="at">fn =</span> poisson_ll, <span class="at">y =</span> y, <span class="at">X =</span> X, </span>
+<span id="cb143-14"><a href="poisson-model.html#cb143-14" aria-hidden="true" tabindex="-1"></a>             <span class="at">control =</span> <span class="fu">list</span>(<span class="at">fnscale =</span> <span class="sc">-</span><span class="dv">1</span>))</span>
+<span id="cb143-15"><a href="poisson-model.html#cb143-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb143-16"><a href="poisson-model.html#cb143-16" aria-hidden="true" tabindex="-1"></a>opt<span class="sc">$</span>par</span></code></pre></div>
 <pre><code>## [1] -2.032493946  0.056296852 -1.000415138 -0.629900495 -0.002084798
 ## [6] -0.015359471  1.949812320 -0.009831003  0.357133706</code></pre>
 <p>Or we can use the <code>glm()</code> function.</p>
-<div class="sourceCode" id="cb146"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb146-1"><a href="poisson-model.html#cb146-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(f, <span class="at">data =</span> hks, <span class="at">family =</span> poisson)</span>
-<span id="cb146-2"><a href="poisson-model.html#cb146-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb145"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb145-1"><a href="poisson-model.html#cb145-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(f, <span class="at">data =</span> hks, <span class="at">family =</span> poisson)</span>
+<span id="cb145-2"><a href="poisson-model.html#cb145-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(fit)</span></code></pre></div>
 <pre><code>##          (Intercept)             troopLag            policeLag 
 ##         -3.579287811         -0.169658063         -3.272474092 
 ## militaryobserversLag           brv_AllLag         osvAllLagDum 
@@ -365,25 +365,25 @@ y_i \sim \text{Poisson}(\lambda_i)\text{, where } \lambda_i = e^{X_i\beta}.
 ##               incomp           epduration               lntpop 
 ##          3.486201819         -0.022230231          0.189391395</code></pre>
 <p>We could also use <code>stan_glm()</code> to obtain simulations from the posterior distribution.</p>
-<div id="predictive-distribution-1" class="section level3" number="3.3.1">
-<h3><span class="header-section-number">3.3.1</span> Predictive Distribution</h3>
-<div class="sourceCode" id="cb148"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb148-1"><a href="poisson-model.html#cb148-1" aria-hidden="true" tabindex="-1"></a>observed_data <span class="ot">&lt;-</span> hks <span class="sc">%&gt;%</span></span>
-<span id="cb148-2"><a href="poisson-model.html#cb148-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">type =</span> <span class="st">&quot;observed&quot;</span>, </span>
-<span id="cb148-3"><a href="poisson-model.html#cb148-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">linpred_hat =</span> <span class="fu">predict</span>(fit, <span class="at">type =</span> <span class="st">&quot;link&quot;</span>))</span>
-<span id="cb148-4"><a href="poisson-model.html#cb148-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb148-5"><a href="poisson-model.html#cb148-5" aria-hidden="true" tabindex="-1"></a>sim_list <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb148-6"><a href="poisson-model.html#cb148-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) {</span>
-<span id="cb148-7"><a href="poisson-model.html#cb148-7" aria-hidden="true" tabindex="-1"></a>  sim_list[[i]] <span class="ot">&lt;-</span> observed_data <span class="sc">%&gt;%</span></span>
-<span id="cb148-8"><a href="poisson-model.html#cb148-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">osvAll =</span> <span class="fu">rpois</span>(<span class="fu">nrow</span>(observed_data), </span>
-<span id="cb148-9"><a href="poisson-model.html#cb148-9" aria-hidden="true" tabindex="-1"></a>                          <span class="at">lambda =</span> <span class="fu">exp</span>(observed_data<span class="sc">$</span>linpred_hat)),</span>
-<span id="cb148-10"><a href="poisson-model.html#cb148-10" aria-hidden="true" tabindex="-1"></a>           <span class="at">type =</span> <span class="fu">paste0</span>(<span class="st">&quot;simulated #&quot;</span>, i))</span>
-<span id="cb148-11"><a href="poisson-model.html#cb148-11" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb148-12"><a href="poisson-model.html#cb148-12" aria-hidden="true" tabindex="-1"></a>gg_data <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(sim_list) <span class="sc">%&gt;%</span></span>
-<span id="cb148-13"><a href="poisson-model.html#cb148-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(observed_data) <span class="sc">%&gt;%</span></span>
-<span id="cb148-14"><a href="poisson-model.html#cb148-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code></pre></div>
+<div id="predictive-distribution-1" class="section level3 hasAnchor" number="3.3.1">
+<h3><span class="header-section-number">3.3.1</span> Predictive Distribution<a href="poisson-model.html#predictive-distribution-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb147"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb147-1"><a href="poisson-model.html#cb147-1" aria-hidden="true" tabindex="-1"></a>observed_data <span class="ot">&lt;-</span> hks <span class="sc">%&gt;%</span></span>
+<span id="cb147-2"><a href="poisson-model.html#cb147-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">type =</span> <span class="st">&quot;observed&quot;</span>, </span>
+<span id="cb147-3"><a href="poisson-model.html#cb147-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">linpred_hat =</span> <span class="fu">predict</span>(fit, <span class="at">type =</span> <span class="st">&quot;link&quot;</span>))</span>
+<span id="cb147-4"><a href="poisson-model.html#cb147-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb147-5"><a href="poisson-model.html#cb147-5" aria-hidden="true" tabindex="-1"></a>sim_list <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb147-6"><a href="poisson-model.html#cb147-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) {</span>
+<span id="cb147-7"><a href="poisson-model.html#cb147-7" aria-hidden="true" tabindex="-1"></a>  sim_list[[i]] <span class="ot">&lt;-</span> observed_data <span class="sc">%&gt;%</span></span>
+<span id="cb147-8"><a href="poisson-model.html#cb147-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">osvAll =</span> <span class="fu">rpois</span>(<span class="fu">nrow</span>(observed_data), </span>
+<span id="cb147-9"><a href="poisson-model.html#cb147-9" aria-hidden="true" tabindex="-1"></a>                          <span class="at">lambda =</span> <span class="fu">exp</span>(observed_data<span class="sc">$</span>linpred_hat)),</span>
+<span id="cb147-10"><a href="poisson-model.html#cb147-10" aria-hidden="true" tabindex="-1"></a>           <span class="at">type =</span> <span class="fu">paste0</span>(<span class="st">&quot;simulated #&quot;</span>, i))</span>
+<span id="cb147-11"><a href="poisson-model.html#cb147-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb147-12"><a href="poisson-model.html#cb147-12" aria-hidden="true" tabindex="-1"></a>gg_data <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(sim_list) <span class="sc">%&gt;%</span></span>
+<span id="cb147-13"><a href="poisson-model.html#cb147-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(observed_data) <span class="sc">%&gt;%</span></span>
+<span id="cb147-14"><a href="poisson-model.html#cb147-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code></pre></div>
 <pre><code>## Rows: 22,476
 ## Columns: 12
-## $ osvAll               &lt;dbl&gt; 303, 316, 1063, 291, 400, 198, 180, 214, 170, 180…
+## $ osvAll               &lt;dbl&gt; 311, 350, 1141, 285, 480, 196, 202, 174, 202, 192…
 ## $ troopLag             &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
 ## $ policeLag            &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
 ## $ militaryobserversLag &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
@@ -395,22 +395,22 @@ y_i \sim \text{Poisson}(\lambda_i)\text{, where } \lambda_i = e^{X_i\beta}.
 ## $ conflict_id          &lt;dbl&gt; 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 7…
 ## $ type                 &lt;chr&gt; &quot;simulated #1&quot;, &quot;simulated #1&quot;, &quot;simulated #1&quot;, &quot;…
 ## $ linpred_hat          &lt;dbl&gt; 5.701372, 5.756500, 7.017963, 5.651498, 6.088931,…</code></pre>
-<div class="sourceCode" id="cb150"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb150-1"><a href="poisson-model.html#cb150-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(gg_data, <span class="fu">aes</span>(<span class="at">x =</span> linpred_hat, <span class="at">y =</span> osvAll <span class="sc">+</span> <span class="dv">1</span>)) <span class="sc">+</span> </span>
-<span id="cb150-2"><a href="poisson-model.html#cb150-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.1</span>, <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="fl">0.3</span>) <span class="sc">+</span> </span>
-<span id="cb150-3"><a href="poisson-model.html#cb150-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(type)) <span class="sc">+</span> </span>
-<span id="cb150-4"><a href="poisson-model.html#cb150-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb149"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb149-1"><a href="poisson-model.html#cb149-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(gg_data, <span class="fu">aes</span>(<span class="at">x =</span> linpred_hat, <span class="at">y =</span> osvAll <span class="sc">+</span> <span class="dv">1</span>)) <span class="sc">+</span> </span>
+<span id="cb149-2"><a href="poisson-model.html#cb149-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.1</span>, <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="fl">0.3</span>) <span class="sc">+</span> </span>
+<span id="cb149-3"><a href="poisson-model.html#cb149-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(type)) <span class="sc">+</span> </span>
+<span id="cb149-4"><a href="poisson-model.html#cb149-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>()</span></code></pre></div>
 <p><img src="03-03-poisson-model_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<div class="sourceCode" id="cb151"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb151-1"><a href="poisson-model.html#cb151-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(gg_data, <span class="fu">aes</span>(<span class="at">x =</span> troopLag, <span class="at">y =</span> osvAll <span class="sc">+</span> <span class="dv">1</span>)) <span class="sc">+</span> </span>
-<span id="cb151-2"><a href="poisson-model.html#cb151-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="fl">0.3</span>) <span class="sc">+</span> </span>
-<span id="cb151-3"><a href="poisson-model.html#cb151-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(type)) <span class="sc">+</span> </span>
-<span id="cb151-4"><a href="poisson-model.html#cb151-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span> </span>
-<span id="cb151-5"><a href="poisson-model.html#cb151-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">se =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb150"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb150-1"><a href="poisson-model.html#cb150-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(gg_data, <span class="fu">aes</span>(<span class="at">x =</span> troopLag, <span class="at">y =</span> osvAll <span class="sc">+</span> <span class="dv">1</span>)) <span class="sc">+</span> </span>
+<span id="cb150-2"><a href="poisson-model.html#cb150-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="fl">0.3</span>) <span class="sc">+</span> </span>
+<span id="cb150-3"><a href="poisson-model.html#cb150-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(type)) <span class="sc">+</span> </span>
+<span id="cb150-4"><a href="poisson-model.html#cb150-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span> </span>
+<span id="cb150-5"><a href="poisson-model.html#cb150-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">se =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
 <p><img src="03-03-poisson-model_files/figure-html/unnamed-chunk-4-2.png" width="672" /></p>
 </div>
-<div id="posterior-predictive-distribution" class="section level3" number="3.3.2">
-<h3><span class="header-section-number">3.3.2</span> Posterior Predictive Distribution</h3>
-<div class="sourceCode" id="cb153"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb153-1"><a href="poisson-model.html#cb153-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstanarm); <span class="fu">options</span>(<span class="at">mc.cores =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span></code></pre></div>
+<div id="posterior-predictive-distribution" class="section level3 hasAnchor" number="3.3.2">
+<h3><span class="header-section-number">3.3.2</span> Posterior Predictive Distribution<a href="poisson-model.html#posterior-predictive-distribution" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb152"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb152-1"><a href="poisson-model.html#cb152-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstanarm); <span class="fu">options</span>(<span class="at">mc.cores =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span></code></pre></div>
 <pre><code>## Loading required package: Rcpp</code></pre>
 <pre><code>## Warning: package &#39;Rcpp&#39; was built under R version 4.1.2</code></pre>
 <pre><code>## This is rstanarm version 2.21.1</code></pre>
@@ -418,16 +418,16 @@ y_i \sim \text{Poisson}(\lambda_i)\text{, where } \lambda_i = e^{X_i\beta}.
 <pre><code>## - Default priors may change, so it&#39;s safest to specify priors, even if equivalent to the defaults.</code></pre>
 <pre><code>## - For execution on a local, multicore CPU with excess RAM we recommend calling</code></pre>
 <pre><code>##   options(mc.cores = parallel::detectCores())</code></pre>
-<div class="sourceCode" id="cb161"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb161-1"><a href="poisson-model.html#cb161-1" aria-hidden="true" tabindex="-1"></a>stan_fit <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(f, <span class="at">data =</span> hks, <span class="at">family =</span> <span class="st">&quot;poisson&quot;</span>)</span>
-<span id="cb161-2"><a href="poisson-model.html#cb161-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb161-3"><a href="poisson-model.html#cb161-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidybayes)</span>
-<span id="cb161-4"><a href="poisson-model.html#cb161-4" aria-hidden="true" tabindex="-1"></a>ppd <span class="ot">&lt;-</span> hks <span class="sc">%&gt;%</span></span>
-<span id="cb161-5"><a href="poisson-model.html#cb161-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_predicted_draws</span>(stan_fit, <span class="at">ndraws =</span> <span class="dv">8</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb161-6"><a href="poisson-model.html#cb161-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">.draw =</span> <span class="fu">paste0</span>(<span class="st">&quot;Draw #&quot;</span>, .draw)) <span class="sc">%&gt;%</span> </span>
-<span id="cb161-7"><a href="poisson-model.html#cb161-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> .draw, <span class="at">values_from =</span> .prediction) <span class="sc">%&gt;%</span></span>
-<span id="cb161-8"><a href="poisson-model.html#cb161-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">Observed</span><span class="st">`</span> <span class="ot">=</span> osvAll) <span class="sc">%&gt;%</span> </span>
-<span id="cb161-9"><a href="poisson-model.html#cb161-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="st">`</span><span class="at">Draw #1</span><span class="st">`</span><span class="sc">:</span><span class="st">`</span><span class="at">Observed</span><span class="st">`</span>, <span class="at">names_to =</span> <span class="st">&quot;type&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;osvAll2&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb161-10"><a href="poisson-model.html#cb161-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb160"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb160-1"><a href="poisson-model.html#cb160-1" aria-hidden="true" tabindex="-1"></a>stan_fit <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(f, <span class="at">data =</span> hks, <span class="at">family =</span> <span class="st">&quot;poisson&quot;</span>)</span>
+<span id="cb160-2"><a href="poisson-model.html#cb160-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb160-3"><a href="poisson-model.html#cb160-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidybayes)</span>
+<span id="cb160-4"><a href="poisson-model.html#cb160-4" aria-hidden="true" tabindex="-1"></a>ppd <span class="ot">&lt;-</span> hks <span class="sc">%&gt;%</span></span>
+<span id="cb160-5"><a href="poisson-model.html#cb160-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_predicted_draws</span>(stan_fit, <span class="at">ndraws =</span> <span class="dv">8</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb160-6"><a href="poisson-model.html#cb160-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">.draw =</span> <span class="fu">paste0</span>(<span class="st">&quot;Draw #&quot;</span>, .draw)) <span class="sc">%&gt;%</span> </span>
+<span id="cb160-7"><a href="poisson-model.html#cb160-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> .draw, <span class="at">values_from =</span> .prediction) <span class="sc">%&gt;%</span></span>
+<span id="cb160-8"><a href="poisson-model.html#cb160-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">Observed</span><span class="st">`</span> <span class="ot">=</span> osvAll) <span class="sc">%&gt;%</span> </span>
+<span id="cb160-9"><a href="poisson-model.html#cb160-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="st">`</span><span class="at">Draw #1</span><span class="st">`</span><span class="sc">:</span><span class="st">`</span><span class="at">Observed</span><span class="st">`</span>, <span class="at">names_to =</span> <span class="st">&quot;type&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;osvAll2&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb160-10"><a href="poisson-model.html#cb160-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code></pre></div>
 <pre><code>## Rows: 33,714
 ## Columns: 15
 ## Groups: osvAll, troopLag, policeLag, militaryobserversLag, brv_AllLag, osvAllLagDum, incomp, epduration, lntpop, conflict_id, .row [3,746]
@@ -446,11 +446,11 @@ y_i \sim \text{Poisson}(\lambda_i)\text{, where } \lambda_i = e^{X_i\beta}.
 ## $ .iteration           &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
 ## $ type                 &lt;chr&gt; &quot;Draw #1&quot;, &quot;Draw #2&quot;, &quot;Draw #3&quot;, &quot;Draw #4&quot;, &quot;Draw…
 ## $ osvAll2              &lt;dbl&gt; 300, 318, 296, 292, 306, 303, 296, 291, 4, 312, 3…</code></pre>
-<div class="sourceCode" id="cb163"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb163-1"><a href="poisson-model.html#cb163-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ppd, <span class="fu">aes</span>(<span class="at">x =</span> troopLag, <span class="at">y =</span> osvAll2 <span class="sc">+</span> <span class="dv">1</span>)) <span class="sc">+</span> </span>
-<span id="cb163-2"><a href="poisson-model.html#cb163-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="fl">0.3</span>) <span class="sc">+</span> </span>
-<span id="cb163-3"><a href="poisson-model.html#cb163-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(type)) <span class="sc">+</span> </span>
-<span id="cb163-4"><a href="poisson-model.html#cb163-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> </span>
-<span id="cb163-5"><a href="poisson-model.html#cb163-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb162"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb162-1"><a href="poisson-model.html#cb162-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ppd, <span class="fu">aes</span>(<span class="at">x =</span> troopLag, <span class="at">y =</span> osvAll2 <span class="sc">+</span> <span class="dv">1</span>)) <span class="sc">+</span> </span>
+<span id="cb162-2"><a href="poisson-model.html#cb162-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="fl">0.3</span>) <span class="sc">+</span> </span>
+<span id="cb162-3"><a href="poisson-model.html#cb162-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(type)) <span class="sc">+</span> </span>
+<span id="cb162-4"><a href="poisson-model.html#cb162-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> </span>
+<span id="cb162-5"><a href="poisson-model.html#cb162-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>()</span></code></pre></div>
 <pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
 <p><img src="03-03-poisson-model_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 

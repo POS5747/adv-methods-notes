@@ -152,7 +152,8 @@ We can program this into R for use in `optim()`.
 
 ```r
 logit_ll <- function(beta, y, X) {
-  p <- plogis(X%*%beta)  # pi is special in R, so I use p
+  mu <- X%*%beta  # pi is special in R, so I use p
+  p <- exp(mu)/(1 + exp(mu))
   ll <- sum(y*log(p)) + sum((1 - y)*log(1 - p))
   return(ll)
 }
@@ -169,7 +170,10 @@ The tricky part about using `optim()` here is not the log-likelihood function, b
 
 ```r
 # create formula
-f <- newvote ~ poly(neweduc, 2, raw = TRUE) + closing + poly(age, 2, raw = TRUE) + south + gov
+st <- function(x) { arm::rescale(x) }
+f <- newvote ~ poly(st(neweduc), 2, raw = TRUE) + st(closing) + poly(st(age), 2, raw = TRUE) + st(south) + st(gov)
+#f <- newvote ~ poly(neweduc, 2, raw = TRUE) + closing + poly(age, 2, raw = TRUE) + south + gov
+
 
 # obtain the model matrix X
 mf <- model.frame(f, data = scobit)  # model frame
@@ -186,29 +190,27 @@ Then we can use `optim()`.
 # for some reason, this isn't converging
 par_start <- c(-3, rep(0, ncol(X) - 1))
 opt <- optim(par_start, fn = logit_ll, y = y, X = X, 
-      control = list(fnscale = -1))
+             method = "BFGS",
+      control = list(fnscale = -1, reltol = .Machine$double.eps))
 opt$par
 ```
 
 ```
-## [1] -3.0546169207  0.2735676715  0.0209478540 -0.0216067192  0.0807472482
-## [6] -0.0004976604 -0.0467922614 -0.0362716220
+## [1]  1.055387404  1.574811426  0.239661630 -0.267674764  1.524032427
+## [6] -1.073869727 -0.190402661  0.005271742
 ```
 
 ```r
-# test w/ same X and y; works
-coef(glm.fit(X, y, family = binomial()))
-```
-
-```
-##                   (Intercept) poly(neweduc, 2, raw = TRUE)1 
-##                 -4.0727861365                  0.2426335636 
-## poly(neweduc, 2, raw = TRUE)2                       closing 
-##                  0.0282045522                 -0.0132046240 
-##     poly(age, 2, raw = TRUE)1     poly(age, 2, raw = TRUE)2 
-##                  0.1142218082                 -0.0008222347 
-##                         south                           gov 
-##                 -0.1904026537                  0.0052717028
+# # test w/ same X and y; works
+# coef(glm.fit(X, y, family = binomial()))
+# 
+# # try optimx
+# library(optimx)
+# 
+# optx <- optimx(par_start, fn = logit_ll, y = y, X = X, 
+#              method = c("BFGS", "Nelder-Mead", "CG"),
+#       control = list(fnscale = -1, reltol = .Machine$double.eps, maxit = 1000))
+# optx
 ```
 
 #### With `glm()`
@@ -220,14 +222,14 @@ coef(fit)
 ```
 
 ```
-##                   (Intercept) poly(neweduc, 2, raw = TRUE)1 
-##                 -4.0727861365                  0.2426335636 
-## poly(neweduc, 2, raw = TRUE)2                       closing 
-##                  0.0282045522                 -0.0132046240 
-##     poly(age, 2, raw = TRUE)1     poly(age, 2, raw = TRUE)2 
-##                  0.1142218082                 -0.0008222347 
-##                         south                           gov 
-##                 -0.1904026537                  0.0052717028
+##                       (Intercept) poly(st(neweduc), 2, raw = TRUE)1 
+##                       1.055387325                       1.574811361 
+## poly(st(neweduc), 2, raw = TRUE)2                       st(closing) 
+##                       0.239661717                      -0.267674768 
+##     poly(st(age), 2, raw = TRUE)1     poly(st(age), 2, raw = TRUE)2 
+##                       1.524032313                      -1.073869592 
+##                         st(south)                           st(gov) 
+##                      -0.190402654                       0.005271703
 ```
 
 

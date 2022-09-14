@@ -161,16 +161,16 @@ opt <- optim(par_start, fn = logit_ll, y = y, X = X,
       control = list(fnscale = -1, reltol = .Machine$double.eps))
 opt$par
 
-# test w/ same X and y; works
-coef(glm.fit(X, y, family = binomial()))
-
-# try optimx
-library(optimx)
-
-optx <- optimx(par_start, fn = logit_ll, y = y, X = X, 
-             method = c("BFGS", "Nelder-Mead", "CG"),
-      control = list(fnscale = -1, reltol = .Machine$double.eps, maxit = 1000))
-optx
+# # test w/ same X and y; works
+# coef(glm.fit(X, y, family = binomial()))
+# 
+# # try optimx
+# library(optimx)
+# 
+# optx <- optimx(par_start, fn = logit_ll, y = y, X = X, 
+#              method = c("BFGS", "Nelder-Mead", "CG"),
+#       control = list(fnscale = -1, reltol = .Machine$double.eps, maxit = 1000))
+# optx
 ```
 
 #### With `glm()`
