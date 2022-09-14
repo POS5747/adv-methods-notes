@@ -416,7 +416,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb234-8"><a href="evaluating-confidence-intervals.html#cb234-8" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(y_obs, x1, x2)</span>
 <span id="cb234-9"><a href="evaluating-confidence-intervals.html#cb234-9" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(y_obs <span class="sc">~</span> x1 <span class="sc">+</span> x2, <span class="at">data =</span> data, <span class="at">family =</span> binomial)</span>
 <span id="cb234-10"><a href="evaluating-confidence-intervals.html#cb234-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># parametric bs for coefficients</span></span>
-<span id="cb234-11"><a href="evaluating-confidence-intervals.html#cb234-11" aria-hidden="true" tabindex="-1"></a>  n_bs <span class="ot">&lt;-</span> <span class="dv">100</span>  <span class="co"># should be 2000 or more</span></span>
+<span id="cb234-11"><a href="evaluating-confidence-intervals.html#cb234-11" aria-hidden="true" tabindex="-1"></a>  n_bs <span class="ot">&lt;-</span> <span class="dv">2000</span>  <span class="co"># should be 2000 or more</span></span>
 <span id="cb234-12"><a href="evaluating-confidence-intervals.html#cb234-12" aria-hidden="true" tabindex="-1"></a>  coef_bs <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">nrow =</span> n_bs, <span class="at">ncol =</span> <span class="fu">length</span>(<span class="fu">coef</span>(fit)))</span>
 <span id="cb234-13"><a href="evaluating-confidence-intervals.html#cb234-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(coef_bs) <span class="ot">&lt;-</span> <span class="fu">names</span>(<span class="fu">coef</span>(fit))</span>
 <span id="cb234-14"><a href="evaluating-confidence-intervals.html#cb234-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_bs) {</span>
@@ -447,9 +447,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>## # A tibble: 3 × 3
 ##   coef_name   coverage se_hat
 ##   &lt;chr&gt;          &lt;dbl&gt;  &lt;dbl&gt;
-## 1 (Intercept)     0.83 0.0378
-## 2 x1              0.87 0.0338
-## 3 x2              0.82 0.0386</code></pre>
+## 1 (Intercept)     0.86 0.0349
+## 2 x1              0.88 0.0327
+## 3 x2              0.88 0.0327</code></pre>
 <p>Thus the parametric bootstrap works well, the coverage is about 90%. But notice that we know the parametric model here, because we created the “observed” data ourselves and matched the GDP exactly with the parametric bootstrap.</p>
 
 </div>

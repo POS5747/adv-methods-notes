@@ -152,7 +152,7 @@ for (i in 1:n_mc_sims) {
   data <- data.frame(y_obs, x1, x2)
   fit <- glm(y_obs ~ x1 + x2, data = data, family = binomial)
   # parametric bs for coefficients
-  n_bs <- 100  # should be 2000 or more
+  n_bs <- 2000  # should be 2000 or more
   coef_bs <- matrix(nrow = n_bs, ncol = length(coef(fit)))
   colnames(coef_bs) <- names(coef(fit))
   for (j in 1:n_bs) {
@@ -186,9 +186,9 @@ ci_df %>%
 ## # A tibble: 3 × 3
 ##   coef_name   coverage se_hat
 ##   <chr>          <dbl>  <dbl>
-## 1 (Intercept)     0.83 0.0378
-## 2 x1              0.87 0.0338
-## 3 x2              0.82 0.0386
+## 1 (Intercept)     0.86 0.0349
+## 2 x1              0.88 0.0327
+## 3 x2              0.88 0.0327
 ```
 
 Thus the parametric bootstrap works well, the coverage is about 90%. But notice that we know the parametric model here, because we created the "observed" data ourselves and matched the GDP exactly with the parametric bootstrap. 
