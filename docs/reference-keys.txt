@@ -76,3 +76,15 @@ coverage
 monte-carlo-simulation-to-assess-coverage
 a-simple-example
 the-parametric-bootstrap-2
+week-5-models-of-binary-outcomes-and-model-fit-summaries
+measures-of-model-fit
+scoring-binary-predictions
+cross-validation
+information-criteria
+models-of-binary-outcomes
+logit
+probit
+cloglog
+cauchit
+scobit
+heteroskedastic-probit

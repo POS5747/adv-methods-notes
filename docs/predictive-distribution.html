@@ -23,7 +23,7 @@
 <meta name="author" content="Carlisle Rainey" />
 
 
-<meta name="date" content="2022-09-14" />
+<meta name="date" content="2022-09-21" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -279,6 +279,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.4.2" data-path="evaluating-confidence-intervals.html"><a href="evaluating-confidence-intervals.html#monte-carlo-simulation-to-assess-coverage"><i class="fa fa-check"></i><b>4.4.2</b> Monte Carlo Simulation to Assess Coverage<span></span></a></li>
 </ul></li>
 </ul></li>
+<li class="chapter" data-level="5" data-path="week-5-models-of-binary-outcomes-and-model-fit-summaries.html"><a href="week-5-models-of-binary-outcomes-and-model-fit-summaries.html"><i class="fa fa-check"></i><b>5</b> Week 5: Models of Binary Outcomes and Model Fit Summaries<span></span></a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="measures-of-model-fit.html"><a href="measures-of-model-fit.html"><i class="fa fa-check"></i><b>5.1</b> Measures of Model Fit<span></span></a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="measures-of-model-fit.html"><a href="measures-of-model-fit.html#scoring-binary-predictions"><i class="fa fa-check"></i><b>5.1.1</b> Scoring Binary Predictions<span></span></a></li>
+<li class="chapter" data-level="5.1.2" data-path="measures-of-model-fit.html"><a href="measures-of-model-fit.html#cross-validation"><i class="fa fa-check"></i><b>5.1.2</b> Cross-Validation<span></span></a></li>
+<li class="chapter" data-level="5.1.3" data-path="measures-of-model-fit.html"><a href="measures-of-model-fit.html#information-criteria"><i class="fa fa-check"></i><b>5.1.3</b> Information Criteria<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="models-of-binary-outcomes.html"><a href="models-of-binary-outcomes.html"><i class="fa fa-check"></i><b>5.2</b> Models of Binary Outcomes<span></span></a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="models-of-binary-outcomes.html"><a href="models-of-binary-outcomes.html#logit"><i class="fa fa-check"></i><b>5.2.1</b> Logit<span></span></a></li>
+<li class="chapter" data-level="5.2.2" data-path="models-of-binary-outcomes.html"><a href="models-of-binary-outcomes.html#probit"><i class="fa fa-check"></i><b>5.2.2</b> Probit<span></span></a></li>
+<li class="chapter" data-level="5.2.3" data-path="models-of-binary-outcomes.html"><a href="models-of-binary-outcomes.html#cloglog"><i class="fa fa-check"></i><b>5.2.3</b> Cloglog<span></span></a></li>
+<li class="chapter" data-level="5.2.4" data-path="models-of-binary-outcomes.html"><a href="models-of-binary-outcomes.html#cauchit"><i class="fa fa-check"></i><b>5.2.4</b> Cauchit<span></span></a></li>
+<li class="chapter" data-level="5.2.5" data-path="models-of-binary-outcomes.html"><a href="models-of-binary-outcomes.html#scobit"><i class="fa fa-check"></i><b>5.2.5</b> Scobit<span></span></a></li>
+<li class="chapter" data-level="5.2.6" data-path="models-of-binary-outcomes.html"><a href="models-of-binary-outcomes.html#heteroskedastic-probit"><i class="fa fa-check"></i><b>5.2.6</b> Heteroskedastic Probit<span></span></a></li>
+</ul></li>
+</ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 
@@ -320,8 +338,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="predictive-distribution.html#cb62-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(civilian_casualties)</span>
 <span id="cb62-2"><a href="predictive-distribution.html#cb62-2" aria-hidden="true" tabindex="-1"></a>y_pred <span class="ot">&lt;-</span> <span class="fu">rpois</span>(n, <span class="at">lambda =</span> ml_est)</span>
 <span id="cb62-3"><a href="predictive-distribution.html#cb62-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(y_pred[<span class="dv">1</span><span class="sc">:</span><span class="dv">30</span>])</span></code></pre></div>
-<pre><code>##  [1] 642 660 615 587 641 659 644 660 603 639 588 618 631 650 636 650 612 645 644
-## [20] 629 604 643 638 587 624 575 615 623 639 613</code></pre>
+<pre><code>##  [1] 652 614 628 587 619 658 647 669 640 654 630 571 637 643 617 608 617 642 606
+## [20] 630 595 630 647 700 588 619 630 654 625 634</code></pre>
 <div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="predictive-distribution.html#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(civilian_casualties[<span class="dv">1</span><span class="sc">:</span><span class="dv">30</span>])</span></code></pre></div>
 <pre><code>##  [1]  0  0  0  0  0 13  0  0 61  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0
 ## [26]  0  0  0  0 19</code></pre>
@@ -354,7 +372,7 @@ These data sets are so different that the plots are difficult to read, so we mig
 <span id="cb68-11"><a href="predictive-distribution.html#cb68-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code></pre></div>
 <pre><code>## Rows: 1,500
 ## Columns: 2
-## $ civilian_casualties &lt;dbl&gt; 595, 600, 625, 597, 612, 658, 621, 641, 610, 658, …
+## $ civilian_casualties &lt;dbl&gt; 611, 634, 636, 631, 587, 637, 605, 673, 648, 644, …
 ## $ type                &lt;chr&gt; &quot;simulated #1&quot;, &quot;simulated #1&quot;, &quot;simulated #1&quot;, &quot;s…</code></pre>
 <div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="predictive-distribution.html#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(gg_data, <span class="fu">aes</span>(<span class="at">x =</span> civilian_casualties)) <span class="sc">+</span> </span>
 <span id="cb70-2"><a href="predictive-distribution.html#cb70-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>() <span class="sc">+</span> </span>

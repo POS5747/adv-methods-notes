@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>5.1 Measures of Model Fit | Statistical Modeling: A Tools Approach</title>
+  <meta name="description" content="Lecture notes covering the key tools of regression modeling in political science." />
+  <meta name="generator" content="bookdown 0.25 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="5.1 Measures of Model Fit | Statistical Modeling: A Tools Approach" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="Lecture notes covering the key tools of regression modeling in political science." />
+  <meta name="github-repo" content="pos5747/adv-methods-notes" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="5.1 Measures of Model Fit | Statistical Modeling: A Tools Approach" />
+  
+  <meta name="twitter:description" content="Lecture notes covering the key tools of regression modeling in political science." />
+  
+
+<meta name="author" content="Carlisle Rainey" />
+
+
+<meta name="date" content="2022-09-21" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="week-5-models-of-binary-outcomes-and-model-fit-summaries.html"/>
+<link rel="next" href="models-of-binary-outcomes.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.10.0/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
+<script>
+    $(document).ready(function () {
+        process_solutions();
+    });
+    function process_solutions() {
+        $("div.section[id^='solution']").each(function(i) {
+        var soln_wrapper_id = "cvxr_ex_" + i;
+        var solution_id = $(this).attr('id');
+        var button = $("<button onclick=\"toggle_solution('" + soln_wrapper_id + "')\">Show/Hide</button>");
+        var new_div = $("<div id='" + soln_wrapper_id + "' class='solution' style='display: none;'></div>");
+        var h = $(this).first();
+        var others = $(this).children().slice(1);
+        $(others).each(function() {
+            $(this).appendTo($(new_div));
+        });
+        $(button).insertAfter($(h));
+        $(new_div).insertAfter($(button));
+        })
+    }
+    function toggle_solution(el_id) {
+      $("#" + el_id).toggle();
+    } 
+</script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Advanced Methods Notes</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Week 1: Maximum Likelihood<span></span></a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="class-agenda.html"><a href="class-agenda.html"><i class="fa fa-check"></i><b>1.1</b> Class agenda<span></span></a></li>
+<li class="chapter" data-level="1.2" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html"><i class="fa fa-check"></i><b>1.2</b> Maximum Likelihood<span></span></a>
+<ul>
+<li class="chapter" data-level="1.2.1" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#example-bernoulli-distribution"><i class="fa fa-check"></i><b>1.2.1</b> Example: Bernoulli Distribution<span></span></a></li>
+<li class="chapter" data-level="1.2.2" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#example-poisson-distribution"><i class="fa fa-check"></i><b>1.2.2</b> Example: Poisson Distribution<span></span></a></li>
+<li class="chapter" data-level="1.2.3" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#remarks"><i class="fa fa-check"></i><b>1.2.3</b> Remarks<span></span></a></li>
+<li class="chapter" data-level="1.2.4" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#example-beta-distribution"><i class="fa fa-check"></i><b>1.2.4</b> Example: Beta Distribution<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="the-invariance-property.html"><a href="the-invariance-property.html"><i class="fa fa-check"></i><b>1.3</b> The Invariance Property<span></span></a>
+<ul>
+<li class="chapter" data-level="1.3.1" data-path="the-invariance-property.html"><a href="the-invariance-property.html#example-bernoulli-odds"><i class="fa fa-check"></i><b>1.3.1</b> Example: Bernoulli Odds<span></span></a></li>
+<li class="chapter" data-level="1.3.2" data-path="the-invariance-property.html"><a href="the-invariance-property.html#example-poisson-sd"><i class="fa fa-check"></i><b>1.3.2</b> Example: Poisson SD<span></span></a></li>
+<li class="chapter" data-level="1.3.3" data-path="the-invariance-property.html"><a href="the-invariance-property.html#example-beta-mean-and-variance"><i class="fa fa-check"></i><b>1.3.3</b> Example: Beta Mean and Variance<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="1.4" data-path="the-parametric-bootstrap.html"><a href="the-parametric-bootstrap.html"><i class="fa fa-check"></i><b>1.4</b> The Parametric Bootstrap<span></span></a>
+<ul>
+<li class="chapter" data-level="1.4.1" data-path="the-parametric-bootstrap.html"><a href="the-parametric-bootstrap.html#example-toothpaste-cap-problm"><i class="fa fa-check"></i><b>1.4.1</b> Example: Toothpaste Cap Problm<span></span></a></li>
+<li class="chapter" data-level="1.4.2" data-path="the-parametric-bootstrap.html"><a href="the-parametric-bootstrap.html#example-beta-distribution-1"><i class="fa fa-check"></i><b>1.4.2</b> Example: Beta Distribution<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="1.5" data-path="sampling-distribution.html"><a href="sampling-distribution.html"><i class="fa fa-check"></i><b>1.5</b> Sampling Distribution<span></span></a>
+<ul>
+<li class="chapter" data-level="1.5.1" data-path="sampling-distribution.html"><a href="sampling-distribution.html#example-the-toothpaste-cap-problem"><i class="fa fa-check"></i><b>1.5.1</b> Example: The Toothpaste Cap Problem<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="1.6" data-path="bias.html"><a href="bias.html"><i class="fa fa-check"></i><b>1.6</b> Bias<span></span></a>
+<ul>
+<li class="chapter" data-level="1.6.1" data-path="bias.html"><a href="bias.html#example-bernoulli-distribution-1"><i class="fa fa-check"></i><b>1.6.1</b> Example: Bernoulli Distribution<span></span></a></li>
+<li class="chapter" data-level="1.6.2" data-path="bias.html"><a href="bias.html#example-poisson-distribution-1"><i class="fa fa-check"></i><b>1.6.2</b> Example: Poisson Distribution<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="1.7" data-path="consistency.html"><a href="consistency.html"><i class="fa fa-check"></i><b>1.7</b> Consistency<span></span></a>
+<ul>
+<li class="chapter" data-level="1.7.1" data-path="consistency.html"><a href="consistency.html#example-illustrative"><i class="fa fa-check"></i><b>1.7.1</b> Example: Illustrative<span></span></a></li>
+<li class="chapter" data-level="1.7.2" data-path="consistency.html"><a href="consistency.html#example-bernoulli-odds-1"><i class="fa fa-check"></i><b>1.7.2</b> Example: Bernoulli Odds<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="1.8" data-path="predictive-distribution.html"><a href="predictive-distribution.html"><i class="fa fa-check"></i><b>1.8</b> Predictive Distribution<span></span></a>
+<ul>
+<li class="chapter" data-level="1.8.1" data-path="predictive-distribution.html"><a href="predictive-distribution.html#example-poisson-distribution-2"><i class="fa fa-check"></i><b>1.8.1</b> Example: Poisson Distribution<span></span></a></li>
+<li class="chapter" data-level="1.8.2" data-path="predictive-distribution.html"><a href="predictive-distribution.html#example-beta-distribution-2"><i class="fa fa-check"></i><b>1.8.2</b> Example: Beta Distribution<span></span></a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html"><i class="fa fa-check"></i><b>2</b> Week 2: Bayesian Inference<span></span></a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="bayesian-inference.html"><a href="bayesian-inference.html"><i class="fa fa-check"></i><b>2.1</b> Bayesian Inference<span></span></a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="bayesian-inference.html"><a href="bayesian-inference.html#mechanics"><i class="fa fa-check"></i><b>2.1.1</b> Mechanics<span></span></a></li>
+<li class="chapter" data-level="2.1.2" data-path="bayesian-inference.html"><a href="bayesian-inference.html#posterior-summaries"><i class="fa fa-check"></i><b>2.1.2</b> Posterior Summaries<span></span></a></li>
+<li class="chapter" data-level="2.1.3" data-path="bayesian-inference.html"><a href="bayesian-inference.html#posterior-simulation"><i class="fa fa-check"></i><b>2.1.3</b> Posterior Simulation<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="example-bernoulli.html"><a href="example-bernoulli.html"><i class="fa fa-check"></i><b>2.2</b> Example: Bernoulli<span></span></a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="example-bernoulli.html"><a href="example-bernoulli.html#likelihood"><i class="fa fa-check"></i><b>2.2.1</b> The Likelihood<span></span></a></li>
+<li class="chapter" data-level="2.2.2" data-path="example-bernoulli.html"><a href="example-bernoulli.html#the-prior"><i class="fa fa-check"></i><b>2.2.2</b> The Prior<span></span></a></li>
+<li class="chapter" data-level="2.2.3" data-path="example-bernoulli.html"><a href="example-bernoulli.html#the-posterior"><i class="fa fa-check"></i><b>2.2.3</b> The Posterior<span></span></a></li>
+<li class="chapter" data-level="2.2.4" data-path="example-bernoulli.html"><a href="example-bernoulli.html#point-estimates"><i class="fa fa-check"></i><b>2.2.4</b> Point Estimates<span></span></a></li>
+<li class="chapter" data-level="2.2.5" data-path="example-bernoulli.html"><a href="example-bernoulli.html#credible-interval"><i class="fa fa-check"></i><b>2.2.5</b> Credible Interval<span></span></a></li>
+<li class="chapter" data-level="2.2.6" data-path="example-bernoulli.html"><a href="example-bernoulli.html#simulation"><i class="fa fa-check"></i><b>2.2.6</b> Simulation<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="example-poisson-distribution-3.html"><a href="example-poisson-distribution-3.html"><i class="fa fa-check"></i><b>2.3</b> Example: Poisson Distribution<span></span></a></li>
+<li class="chapter" data-level="2.4" data-path="remarks-1.html"><a href="remarks-1.html"><i class="fa fa-check"></i><b>2.4</b> Remarks<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="week-3-adding-predictors.html"><a href="week-3-adding-predictors.html"><i class="fa fa-check"></i><b>3</b> Week 3: Adding Predictors<span></span></a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html"><i class="fa fa-check"></i><b>3.1</b> Review: The Normal Model<span></span></a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html#distribution"><i class="fa fa-check"></i><b>3.1.1</b> Distribution<span></span></a></li>
+<li class="chapter" data-level="3.1.2" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html#linear-predictor"><i class="fa fa-check"></i><b>3.1.2</b> Linear Predictor<span></span></a></li>
+<li class="chapter" data-level="3.1.3" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html#fitting-the-normal-linear-model"><i class="fa fa-check"></i><b>3.1.3</b> Fitting the Normal-Linear Model<span></span></a></li>
+<li class="chapter" data-level="3.1.4" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html#applied-example"><i class="fa fa-check"></i><b>3.1.4</b> Applied Example<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="bernoulli-model.html"><a href="bernoulli-model.html"><i class="fa fa-check"></i><b>3.2</b> Bernoulli Model<span></span></a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="bernoulli-model.html"><a href="bernoulli-model.html#the-linear-probability-model"><i class="fa fa-check"></i><b>3.2.1</b> The Linear Probability Model<span></span></a></li>
+<li class="chapter" data-level="3.2.2" data-path="bernoulli-model.html"><a href="bernoulli-model.html#the-logit-model"><i class="fa fa-check"></i><b>3.2.2</b> The Logit Model<span></span></a></li>
+<li class="chapter" data-level="3.2.3" data-path="bernoulli-model.html"><a href="bernoulli-model.html#fitting-a-logit-model"><i class="fa fa-check"></i><b>3.2.3</b> Fitting a Logit Model<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="poisson-model.html"><a href="poisson-model.html"><i class="fa fa-check"></i><b>3.3</b> Poisson Model<span></span></a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="poisson-model.html"><a href="poisson-model.html#predictive-distribution-1"><i class="fa fa-check"></i><b>3.3.1</b> Predictive Distribution<span></span></a></li>
+<li class="chapter" data-level="3.3.2" data-path="poisson-model.html"><a href="poisson-model.html#posterior-predictive-distribution"><i class="fa fa-check"></i><b>3.3.2</b> Posterior Predictive Distribution<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="posterior-predictive-distribution-1.html"><a href="posterior-predictive-distribution-1.html"><i class="fa fa-check"></i><b>3.4</b> [Posterior] Predictive Distribution<span></span></a>
+<ul>
+<li class="chapter" data-level="3.4.1" data-path="posterior-predictive-distribution-1.html"><a href="posterior-predictive-distribution-1.html#for-the-logit-model"><i class="fa fa-check"></i><b>3.4.1</b> … for the logit model<span></span></a></li>
+<li class="chapter" data-level="3.4.2" data-path="posterior-predictive-distribution-1.html"><a href="posterior-predictive-distribution-1.html#for-the-poisson-model"><i class="fa fa-check"></i><b>3.4.2</b> … for the Poisson model<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="quantities-of-interest.html"><a href="quantities-of-interest.html"><i class="fa fa-check"></i><b>3.5</b> Quantities of Interest<span></span></a>
+<ul>
+<li class="chapter" data-level="3.5.1" data-path="quantities-of-interest.html"><a href="quantities-of-interest.html#expected-value"><i class="fa fa-check"></i><b>3.5.1</b> Expected Value<span></span></a></li>
+<li class="chapter" data-level="3.5.2" data-path="quantities-of-interest.html"><a href="quantities-of-interest.html#first-difference"><i class="fa fa-check"></i><b>3.5.2</b> First Difference<span></span></a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="week-4-confidence-intervals.html"><a href="week-4-confidence-intervals.html"><i class="fa fa-check"></i><b>4</b> Week 4: Confidence Intervals<span></span></a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="the-parametric-bootstrap-1.html"><a href="the-parametric-bootstrap-1.html"><i class="fa fa-check"></i><b>4.1</b> The Parametric Bootstrap<span></span></a></li>
+<li class="chapter" data-level="4.2" data-path="the-nonparametric-bootstrap.html"><a href="the-nonparametric-bootstrap.html"><i class="fa fa-check"></i><b>4.2</b> The <em>Non</em>parametric Bootstrap<span></span></a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="the-nonparametric-bootstrap.html"><a href="the-nonparametric-bootstrap.html#example-coefficients-from-the-civilian-casualties-model"><i class="fa fa-check"></i><b>4.2.1</b> Example: Coefficients from the Civilian Casualties Model<span></span></a></li>
+<li class="chapter" data-level="4.2.2" data-path="the-nonparametric-bootstrap.html"><a href="the-nonparametric-bootstrap.html#example-first-difference-from-the-civilian-casualties-model"><i class="fa fa-check"></i><b>4.2.2</b> Example: First Difference from the Civilian Casualties Model<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html"><i class="fa fa-check"></i><b>4.3</b> Wald Confidence Intervals<span></span></a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html#curvature-in-a-single-dimmension"><i class="fa fa-check"></i><b>4.3.1</b> Curvature in a Single Dimmension<span></span></a></li>
+<li class="chapter" data-level="4.3.2" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html#curvature-in-a-multiple-dimmensions"><i class="fa fa-check"></i><b>4.3.2</b> Curvature in a Multiple Dimmensions<span></span></a></li>
+<li class="chapter" data-level="4.3.3" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html#from-curvature-to-confidence-intervals"><i class="fa fa-check"></i><b>4.3.3</b> From Curvature to Confidence Intervals<span></span></a></li>
+<li class="chapter" data-level="4.3.4" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html#final-notes"><i class="fa fa-check"></i><b>4.3.4</b> Final Notes<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="evaluating-confidence-intervals.html"><a href="evaluating-confidence-intervals.html"><i class="fa fa-check"></i><b>4.4</b> Evaluating Confidence Intervals<span></span></a>
+<ul>
+<li class="chapter" data-level="4.4.1" data-path="evaluating-confidence-intervals.html"><a href="evaluating-confidence-intervals.html#coverage"><i class="fa fa-check"></i><b>4.4.1</b> Coverage<span></span></a></li>
+<li class="chapter" data-level="4.4.2" data-path="evaluating-confidence-intervals.html"><a href="evaluating-confidence-intervals.html#monte-carlo-simulation-to-assess-coverage"><i class="fa fa-check"></i><b>4.4.2</b> Monte Carlo Simulation to Assess Coverage<span></span></a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="week-5-models-of-binary-outcomes-and-model-fit-summaries.html"><a href="week-5-models-of-binary-outcomes-and-model-fit-summaries.html"><i class="fa fa-check"></i><b>5</b> Week 5: Models of Binary Outcomes and Model Fit Summaries<span></span></a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="measures-of-model-fit.html"><a href="measures-of-model-fit.html"><i class="fa fa-check"></i><b>5.1</b> Measures of Model Fit<span></span></a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="measures-of-model-fit.html"><a href="measures-of-model-fit.html#scoring-binary-predictions"><i class="fa fa-check"></i><b>5.1.1</b> Scoring Binary Predictions<span></span></a></li>
+<li class="chapter" data-level="5.1.2" data-path="measures-of-model-fit.html"><a href="measures-of-model-fit.html#cross-validation"><i class="fa fa-check"></i><b>5.1.2</b> Cross-Validation<span></span></a></li>
+<li class="chapter" data-level="5.1.3" data-path="measures-of-model-fit.html"><a href="measures-of-model-fit.html#information-criteria"><i class="fa fa-check"></i><b>5.1.3</b> Information Criteria<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="models-of-binary-outcomes.html"><a href="models-of-binary-outcomes.html"><i class="fa fa-check"></i><b>5.2</b> Models of Binary Outcomes<span></span></a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="models-of-binary-outcomes.html"><a href="models-of-binary-outcomes.html#logit"><i class="fa fa-check"></i><b>5.2.1</b> Logit<span></span></a></li>
+<li class="chapter" data-level="5.2.2" data-path="models-of-binary-outcomes.html"><a href="models-of-binary-outcomes.html#probit"><i class="fa fa-check"></i><b>5.2.2</b> Probit<span></span></a></li>
+<li class="chapter" data-level="5.2.3" data-path="models-of-binary-outcomes.html"><a href="models-of-binary-outcomes.html#cloglog"><i class="fa fa-check"></i><b>5.2.3</b> Cloglog<span></span></a></li>
+<li class="chapter" data-level="5.2.4" data-path="models-of-binary-outcomes.html"><a href="models-of-binary-outcomes.html#cauchit"><i class="fa fa-check"></i><b>5.2.4</b> Cauchit<span></span></a></li>
+<li class="chapter" data-level="5.2.5" data-path="models-of-binary-outcomes.html"><a href="models-of-binary-outcomes.html#scobit"><i class="fa fa-check"></i><b>5.2.5</b> Scobit<span></span></a></li>
+<li class="chapter" data-level="5.2.6" data-path="models-of-binary-outcomes.html"><a href="models-of-binary-outcomes.html#heteroskedastic-probit"><i class="fa fa-check"></i><b>5.2.6</b> Heteroskedastic Probit<span></span></a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistical Modeling: A Tools Approach</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="measures-of-model-fit" class="section level2 hasAnchor" number="5.1">
+<h2><span class="header-section-number">5.1</span> Measures of Model Fit<a href="measures-of-model-fit.html#measures-of-model-fit" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="scoring-binary-predictions" class="section level3 hasAnchor" number="5.1.1">
+<h3><span class="header-section-number">5.1.1</span> Scoring Binary Predictions<a href="measures-of-model-fit.html#scoring-binary-predictions" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Suppose you have a binary outcome <span class="math inline">\(y_i\)</span> for <span class="math inline">\(i = \{1, 2, ..., n\}\)</span> and you develop a set of predictions for each outcome in the from of probabilities <span class="math inline">\(p_i\)</span> for <span class="math inline">\(i = \{1, 2, ..., n\}\)</span> and a competitor develops the set <span class="math inline">\(q_i\)</span> for <span class="math inline">\(i = \{1, 2, ..., n\}\)</span>. Intuitively, if the <span class="math inline">\(p_i\)</span>s are “closer” to the <span class="math inline">\(y_i\)</span>s than the <span class="math inline">\(q_i\)</span>s, then the <span class="math inline">\(p_i\)</span>s are a better prediction. By extension, the model that produced the <span class="math inline">\(p_i\)</span>s is a better model than the model that produced the <span class="math inline">\(q_i\)</span>s.</p>
+<p>But we need a formal rule for defining what we mean by “closer.” There are two common scoring rules at the level of the individual predictions.</p>
+<ol style="list-style-type: decimal">
+<li><strong>Brier Score</strong> The Brier score is squared error of the prediction <span class="math inline">\(p_i\)</span> and the outcome <span class="math inline">\(y_i\)</span>, so that <span class="math inline">\(\text{Brier Score_i} = (p_i -y_i)^2\)</span>. This is analogous to linear regression, where we minimize the RMS of the residuals.</li>
+<li><strong>Log Score</strong> The log score is the logarithm of the probabilities assigned to the event that occurred. This can be awkward to interpret, since better predictions produce <em>less negative</em> values. Therefore, it’s common to multiply log scores by <span class="math inline">\(-1\)</span>. In practice, we tend to we can compute this as <span class="math inline">\(\text{Log Score}_i = - [y_i \log(p_i) + (1 - y_i) \log (1 - p_i)]\)</span></li>
+</ol>
+<p>To aggregate the scores across the observations, we can use a simple average for both the Brier and log scores.</p>
+<p>To see these scoring rules in action, let’s fit fit the familiar logit model to data from <a href="https://onlinelibrary.wiley.com/doi/10.1111/j.1540-5907.2011.00522.x">Krupnikov (2011)</a>. In this <em>AJPS</em> article, she argues that late campaign negativity targeted toward a liked candidate demobilizes voters while other forms of negativity do not.</p>
+<p>She concludes:</p>
+<blockquote>
+<p>…the substantive results reinforce the conclusion that it is late negativity that targets the individual’s preferred candidate that leads to significant changes in the likelihood of turnout. Increases in negativity about the preferred candidate decrease turnout likelihood by as much as 6 percentage points; even more importantly, the decrease in turnout is statistically significant. In contrast, the substantive effects of negativity about the other candidate, as well as overall negativity, are statistically indistinguishable from 0.</p>
+</blockquote>
+<p>In the model below (from her Model 3 in Table 4 on p. 807), she is specifically interested in comparing the effects of <code>negaboutdislike</code> and <code>negaboutlike</code>. She shows that the estimated coefficient for <code>negaboutdislike</code> is not statistically significant, while the estimated coefficient for <code>negaboutlike</code> <em>is</em> statistically significant.</p>
+<p>First, let’s reproduce her fitted model results.</p>
+<div class="sourceCode" id="cb240"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb240-1"><a href="measures-of-model-fit.html#cb240-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load data</span></span>
+<span id="cb240-2"><a href="measures-of-model-fit.html#cb240-2" aria-hidden="true" tabindex="-1"></a>krup_raw <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">&quot;data/krup.dta&quot;</span>) </span>
+<span id="cb240-3"><a href="measures-of-model-fit.html#cb240-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb240-4"><a href="measures-of-model-fit.html#cb240-4" aria-hidden="true" tabindex="-1"></a><span class="co"># model formula (model 3, tab. 4, p. 807, krupnikov 2011)</span></span>
+<span id="cb240-5"><a href="measures-of-model-fit.html#cb240-5" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> turnout <span class="sc">~</span> </span>
+<span id="cb240-6"><a href="measures-of-model-fit.html#cb240-6" aria-hidden="true" tabindex="-1"></a>           <span class="co"># negativity</span></span>
+<span id="cb240-7"><a href="measures-of-model-fit.html#cb240-7" aria-hidden="true" tabindex="-1"></a>           negaboutdislike <span class="sc">+</span> negaboutlike <span class="sc">+</span></span>
+<span id="cb240-8"><a href="measures-of-model-fit.html#cb240-8" aria-hidden="true" tabindex="-1"></a>           <span class="co"># resources</span></span>
+<span id="cb240-9"><a href="measures-of-model-fit.html#cb240-9" aria-hidden="true" tabindex="-1"></a>           income <span class="sc">+</span> education <span class="sc">+</span> age <span class="sc">+</span> unemployed <span class="sc">+</span></span>
+<span id="cb240-10"><a href="measures-of-model-fit.html#cb240-10" aria-hidden="true" tabindex="-1"></a>           <span class="co"># evaluation of parties and candidates</span></span>
+<span id="cb240-11"><a href="measures-of-model-fit.html#cb240-11" aria-hidden="true" tabindex="-1"></a>           PIDStrength <span class="sc">+</span> AffectPID <span class="sc">+</span> care <span class="sc">+</span> AffectPRES <span class="sc">+</span></span>
+<span id="cb240-12"><a href="measures-of-model-fit.html#cb240-12" aria-hidden="true" tabindex="-1"></a>           <span class="co"># social involvement</span></span>
+<span id="cb240-13"><a href="measures-of-model-fit.html#cb240-13" aria-hidden="true" tabindex="-1"></a>           lnYears <span class="sc">+</span> Church <span class="sc">+</span> homeowners <span class="sc">+</span> working <span class="sc">+</span> </span>
+<span id="cb240-14"><a href="measures-of-model-fit.html#cb240-14" aria-hidden="true" tabindex="-1"></a>           <span class="co"># mobilization</span></span>
+<span id="cb240-15"><a href="measures-of-model-fit.html#cb240-15" aria-hidden="true" tabindex="-1"></a>           contacted <span class="sc">+</span> </span>
+<span id="cb240-16"><a href="measures-of-model-fit.html#cb240-16" aria-hidden="true" tabindex="-1"></a>           <span class="co"># interest, exposure, and efficacy</span></span>
+<span id="cb240-17"><a href="measures-of-model-fit.html#cb240-17" aria-hidden="true" tabindex="-1"></a>           external <span class="sc">+</span> internal <span class="sc">+</span> interest <span class="sc">+</span> media_index <span class="sc">+</span> </span>
+<span id="cb240-18"><a href="measures-of-model-fit.html#cb240-18" aria-hidden="true" tabindex="-1"></a>           <span class="co"># other demographics</span></span>
+<span id="cb240-19"><a href="measures-of-model-fit.html#cb240-19" aria-hidden="true" tabindex="-1"></a>           married <span class="sc">+</span> black <span class="sc">+</span> southern <span class="sc">+</span> hispanic <span class="sc">+</span> gender <span class="sc">+</span> </span>
+<span id="cb240-20"><a href="measures-of-model-fit.html#cb240-20" aria-hidden="true" tabindex="-1"></a>           <span class="co"># state conditions</span></span>
+<span id="cb240-21"><a href="measures-of-model-fit.html#cb240-21" aria-hidden="true" tabindex="-1"></a>           closeness <span class="sc">+</span> governors <span class="sc">+</span> primaries <span class="sc">+</span> </span>
+<span id="cb240-22"><a href="measures-of-model-fit.html#cb240-22" aria-hidden="true" tabindex="-1"></a>           <span class="co"># volume and year controls</span></span>
+<span id="cb240-23"><a href="measures-of-model-fit.html#cb240-23" aria-hidden="true" tabindex="-1"></a>           volume2 <span class="sc">+</span> dummy1988 <span class="sc">+</span> dummy2000 <span class="sc">+</span> dummy1992 <span class="sc">+</span> dummy1996</span>
+<span id="cb240-24"><a href="measures-of-model-fit.html#cb240-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb240-25"><a href="measures-of-model-fit.html#cb240-25" aria-hidden="true" tabindex="-1"></a><span class="co"># drop rows with missing values from the data set</span></span>
+<span id="cb240-26"><a href="measures-of-model-fit.html#cb240-26" aria-hidden="true" tabindex="-1"></a>krup <span class="ot">&lt;-</span> krup_raw <span class="sc">%&gt;%</span></span>
+<span id="cb240-27"><a href="measures-of-model-fit.html#cb240-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">get_all_vars</span>(f, <span class="at">data =</span> .)  <span class="sc">%&gt;%</span></span>
+<span id="cb240-28"><a href="measures-of-model-fit.html#cb240-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span>
+<span id="cb240-29"><a href="measures-of-model-fit.html#cb240-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb240-30"><a href="measures-of-model-fit.html#cb240-30" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(f, <span class="at">data =</span> krup, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>)</span></code></pre></div>
+<p>Now let’s compute the Brier scores for each observation and the aggregate to the data set by averaging.</p>
+<div class="sourceCode" id="cb241"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb241-1"><a href="measures-of-model-fit.html#cb241-1" aria-hidden="true" tabindex="-1"></a><span class="co"># obtain prediction</span></span>
+<span id="cb241-2"><a href="measures-of-model-fit.html#cb241-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
+<span id="cb241-3"><a href="measures-of-model-fit.html#cb241-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb241-4"><a href="measures-of-model-fit.html#cb241-4" aria-hidden="true" tabindex="-1"></a><span class="co"># compute brier scores</span></span>
+<span id="cb241-5"><a href="measures-of-model-fit.html#cb241-5" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> krup<span class="sc">$</span>turnout                           <span class="co"># create a vector to make code more readable</span></span>
+<span id="cb241-6"><a href="measures-of-model-fit.html#cb241-6" aria-hidden="true" tabindex="-1"></a>brier_scores <span class="ot">&lt;-</span> (y <span class="sc">-</span> p)<span class="sc">^</span><span class="dv">2</span>                      <span class="co"># compute manually</span></span>
+<span id="cb241-7"><a href="measures-of-model-fit.html#cb241-7" aria-hidden="true" tabindex="-1"></a>brier_scores_alt <span class="ot">&lt;-</span> scoring<span class="sc">::</span><span class="fu">brierscore</span>(y <span class="sc">~</span> p) <span class="co"># compute with the scoring package</span></span>
+<span id="cb241-8"><a href="measures-of-model-fit.html#cb241-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb241-9"><a href="measures-of-model-fit.html#cb241-9" aria-hidden="true" tabindex="-1"></a><span class="co"># aggregate by averaging</span></span>
+<span id="cb241-10"><a href="measures-of-model-fit.html#cb241-10" aria-hidden="true" tabindex="-1"></a>bs <span class="ot">&lt;-</span> <span class="fu">mean</span>(brier_scores)</span>
+<span id="cb241-11"><a href="measures-of-model-fit.html#cb241-11" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(bs, <span class="at">digits =</span> <span class="dv">2</span>)</span></code></pre></div>
+<pre><code>## [1] 0.089</code></pre>
+<p>Now let’s do the same for the log scores.</p>
+<div class="sourceCode" id="cb243"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb243-1"><a href="measures-of-model-fit.html#cb243-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compute log scores</span></span>
+<span id="cb243-2"><a href="measures-of-model-fit.html#cb243-2" aria-hidden="true" tabindex="-1"></a>log_scores <span class="ot">&lt;-</span> <span class="sc">-</span>(y<span class="sc">*</span><span class="fu">log</span>(p) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> y)<span class="sc">*</span><span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> p))</span>
+<span id="cb243-3"><a href="measures-of-model-fit.html#cb243-3" aria-hidden="true" tabindex="-1"></a>log_scores_alt <span class="ot">&lt;-</span> scoring<span class="sc">::</span><span class="fu">logscore</span>(y <span class="sc">~</span> p)</span>
+<span id="cb243-4"><a href="measures-of-model-fit.html#cb243-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb243-5"><a href="measures-of-model-fit.html#cb243-5" aria-hidden="true" tabindex="-1"></a><span class="co"># aggregate by averaging</span></span>
+<span id="cb243-6"><a href="measures-of-model-fit.html#cb243-6" aria-hidden="true" tabindex="-1"></a>ls <span class="ot">&lt;-</span> <span class="fu">mean</span>(log_scores)</span>
+<span id="cb243-7"><a href="measures-of-model-fit.html#cb243-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(ls, <span class="at">digits =</span> <span class="dv">2</span>)</span></code></pre></div>
+<pre><code>## [1] 0.3</code></pre>
+<p>It’s usually difficult to interpret or act upon the Brier and log scores for a single model. Instead, we typically use them to choose among a set of models.</p>
+<p>As an simple example, I removed the two late-negativity variables from the model (Krupnikov’s key explanatory variables)</p>
+<p>Important: When using the Brier and log scores, <strong>lower scores indicate a better fit.</strong></p>
+<table>
+<colgroup>
+<col width="57%" />
+<col width="19%" />
+<col width="22%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Model Name</th>
+<th align="right">Avg. Log Score</th>
+<th align="right">Avg. Brier Score</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Full Model</td>
+<td align="right">0.2984</td>
+<td align="right">0.0893</td>
+</tr>
+<tr class="even">
+<td align="left">Remove Negativity About Disliked Candidates</td>
+<td align="right">0.2986</td>
+<td align="right">0.0893</td>
+</tr>
+<tr class="odd">
+<td align="left">Remove Negativity About Liked Candidates</td>
+<td align="right">0.2986</td>
+<td align="right">0.0893</td>
+</tr>
+<tr class="even">
+<td align="left">Remove Both Negativity Variables</td>
+<td align="right">0.2986</td>
+<td align="right">0.0893</td>
+</tr>
+</tbody>
+</table>
+<p><img src="05-01-model-fit-summaries_files/figure-html/unnamed-chunk-5-1.png" width="576" /></p>
+</div>
+<div id="cross-validation" class="section level3 hasAnchor" number="5.1.2">
+<h3><span class="header-section-number">5.1.2</span> Cross-Validation<a href="measures-of-model-fit.html#cross-validation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>But here’s the dirty little secret: you can <strong>always</strong> make your model better <em>within your sample</em> by making the model more complex. As a simple illustration, I added a quadruple interactions between both forms of negativity and education, income, and gender.</p>
+<pre><code>turnout ~ negaboutdislike*education*income*gender + negaboutlike*education*income*gender + ...</code></pre>
+<p>This model will better predictions than the baseline model.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Model Name</th>
+<th align="right">Avg. Log Score</th>
+<th align="right">Avg. Brier Score</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Full Model</td>
+<td align="right">0.2983961</td>
+<td align="right">0.08928690</td>
+</tr>
+<tr class="even">
+<td align="left">Adding Wild Interactions</td>
+<td align="right">0.2966916</td>
+<td align="right">0.08876646</td>
+</tr>
+</tbody>
+</table>
+<p>Consider the two models fit trough the data below. A simple line (in green) fits the data quite nicely. However, a 10th-order polynomial (in orange) fits the observed data <em>even better</em> (in fact, it has no error at all!).</p>
+<div class="sourceCode" id="cb246"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb246-1"><a href="measures-of-model-fit.html#cb246-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb246-2"><a href="measures-of-model-fit.html#cb246-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">11</span></span>
+<span id="cb246-3"><a href="measures-of-model-fit.html#cb246-3" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="at">length.out =</span> n)</span>
+<span id="cb246-4"><a href="measures-of-model-fit.html#cb246-4" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n) <span class="sc">+</span> x</span>
+<span id="cb246-5"><a href="measures-of-model-fit.html#cb246-5" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(y, x)</span>
+<span id="cb246-6"><a href="measures-of-model-fit.html#cb246-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb246-7"><a href="measures-of-model-fit.html#cb246-7" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x, <span class="at">data =</span> data)</span>
+<span id="cb246-8"><a href="measures-of-model-fit.html#cb246-8" aria-hidden="true" tabindex="-1"></a>fit10 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="fu">poly</span>(x, <span class="dv">10</span>), <span class="at">data =</span> data)</span>
+<span id="cb246-9"><a href="measures-of-model-fit.html#cb246-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb246-10"><a href="measures-of-model-fit.html#cb246-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(x, y)) <span class="sc">+</span> </span>
+<span id="cb246-11"><a href="measures-of-model-fit.html#cb246-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> lm, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">color =</span> <span class="st">&quot;#1b9e77&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb246-12"><a href="measures-of-model-fit.html#cb246-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> lm, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">formula =</span> y <span class="sc">~</span> <span class="fu">poly</span>(x, <span class="dv">10</span>), <span class="at">n =</span> <span class="dv">1001</span>, <span class="at">color =</span> <span class="st">&quot;#d95f02&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb246-13"><a href="measures-of-model-fit.html#cb246-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code></pre></div>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p><img src="05-01-model-fit-summaries_files/figure-html/unnamed-chunk-7-1.png" width="384" /></p>
+<p>But if we used the 10th-order polynomial for prediction, it would perform horribly. Why? Because it <em>overfits</em> the data. That is, it explains both the <em>systematic</em> and <em>idiosyncratic</em> features of the observed data. Suppose we need to make a prediction for <span class="math inline">\(x = -0.95\)</span>. The complex model generates a prediction of about -14.</p>
+<p>To avoid over-fitting the model, we can use two approaches.</p>
+<ol style="list-style-type: decimal">
+<li>cross validation</li>
+<li>information criteria</li>
+</ol>
+<p>Let’s start with leave-one-out cross validation.</p>
+<p>For each observation <span class="math inline">\(i\)</span> in the data set:</p>
+<ol style="list-style-type: decimal">
+<li>Drop that observation <span class="math inline">\(i\)</span>.</li>
+<li>Fit the model using the remaining data.</li>
+<li>Predict the dropped observation.</li>
+<li>Compute the score for that observation.</li>
+</ol>
+<p>Because the observation being predicted is left-out and <em>not in the data set used to fit the model</em>, the model cannot “cheat” and fit the idiosyncratic variation in the left-out data point. In order to perform well, it must identify systematic variation in the <em>other</em> data points and use that information to predict the left-out observation.</p>
+<p>If your data set has <span class="math inline">\(n\)</span> observations, then you must fit <span class="math inline">\(n\)</span> models to perform leave-one-out cross validation. Let’s estimate the time-cost for Krupnikov’s model.</p>
+<div class="sourceCode" id="cb248"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb248-1"><a href="measures-of-model-fit.html#cb248-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit model and store time</span></span>
+<span id="cb248-2"><a href="measures-of-model-fit.html#cb248-2" aria-hidden="true" tabindex="-1"></a>time <span class="ot">&lt;-</span> <span class="fu">system.time</span>( </span>
+<span id="cb248-3"><a href="measures-of-model-fit.html#cb248-3" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(f, <span class="at">data =</span> krup, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>)</span>
+<span id="cb248-4"><a href="measures-of-model-fit.html#cb248-4" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb248-5"><a href="measures-of-model-fit.html#cb248-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb248-6"><a href="measures-of-model-fit.html#cb248-6" aria-hidden="true" tabindex="-1"></a><span class="co"># multiply elapsed time times number of observations</span></span>
+<span id="cb248-7"><a href="measures-of-model-fit.html#cb248-7" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(time[<span class="st">&quot;elapsed&quot;</span>]<span class="sc">*</span><span class="fu">nrow</span>(krup)<span class="sc">/</span>(<span class="dv">60</span>), <span class="dv">1</span>)  <span class="co"># convert to minutes</span></span></code></pre></div>
+<pre><code>## elapsed 
+##     6.6</code></pre>
+<p>Each model takes about 0.05 seconds to fit. This seems fast, but you need to do it about 6,000 times, which takes about 300 seconds or five minutes.</p>
+<div class="sourceCode" id="cb250"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb250-1"><a href="measures-of-model-fit.html#cb250-1" aria-hidden="true" tabindex="-1"></a><span class="co"># note system time</span></span>
+<span id="cb250-2"><a href="measures-of-model-fit.html#cb250-2" aria-hidden="true" tabindex="-1"></a>start_time <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb250-3"><a href="measures-of-model-fit.html#cb250-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb250-4"><a href="measures-of-model-fit.html#cb250-4" aria-hidden="true" tabindex="-1"></a><span class="co"># perform cross validation</span></span>
+<span id="cb250-5"><a href="measures-of-model-fit.html#cb250-5" aria-hidden="true" tabindex="-1"></a>results_list <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb250-6"><a href="measures-of-model-fit.html#cb250-6" aria-hidden="true" tabindex="-1"></a><span class="co">#for (i in 1:nrow(krup)) {</span></span>
+<span id="cb250-7"><a href="measures-of-model-fit.html#cb250-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>) {</span>
+<span id="cb250-8"><a href="measures-of-model-fit.html#cb250-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (i <span class="sc">%%</span> <span class="dv">100</span> <span class="sc">==</span> <span class="dv">0</span>) <span class="fu">print</span>(i)</span>
+<span id="cb250-9"><a href="measures-of-model-fit.html#cb250-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create training data and test data, to make code readable</span></span>
+<span id="cb250-10"><a href="measures-of-model-fit.html#cb250-10" aria-hidden="true" tabindex="-1"></a>  training <span class="ot">&lt;-</span> <span class="fu">slice</span>(krup, <span class="sc">-</span>i)</span>
+<span id="cb250-11"><a href="measures-of-model-fit.html#cb250-11" aria-hidden="true" tabindex="-1"></a>  test     <span class="ot">&lt;-</span> <span class="fu">slice</span>(krup,  i)</span>
+<span id="cb250-12"><a href="measures-of-model-fit.html#cb250-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># fit model</span></span>
+<span id="cb250-13"><a href="measures-of-model-fit.html#cb250-13" aria-hidden="true" tabindex="-1"></a>  fit_i <span class="ot">&lt;-</span> <span class="fu">glm</span>(f, <span class="at">data =</span> training, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>)</span>
+<span id="cb250-14"><a href="measures-of-model-fit.html#cb250-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># compute scores for test data (compute scores later)</span></span>
+<span id="cb250-15"><a href="measures-of-model-fit.html#cb250-15" aria-hidden="true" tabindex="-1"></a>  y_i <span class="ot">&lt;-</span> test<span class="sc">$</span>turnout</span>
+<span id="cb250-16"><a href="measures-of-model-fit.html#cb250-16" aria-hidden="true" tabindex="-1"></a>  p_i <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit_i, <span class="at">newdata =</span> test, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
+<span id="cb250-17"><a href="measures-of-model-fit.html#cb250-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># store results</span></span>
+<span id="cb250-18"><a href="measures-of-model-fit.html#cb250-18" aria-hidden="true" tabindex="-1"></a>  results_list[[i]] <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">case_id =</span> i,</span>
+<span id="cb250-19"><a href="measures-of-model-fit.html#cb250-19" aria-hidden="true" tabindex="-1"></a>                              <span class="at">y =</span> y_i,</span>
+<span id="cb250-20"><a href="measures-of-model-fit.html#cb250-20" aria-hidden="true" tabindex="-1"></a>                              <span class="at">p =</span> p_i)</span>
+<span id="cb250-21"><a href="measures-of-model-fit.html#cb250-21" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb250-22"><a href="measures-of-model-fit.html#cb250-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb250-23"><a href="measures-of-model-fit.html#cb250-23" aria-hidden="true" tabindex="-1"></a><span class="co"># note system time</span></span>
+<span id="cb250-24"><a href="measures-of-model-fit.html#cb250-24" aria-hidden="true" tabindex="-1"></a>end_time <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb250-25"><a href="measures-of-model-fit.html#cb250-25" aria-hidden="true" tabindex="-1"></a>diff_time <span class="ot">&lt;-</span> <span class="fu">difftime</span>(end_time, start_time, <span class="at">units =</span> <span class="st">&quot;mins&quot;</span>)</span>
+<span id="cb250-26"><a href="measures-of-model-fit.html#cb250-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb250-27"><a href="measures-of-model-fit.html#cb250-27" aria-hidden="true" tabindex="-1"></a><span class="co"># combine results and compute scores</span></span>
+<span id="cb250-28"><a href="measures-of-model-fit.html#cb250-28" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(results_list) <span class="sc">%&gt;%</span></span>
+<span id="cb250-29"><a href="measures-of-model-fit.html#cb250-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">log_score =</span> <span class="sc">-</span>(y<span class="sc">*</span><span class="fu">log</span>(p) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> y)<span class="sc">*</span><span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> p)),</span>
+<span id="cb250-30"><a href="measures-of-model-fit.html#cb250-30" aria-hidden="true" tabindex="-1"></a>         <span class="at">brier_score =</span> (y <span class="sc">-</span> p)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb250-31"><a href="measures-of-model-fit.html#cb250-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb250-32"><a href="measures-of-model-fit.html#cb250-32" aria-hidden="true" tabindex="-1"></a><span class="co"># average scores</span></span>
+<span id="cb250-33"><a href="measures-of-model-fit.html#cb250-33" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">mean</span>(results<span class="sc">$</span>log_score), <span class="dv">3</span>)</span></code></pre></div>
+<pre><code>## [1] 0.411</code></pre>
+<div class="sourceCode" id="cb252"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb252-1"><a href="measures-of-model-fit.html#cb252-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">mean</span>(results<span class="sc">$</span>brier_score), <span class="dv">3</span>)</span></code></pre></div>
+<pre><code>## [1] 0.13</code></pre>
+<p>This code took 0) minutes to run. This isn’t always practical, especially for large data sets. (It is embarrassingly parallel, though, so it’s possible to dramatically shrink this time using parallel computing.)</p>
+<p>For large data sets, rather than drop each observation individually, we can divide the data into <span class="math inline">\(k\)</span> equally-sized (or as close to equal as possible) groups. The we repeat the same process but drop and predict each <em>group</em> rather than the individual data points. This is called <strong><span class="math inline">\(k\)</span>-fold cross validation</strong>. If <span class="math inline">\(k = n\)</span>, then we just have leave-one-out cross-validation.</p>
+<p>The code below uses <span class="math inline">\(k = 10\)</span> and finds the average log and Brier scores for out-of-sample prediction using <span class="math inline">\(k\)</span>-fold cross-validation for the scobit data.</p>
+<div class="sourceCode" id="cb254"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb254-1"><a href="measures-of-model-fit.html#cb254-1" aria-hidden="true" tabindex="-1"></a><span class="co"># cross validation groups</span></span>
+<span id="cb254-2"><a href="measures-of-model-fit.html#cb254-2" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="dv">10</span>  </span>
+<span id="cb254-3"><a href="measures-of-model-fit.html#cb254-3" aria-hidden="true" tabindex="-1"></a>group <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>k, <span class="at">length.out =</span> <span class="fu">nrow</span>(krup)))</span>
+<span id="cb254-4"><a href="measures-of-model-fit.html#cb254-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb254-5"><a href="measures-of-model-fit.html#cb254-5" aria-hidden="true" tabindex="-1"></a><span class="co"># perform cross validation</span></span>
+<span id="cb254-6"><a href="measures-of-model-fit.html#cb254-6" aria-hidden="true" tabindex="-1"></a>results_list <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb254-7"><a href="measures-of-model-fit.html#cb254-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>k) {</span>
+<span id="cb254-8"><a href="measures-of-model-fit.html#cb254-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create training data and test data, to make code readable</span></span>
+<span id="cb254-9"><a href="measures-of-model-fit.html#cb254-9" aria-hidden="true" tabindex="-1"></a>  training <span class="ot">&lt;-</span> <span class="fu">filter</span>(krup, group <span class="sc">!=</span> i)</span>
+<span id="cb254-10"><a href="measures-of-model-fit.html#cb254-10" aria-hidden="true" tabindex="-1"></a>  test     <span class="ot">&lt;-</span> <span class="fu">filter</span>(krup, group <span class="sc">==</span> i)</span>
+<span id="cb254-11"><a href="measures-of-model-fit.html#cb254-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># fit model</span></span>
+<span id="cb254-12"><a href="measures-of-model-fit.html#cb254-12" aria-hidden="true" tabindex="-1"></a>  fit_i <span class="ot">&lt;-</span> <span class="fu">glm</span>(f, <span class="at">data =</span> training, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>)</span>
+<span id="cb254-13"><a href="measures-of-model-fit.html#cb254-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># compute scores for test data (compute scores later)</span></span>
+<span id="cb254-14"><a href="measures-of-model-fit.html#cb254-14" aria-hidden="true" tabindex="-1"></a>  y_i <span class="ot">&lt;-</span> test<span class="sc">$</span>turnout</span>
+<span id="cb254-15"><a href="measures-of-model-fit.html#cb254-15" aria-hidden="true" tabindex="-1"></a>  p_i <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit_i, <span class="at">newdata =</span> test, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
+<span id="cb254-16"><a href="measures-of-model-fit.html#cb254-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># store results</span></span>
+<span id="cb254-17"><a href="measures-of-model-fit.html#cb254-17" aria-hidden="true" tabindex="-1"></a>  results_list[[i]] <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">group =</span> i,</span>
+<span id="cb254-18"><a href="measures-of-model-fit.html#cb254-18" aria-hidden="true" tabindex="-1"></a>                              <span class="at">y =</span> y_i,</span>
+<span id="cb254-19"><a href="measures-of-model-fit.html#cb254-19" aria-hidden="true" tabindex="-1"></a>                              <span class="at">p =</span> p_i)</span>
+<span id="cb254-20"><a href="measures-of-model-fit.html#cb254-20" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb254-21"><a href="measures-of-model-fit.html#cb254-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb254-22"><a href="measures-of-model-fit.html#cb254-22" aria-hidden="true" tabindex="-1"></a><span class="co"># combine results and compute scores</span></span>
+<span id="cb254-23"><a href="measures-of-model-fit.html#cb254-23" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(results_list) <span class="sc">%&gt;%</span></span>
+<span id="cb254-24"><a href="measures-of-model-fit.html#cb254-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">log_score =</span> <span class="sc">-</span>(y<span class="sc">*</span><span class="fu">log</span>(p) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> y)<span class="sc">*</span><span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> p)),</span>
+<span id="cb254-25"><a href="measures-of-model-fit.html#cb254-25" aria-hidden="true" tabindex="-1"></a>         <span class="at">brier_score =</span> (y <span class="sc">-</span> p)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb254-26"><a href="measures-of-model-fit.html#cb254-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb254-27"><a href="measures-of-model-fit.html#cb254-27" aria-hidden="true" tabindex="-1"></a><span class="co"># average scores</span></span>
+<span id="cb254-28"><a href="measures-of-model-fit.html#cb254-28" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">mean</span>(results<span class="sc">$</span>log_score), <span class="dv">3</span>)</span></code></pre></div>
+<pre><code>## [1] 0.303</code></pre>
+<div class="sourceCode" id="cb256"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb256-1"><a href="measures-of-model-fit.html#cb256-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">mean</span>(results<span class="sc">$</span>brier_score), <span class="dv">3</span>)</span></code></pre></div>
+<pre><code>## [1] 0.0908</code></pre>
+<p>This result took just a second or two.</p>
+<p>To illustrate how we can use <span class="math inline">\(k\)</span>-fold cross-validation to evaluate models, I use <span class="math inline">\(k\)</span>-fold cross validation to compute the average scores for all seven models (simpler and more complex) models discussed above.</p>
+<p>The results are <em>really</em> close and can depend on the random assignment to the <span class="math inline">\(k\)</span> groups, so we want a large <span class="math inline">\(k\)</span> (or use leave-one-out cross validation). For the results below, I use 100-fold cross-validation.</p>
+<table>
+<colgroup>
+<col width="57%" />
+<col width="19%" />
+<col width="22%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Model Name</th>
+<th align="right">Avg. Log Score</th>
+<th align="right">Avg. Brier Score</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Adding Wild Interactions</td>
+<td align="right">0.2937</td>
+<td align="right">0.0855</td>
+</tr>
+<tr class="even">
+<td align="left">Full Model</td>
+<td align="right">0.2901</td>
+<td align="right">0.0849</td>
+</tr>
+<tr class="odd">
+<td align="left">Remove Both Negativity Variables</td>
+<td align="right">0.2909</td>
+<td align="right">0.0851</td>
+</tr>
+<tr class="even">
+<td align="left">Remove Negativity About Disliked Candidates</td>
+<td align="right">0.2905</td>
+<td align="right">0.0849</td>
+</tr>
+<tr class="odd">
+<td align="left">Remove Negativity About Liked Candidates</td>
+<td align="right">0.2909</td>
+<td align="right">0.0851</td>
+</tr>
+</tbody>
+</table>
+<p><img src="05-01-model-fit-summaries_files/figure-html/unnamed-chunk-11-1.png" width="576" /></p>
+</div>
+<div id="information-criteria" class="section level3 hasAnchor" number="5.1.3">
+<h3><span class="header-section-number">5.1.3</span> Information Criteria<a href="measures-of-model-fit.html#information-criteria" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>As an alternative to cross-validation, we can use information criteria for a similar purpose without needing to refit the model many times.</p>
+<p>Information criteria have the following general structure:</p>
+<p><span class="math display">\[
+-2 \log L(\hat{\theta}) + [\text{constant}\times k ]
+\]</span></p>
+<p>Here, <span class="math inline">\(\log L(\hat{\theta})\)</span> is the value achieved when we maximized the log-likelihood function (not the <span class="math inline">\(\hat{\theta}\)</span>, but the value of <span class="math inline">\(\log L\)</span> itself), <span class="math inline">\(k\)</span> is the number of parameters, and <span class="math inline">\(\text{constant}\)</span> is a constant term that varies across information criteria.</p>
+<p>The two most common information criteria are:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Akaike Information Criterion (AIC)</strong> <span class="math inline">\(= -2 \log L(\hat{\theta}) + [2 \times k]\)</span></li>
+<li><strong>Bayesian Information Criterion (AIC)</strong> <span class="math inline">\(= -2 \log L(\hat{\theta}) + [\log(n) \times k]\)</span></li>
+</ol>
+<p>The AIC and BIC have a deep and detailed theoretical development–the choice of constant is not at all arbitrary. It doesn’t seem helpful to reproduce the theory here, but instead mention a few practical points.</p>
+<ul>
+<li>The <em>magnitude</em> of the IC is generally not of interest. Instead, we focus on the <em>difference</em> in the IC between models.</li>
+<li>Both the the AIC and the BIC work to identify the “best” model, but in two difference senses:
+<ul>
+<li>The AIC roughly compares the observed and predictive distributions are tries to identify the best match.</li>
+<li>The BIC roughly identifies the model with the highest posterior probability—the most likely model to have generated the data.</li>
+</ul></li>
+<li>Both AIC and BIC penalize adding parameters. That is, in order to improve the IC, a more complex model must improve the fit enough to offset the additional penalty. That said, the BIC imposes a larger penalty for <span class="math inline">\(n \geq 8\)</span>.</li>
+</ul>
+<p>ADD SOME DISCUSSION ABOUT THE MAGNITUDE OF THE DIFFERENCE OF AIC AND BIC.</p>
+<p>ADD RAFTERY’s TABLE HERE.</p>
+<p>To compute the AIC and BIC, we have the easy-to-use <code>AIC()</code> and <code>BIC()</code> functions.</p>
+<p>We can use those to compare models with and without the <code>negaboutlike</code> variable, for example. The AIC <em>slightly</em> prefers including the variable, but the BIC prefers the model without Krupnikov’s key explanatory variable.</p>
+<div class="sourceCode" id="cb258"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb258-1"><a href="measures-of-model-fit.html#cb258-1" aria-hidden="true" tabindex="-1"></a><span class="co"># aic and bic for full model</span></span>
+<span id="cb258-2"><a href="measures-of-model-fit.html#cb258-2" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(fit)</span></code></pre></div>
+<pre><code>## [1] 3774.467</code></pre>
+<div class="sourceCode" id="cb260"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb260-1"><a href="measures-of-model-fit.html#cb260-1" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(fit)</span></code></pre></div>
+<pre><code>## [1] 3996.707</code></pre>
+<div class="sourceCode" id="cb262"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb262-1"><a href="measures-of-model-fit.html#cb262-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compare models</span></span>
+<span id="cb262-2"><a href="measures-of-model-fit.html#cb262-2" aria-hidden="true" tabindex="-1"></a>fit0 <span class="ot">&lt;-</span> <span class="fu">update</span>(fit, . <span class="sc">~</span> . <span class="sc">-</span>negaboutlike)</span>
+<span id="cb262-3"><a href="measures-of-model-fit.html#cb262-3" aria-hidden="true" tabindex="-1"></a>fit1 <span class="ot">&lt;-</span> <span class="fu">update</span>(fit, . <span class="sc">~</span> . <span class="sc">-</span>negaboutdislike)</span>
+<span id="cb262-4"><a href="measures-of-model-fit.html#cb262-4" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">&lt;-</span> <span class="fu">update</span>(fit, . <span class="sc">~</span> . <span class="sc">-</span>negaboutdislike <span class="sc">-</span> negaboutlike)</span>
+<span id="cb262-5"><a href="measures-of-model-fit.html#cb262-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb262-6"><a href="measures-of-model-fit.html#cb262-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb262-7"><a href="measures-of-model-fit.html#cb262-7" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(fit, fit0)</span></code></pre></div>
+<pre><code>##      df      AIC
+## fit  33 3774.467
+## fit0 32 3775.490</code></pre>
+<div class="sourceCode" id="cb264"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb264-1"><a href="measures-of-model-fit.html#cb264-1" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(fit, fit0)</span></code></pre></div>
+<pre><code>##      df      BIC
+## fit  33 3996.707
+## fit0 32 3990.996</code></pre>
+<div class="sourceCode" id="cb266"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb266-1"><a href="measures-of-model-fit.html#cb266-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compute model weights</span></span>
+<span id="cb266-2"><a href="measures-of-model-fit.html#cb266-2" aria-hidden="true" tabindex="-1"></a><span class="co"># note: in krupnikov&#39;s theory, fit1 should be best (fit includes unnecessary variable)</span></span>
+<span id="cb266-3"><a href="measures-of-model-fit.html#cb266-3" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(fit, fit0, fit1, fit2) <span class="sc">%&gt;%</span></span>
+<span id="cb266-4"><a href="measures-of-model-fit.html#cb266-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diff_min =</span> AIC <span class="sc">-</span> <span class="fu">min</span>(AIC),</span>
+<span id="cb266-5"><a href="measures-of-model-fit.html#cb266-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">akiaike_weights =</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)))</span></code></pre></div>
+<pre><code>##      df      AIC  diff_min akiaike_weights
+## fit  33 3774.467 0.8580177       0.2448183
+## fit0 32 3775.490 1.8814836       0.1467578
+## fit1 32 3774.571 0.9617180       0.2324479
+## fit2 31 3773.609 0.0000000       0.3759760</code></pre>
+<div class="sourceCode" id="cb268"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb268-1"><a href="measures-of-model-fit.html#cb268-1" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(fit, fit0, fit1, fit2) <span class="sc">%&gt;%</span></span>
+<span id="cb268-2"><a href="measures-of-model-fit.html#cb268-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diff_min =</span> BIC <span class="sc">-</span> <span class="fu">min</span>(BIC),</span>
+<span id="cb268-3"><a href="measures-of-model-fit.html#cb268-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">post_prob =</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)))</span></code></pre></div>
+<pre><code>##      df      BIC  diff_min    post_prob
+## fit  33 3996.707 14.327138 0.0007477026
+## fit0 32 3990.996  8.616044 0.0129980202
+## fit1 32 3990.077  7.696278 0.0205874133
+## fit2 31 3982.380  0.000000 0.9656668640</code></pre>
+<p><img src="05-01-model-fit-summaries_files/figure-html/unnamed-chunk-13-1.png" width="576" /></p>
+<p><img src="05-01-model-fit-summaries_files/figure-html/unnamed-chunk-14-1.png" width="576" /></p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="week-5-models-of-binary-outcomes-and-model-fit-summaries.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="models-of-binary-outcomes.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["adv-methods-notes.pdf", "adv-methods-notes.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
