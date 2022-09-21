@@ -246,24 +246,7 @@ Like the probit uses the normal CDF as the inverse link function, the cauchit us
 To illustrate the tail behavior of the logit and cauchit model, I simulated a data set using the true cauchit model, and fitted the logit and cauchit models. 
 
 1. The logit curve *smoothly* transitions from flat to steep to flat again.
-1. The cauchit model seems to have three distinct sections a roughly linear portion below $pi = 0.15$, another roughly linear portion between between 0.25 and 0.75, and another roughly linear portion above about 0.85. Between these roughly linear portions, the curve changes slope changes dramatically.
-
-
-```
-## Rows: 10,000
-## Columns: 3
-## $ x     <dbl> -8.000000, -7.998400, -7.996800, -7.995200, -7.993599, -7.991999…
-## $ pr    <dbl> 0.009796585, 0.009805556, 0.009814535, 0.009823523, 0.009832519,…
-## $ model <chr> "logit (best approximation)", "logit (best approximation)", "log…
-```
-
-```
-## Rows: 10,000
-## Columns: 3
-## $ x     <dbl> -8.000000, -7.998400, -7.996800, -7.995200, -7.993599, -7.991999…
-## $ pr    <dbl> 0.03846280, 0.03847040, 0.03847801, 0.03848562, 0.03849323, 0.03…
-## $ model <chr> "cauchy (true)", "cauchy (true)", "cauchy (true)", "cauchy (true…
-```
+1. The cauchit model seems to have three distinct sections a roughly linear portion below $\pi = 0.15$, another roughly linear portion between between 0.25 and 0.75, and another roughly linear portion above about 0.85. Between these roughly linear portions, the curve changes slope changes dramatically.
 
 <img src="05-02-models-of-binary-outcomes_files/figure-html/unnamed-chunk-15-1.png" width="768" />
 
@@ -520,7 +503,7 @@ gg1 + gg2
 | Expected Value                  | $\hat{E}(\tilde{y} \mid X_s) = \Phi \left( \frac{X_s\hat{\beta}}{e^{Z_s\hat{\gamma}}}\right)$                          |
 | Manual Computation of EV        | `pi_s = pnorm(X_s %*% beta_hat/exp(Z_s %*% gamma_hat))`                                                                        |
 | `predict()` Computation of EV   | `pi_s <- predict(fit, newdata = s, type = "response")` |
-| Marginal Effect                 | $\frac{ \partial \hat{E}(\tilde{y} \mid X_s)}{\partial x_j} = \phi \left( \frac{X_s\hat{\beta}}{e^{Z_s\hat{\gamma}}}\right) \left[ \frac{\hat{\beta}_j - (X_s\hat{\beta})\hat{\gamma}_j}{e^{Z_s\hat{\gamma}}}\right]$  This assumes that $x_j$ appears in both $X$ and $Z$. If not, then $\beta_j$ or $\gamma_j$ are zero and then marginal effect simplifies.|
+| Marginal Effect                 | $\frac{ \partial \hat{E}(\tilde{y} \mid X_s)}{\partial x_j} = \phi \left( \frac{X_s\hat{\beta}}{e^{Z_s\hat{\gamma}}}\right) \left[ \frac{\hat{\beta}_j - (X_s\hat{\beta})\hat{\gamma}_j}{e^{Z_s\hat{\gamma}}}\right]$  This assumes that $x_j$ appears in both $X$ and $Z$. If not, then $\hat{\beta}_j$ or $\hat{\gamma}_j$ is zero and then the marginal effect simplifies.|
 | Computation of Marginal Effect  | See below; it's a couple of lines and somewhat unexpected. |
 
 
@@ -593,6 +576,7 @@ BIC(fit, fit_logit) %>%
 ## fit_logit  6 112986.1 1005.464 4.637491e-219
 ```
 
+Lastly, here's a replication of Alvarez and Brehm's classic example modeling ambivalence within abortion attitudes.
 
 
 ```r

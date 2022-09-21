@@ -267,11 +267,11 @@ Like the probit uses the normal CDF as the inverse link function, the cauchit us
 To illustrate the tail behavior of the logit and cauchit model, I simulated a data set using the true cauchit model, and fitted the logit and cauchit models. 
 
 1. The logit curve *smoothly* transitions from flat to steep to flat again.
-1. The cauchit model seems to have three distinct sections a roughly linear portion below $pi = 0.15$, another roughly linear portion between between 0.25 and 0.75, and another roughly linear portion above about 0.85. Between these roughly linear portions, the curve changes slope changes dramatically.
+1. The cauchit model seems to have three distinct sections a roughly linear portion below $\pi = 0.15$, another roughly linear portion between between 0.25 and 0.75, and another roughly linear portion above about 0.85. Between these roughly linear portions, the curve changes slope changes dramatically.
 
 ```{r echo=FALSE, fig.height=3, fig.width=8, paged.print=FALSE}
 n <- 10000
-x <- seq(-8, 8, length.out = n)
+x <- seq(-10, 10, length.out = n)
 y <- rbinom(n, size = 1, prob = pcauchy(x))
 
 data <- tibble(y, x)
@@ -281,15 +281,14 @@ fit2 <- glm(y ~ x, data = data, family = binomial(link = "cauchit"))
 
 pred1 <- tibble(x = data$x) %>%
   mutate(pr = predict(fit1, type = "response"), 
-         model = "logit (best approximation)") %>%
-  glimpse()
+         model = "logit (best approximation)")
 pred2 <- tibble(x = data$x) %>%
   mutate(pr = predict(fit2, type = "response"), 
-         model = "cauchy (true)") %>%
-  glimpse()
+         model = "cauchy (true)")
 
 pred <- bind_rows(pred1, pred2)
 ggplot(pred, aes(x = x, y = pr, color = model)) + 
+  geom_hline(yintercept = c(0, 1)) + 
   geom_line()
 
 ```
@@ -502,7 +501,7 @@ gg1 + gg2
 | Expected Value                  | $\hat{E}(\tilde{y} \mid X_s) = \Phi \left( \frac{X_s\hat{\beta}}{e^{Z_s\hat{\gamma}}}\right)$                          |
 | Manual Computation of EV        | `pi_s = pnorm(X_s %*% beta_hat/exp(Z_s %*% gamma_hat))`                                                                        |
 | `predict()` Computation of EV   | `pi_s <- predict(fit, newdata = s, type = "response")` |
-| Marginal Effect                 | $\frac{ \partial \hat{E}(\tilde{y} \mid X_s)}{\partial x_j} = \phi \left( \frac{X_s\hat{\beta}}{e^{Z_s\hat{\gamma}}}\right) \left[ \frac{\hat{\beta}_j - (X_s\hat{\beta})\hat{\gamma}_j}{e^{Z_s\hat{\gamma}}}\right]$  This assumes that $x_j$ appears in both $X$ and $Z$. If not, then $\beta_j$ or $\gamma_j$ are zero and then marginal effect simplifies.|
+| Marginal Effect                 | $\frac{ \partial \hat{E}(\tilde{y} \mid X_s)}{\partial x_j} = \phi \left( \frac{X_s\hat{\beta}}{e^{Z_s\hat{\gamma}}}\right) \left[ \frac{\hat{\beta}_j - (X_s\hat{\beta})\hat{\gamma}_j}{e^{Z_s\hat{\gamma}}}\right]$  This assumes that $x_j$ appears in both $X$ and $Z$. If not, then $\hat{\beta}_j$ or $\hat{\gamma}_j$ is zero and then the marginal effect simplifies.|
 | Computation of Marginal Effect  | See below; it's a couple of lines and somewhat unexpected. |
 
 
@@ -573,6 +572,7 @@ BIC(fit, fit_logit) %>%
          post_prob = exp(-0.5*diff_min)/sum(exp(-0.5*diff_min)))
 ```
 
+Lastly, here's a replication of Alvarez and Brehm's classic example modeling ambivalence within abortion attitudes.
 
 ```{r}
 col_names <- c("abhlth", "abpoor", "absingle", "abnomore", "abdefect", "abany", "abrape", "sexlty",

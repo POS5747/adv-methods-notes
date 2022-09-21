@@ -338,8 +338,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="predictive-distribution.html#cb62-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(civilian_casualties)</span>
 <span id="cb62-2"><a href="predictive-distribution.html#cb62-2" aria-hidden="true" tabindex="-1"></a>y_pred <span class="ot">&lt;-</span> <span class="fu">rpois</span>(n, <span class="at">lambda =</span> ml_est)</span>
 <span id="cb62-3"><a href="predictive-distribution.html#cb62-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(y_pred[<span class="dv">1</span><span class="sc">:</span><span class="dv">30</span>])</span></code></pre></div>
-<pre><code>##  [1] 652 614 628 587 619 658 647 669 640 654 630 571 637 643 617 608 617 642 606
-## [20] 630 595 630 647 700 588 619 630 654 625 634</code></pre>
+<pre><code>##  [1] 640 585 619 571 620 626 615 630 627 621 655 624 614 658 621 622 639 616 668
+## [20] 590 696 652 648 657 611 651 611 634 619 602</code></pre>
 <div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="predictive-distribution.html#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(civilian_casualties[<span class="dv">1</span><span class="sc">:</span><span class="dv">30</span>])</span></code></pre></div>
 <pre><code>##  [1]  0  0  0  0  0 13  0  0 61  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0
 ## [26]  0  0  0  0 19</code></pre>
@@ -372,7 +372,7 @@ These data sets are so different that the plots are difficult to read, so we mig
 <span id="cb68-11"><a href="predictive-distribution.html#cb68-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code></pre></div>
 <pre><code>## Rows: 1,500
 ## Columns: 2
-## $ civilian_casualties &lt;dbl&gt; 611, 634, 636, 631, 587, 637, 605, 673, 648, 644, …
+## $ civilian_casualties &lt;dbl&gt; 603, 603, 650, 624, 632, 632, 584, 598, 671, 628, …
 ## $ type                &lt;chr&gt; &quot;simulated #1&quot;, &quot;simulated #1&quot;, &quot;simulated #1&quot;, &quot;s…</code></pre>
 <div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="predictive-distribution.html#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(gg_data, <span class="fu">aes</span>(<span class="at">x =</span> civilian_casualties)) <span class="sc">+</span> </span>
 <span id="cb70-2"><a href="predictive-distribution.html#cb70-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>() <span class="sc">+</span> </span>
