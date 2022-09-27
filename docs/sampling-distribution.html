@@ -23,7 +23,7 @@
 <meta name="author" content="Carlisle Rainey" />
 
 
-<meta name="date" content="2022-09-21" />
+<meta name="date" content="2022-09-27" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -297,6 +297,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.2.6" data-path="models-of-binary-outcomes.html"><a href="models-of-binary-outcomes.html#heteroskedastic-probit"><i class="fa fa-check"></i><b>5.2.6</b> Heteroskedastic Probit<span></span></a></li>
 </ul></li>
 </ul></li>
+<li class="chapter" data-level="6" data-path="week-6-an-explosion-of-quantities-of-interest.html"><a href="week-6-an-explosion-of-quantities-of-interest.html"><i class="fa fa-check"></i><b>6</b> Week 6: An Explosion of Quantities of Interest<span></span></a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="king-tomz-and-wittenberg-2001.html"><a href="king-tomz-and-wittenberg-2001.html"><i class="fa fa-check"></i><b>6.1</b> King, Tomz, and Wittenberg (2001)<span></span></a></li>
+<li class="chapter" data-level="6.2" data-path="brambor-clark-and-golder-2006.html"><a href="brambor-clark-and-golder-2006.html"><i class="fa fa-check"></i><b>6.2</b> Brambor, Clark, and Golder (2006)<span></span></a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="brambor-clark-and-golder-2006.html"><a href="brambor-clark-and-golder-2006.html#a-warning-about-misinterpreting-marginal-effect-plots"><i class="fa fa-check"></i><b>6.2.1</b> A Warning about Misinterpreting Marginal Effect Plots<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="berry-golder-and-milton-2012.html"><a href="berry-golder-and-milton-2012.html"><i class="fa fa-check"></i><b>6.3</b> Berry, Golder, and Milton (2012)<span></span></a></li>
+</ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 
@@ -335,7 +344,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb38-5"><a href="sampling-distribution.html#cb38-5" aria-hidden="true" tabindex="-1"></a>  ml_est[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(y)</span>
 <span id="cb38-6"><a href="sampling-distribution.html#cb38-6" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb38-7"><a href="sampling-distribution.html#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(ml_est, <span class="at">digits =</span> <span class="dv">2</span>)</span></code></pre></div>
-<pre><code>##  [1] 0.0267 0.0333 0.0600 0.0067 0.0467 0.0600 0.0533 0.0800 0.0600 0.0933</code></pre>
+<pre><code>##  [1] 0.060 0.027 0.053 0.067 0.073 0.033 0.053 0.020 0.093 0.027</code></pre>
 <p>As you can see, the ML estimates vary to from sample to sample–different data sets produce different ML estimates. We need a way to create a confidence interval that consistently captures <span class="math inline">\(\theta\)</span>.</p>
 <p>If we repeat the simulations a large number of times, we can see an accuracy picture of the sampling distribution via histogram.</p>
 <div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="sampling-distribution.html#cb40-1" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">10000</span></span>

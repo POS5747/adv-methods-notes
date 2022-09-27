@@ -23,7 +23,7 @@
 <meta name="author" content="Carlisle Rainey" />
 
 
-<meta name="date" content="2022-09-21" />
+<meta name="date" content="2022-09-27" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -297,6 +297,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.2.6" data-path="models-of-binary-outcomes.html"><a href="models-of-binary-outcomes.html#heteroskedastic-probit"><i class="fa fa-check"></i><b>5.2.6</b> Heteroskedastic Probit<span></span></a></li>
 </ul></li>
 </ul></li>
+<li class="chapter" data-level="6" data-path="week-6-an-explosion-of-quantities-of-interest.html"><a href="week-6-an-explosion-of-quantities-of-interest.html"><i class="fa fa-check"></i><b>6</b> Week 6: An Explosion of Quantities of Interest<span></span></a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="king-tomz-and-wittenberg-2001.html"><a href="king-tomz-and-wittenberg-2001.html"><i class="fa fa-check"></i><b>6.1</b> King, Tomz, and Wittenberg (2001)<span></span></a></li>
+<li class="chapter" data-level="6.2" data-path="brambor-clark-and-golder-2006.html"><a href="brambor-clark-and-golder-2006.html"><i class="fa fa-check"></i><b>6.2</b> Brambor, Clark, and Golder (2006)<span></span></a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="brambor-clark-and-golder-2006.html"><a href="brambor-clark-and-golder-2006.html#a-warning-about-misinterpreting-marginal-effect-plots"><i class="fa fa-check"></i><b>6.2.1</b> A Warning about Misinterpreting Marginal Effect Plots<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="berry-golder-and-milton-2012.html"><a href="berry-golder-and-milton-2012.html"><i class="fa fa-check"></i><b>6.3</b> Berry, Golder, and Milton (2012)<span></span></a></li>
+</ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 
@@ -338,8 +347,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="predictive-distribution.html#cb62-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(civilian_casualties)</span>
 <span id="cb62-2"><a href="predictive-distribution.html#cb62-2" aria-hidden="true" tabindex="-1"></a>y_pred <span class="ot">&lt;-</span> <span class="fu">rpois</span>(n, <span class="at">lambda =</span> ml_est)</span>
 <span id="cb62-3"><a href="predictive-distribution.html#cb62-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(y_pred[<span class="dv">1</span><span class="sc">:</span><span class="dv">30</span>])</span></code></pre></div>
-<pre><code>##  [1] 640 585 619 571 620 626 615 630 627 621 655 624 614 658 621 622 639 616 668
-## [20] 590 696 652 648 657 611 651 611 634 619 602</code></pre>
+<pre><code>##  [1] 596 650 653 609 651 644 628 676 596 640 644 607 632 578 600 652 576 579 613
+## [20] 623 661 576 594 647 609 573 641 666 655 581</code></pre>
 <div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="predictive-distribution.html#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(civilian_casualties[<span class="dv">1</span><span class="sc">:</span><span class="dv">30</span>])</span></code></pre></div>
 <pre><code>##  [1]  0  0  0  0  0 13  0  0 61  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0
 ## [26]  0  0  0  0 19</code></pre>
@@ -372,7 +381,7 @@ These data sets are so different that the plots are difficult to read, so we mig
 <span id="cb68-11"><a href="predictive-distribution.html#cb68-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code></pre></div>
 <pre><code>## Rows: 1,500
 ## Columns: 2
-## $ civilian_casualties &lt;dbl&gt; 603, 603, 650, 624, 632, 632, 584, 598, 671, 628, …
+## $ civilian_casualties &lt;dbl&gt; 663, 658, 607, 602, 648, 609, 624, 686, 638, 651, …
 ## $ type                &lt;chr&gt; &quot;simulated #1&quot;, &quot;simulated #1&quot;, &quot;simulated #1&quot;, &quot;s…</code></pre>
 <div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="predictive-distribution.html#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(gg_data, <span class="fu">aes</span>(<span class="at">x =</span> civilian_casualties)) <span class="sc">+</span> </span>
 <span id="cb70-2"><a href="predictive-distribution.html#cb70-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>() <span class="sc">+</span> </span>
