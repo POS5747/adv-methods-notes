@@ -88,8 +88,3 @@ cloglog
 cauchit
 scobit
 heteroskedastic-probit
-week-6-an-explosion-of-quantities-of-interest
-king-tomz-and-wittenberg-2001
-brambor-clark-and-golder-2006
-a-warning-about-misinterpreting-marginal-effect-plots
-berry-golder-and-milton-2012

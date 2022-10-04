@@ -1,0 +1,219 @@
+
+```{r include=FALSE}
+library(tidyverse)
+```
+
+## Berry, DeMeritt, and Esarey (2010)
+
+Berry, DeMeritt, and Esarey (2010) make a critical point: If one is interested in the marginal effect of $x$ on $E(\tilde{y} \mid X)$, then the product term $x \times z$ can be a misleading indicator of the modifying effect of $z$ on $\frac{\partial E(\tilde{y} \mid X)}{\partial x}$.
+
+Consider a  probit model $y_i \sim \text{Bernoulli}(\pi_i)$, where $\pi_i = \Phi(\eta_i)$ and $\eta_i = X_i\beta$. For simplicity, let’s suppose that
+
+$$
+X_i\beta = \beta_0 + \beta_x x_i + \beta_{z} z_i + \beta_{xz}x_iz_i + \text{other terms not involving } x \text{ or } z.
+$$
+In my mind, there are two "interaction effects" that one could compute here.
+
+First, we could compute the interaction of $x$ and $z$ in influencing $\eta$. In this case, the interaction is $\frac{\partial^2 \pi}{\partial x \partial z}$ or the analogous second-difference (and is quite complicated). BDE (2010) argue that this "is usually the case" (p. 250).
+
+I'm not sure that I agree that it’s most natural to think about interaction it terms of $\pi$ or $\Pr(y)$. BDE treat hypotheses about $\eta$ as the special case and hypotheses about $\Pr(y)$ as the "obvious" default. But social science theories are usually vague, and it takes precision to account for the compression of the probit link function in the hypothesis. As an example, a researcher might theorize that negative news coverage would have a larger impact on turning out to vote among people with higher levels of education because the most educated are paying the most attention to the news. However, this theoretical intuition does not account for the ceiling effect that the most educated experience. Contrary to BDE, I suspect that most natural place to think about interaction is "outside the link function" and in terms of $\eta$.
+
+Second, we could compute the interaction of $x$ and $z$ in influencing $\eta$. This *excludes* the interaction "due to compression." In this case, the interaction is just $\frac{\partial^2 \eta}{\partial x \partial z} = \beta_{xz}$. Testing this "interaction effect" does not require computing $\frac{\partial^2 \pi}{\partial x \partial z}$ or anything beyond the standard table of coefficients and p-values. I find myself more in this camp. Unless one has a specific reason for theorizing specifically about interaction *due to the compression of the link function,* it makes more sense to focus on $\beta_{xz}$ as the "interaction effect."
+
+I think everyone writing in this literature would agree that these are two types of (or "measures of") interaction: $\frac{\partial^2 \pi}{\partial x \partial z}$ and $\frac{\partial^2 \eta}{\partial x \partial z}$ . There's disagreement about the type that researchers should "usually" care about. Most people---Bill Berry might be the only exception---would argue that $\frac{\partial^2 \eta}{\partial x \partial z}$ is the obvious default. Some might hold the extreme view that $\frac{\partial^2 \eta}{\partial x \partial z}$ is the only interaction effect worth hypothesizing about. Regardless, I don't see any consensus that $\frac{\partial^2 \pi}{\partial x \partial z}$ is THE interaction effect. 
+
+Regardless, you should be aware of the two possibilities for defining and measuring interaction.
+
+BDE define interaction in terms of the second derivative (or "cross partial derivative") $\frac{\partial^2 \pi}{\partial x \partial z}$ or the analogous second difference. The second *derivative* is easier to write about (i.e., type), but the second difference is easier to compute.
+
+```{r, cache = TRUE}
+# load data
+scobit <- haven::read_dta("data/scobit.dta") %>%
+  filter(newvote != -1) 
+
+# fit model (w&r's specification in bde table 1 on p. 263)
+f <- newvote ~ poly(neweduc, 2, raw = TRUE) + closing + poly(age, 2, raw = TRUE) + south + gov
+fit <- glm(f, data = scobit, family = binomial(link = "probit"))
+
+# simulate beta_tildes using KTW's method
+beta_tilde <- mvtnorm::rmvnorm(2000, mean = coef(fit), sigma = vcov(fit))
+
+# four scenarios of the second difference; 10th to 90th percentile for both
+# note: 1st lo/hi refers to neweduc; 2nd refers to closing
+s_lo_lo <- tibble(
+  neweduc = quantile(scobit$neweduc, probs = 0.1),
+  closing = quantile(scobit$neweduc, probs = 0.1),
+  age = median(scobit$age),
+  south = median(scobit$south),
+  gov = median(scobit$gov)) 
+f_s <- update(f, NULL ~ .)           # remove lhs for use below
+mf <- model.frame(f_s, s_lo_lo)
+X_s <- model.matrix(mf, s_lo_lo)
+eta_tilde <- X_s%*%t(beta_tilde)     # simulations of linear predictor
+eta_hat <- X_s%*%coef(fit)           # ml estimate of linear predictor
+pi_lo_lo_tilde <- pnorm(eta_tilde)  # simulations of expected value 
+pi_lo_lo_hat <- pnorm(eta_hat)      # ml estimate of expected value
+# note: I only care to "keep" things with the _lo_lo tag, everything 
+#   else gets overwritten below.
+
+# hi; lo
+s_hi_lo <- tibble(
+  neweduc = quantile(scobit$neweduc, probs = 0.9),
+  closing = quantile(scobit$neweduc, probs = 0.1),
+  age = median(scobit$age),
+  south = median(scobit$south),
+  gov = median(scobit$gov)) 
+f_s <- update(f, NULL ~ .)           # remove lhs for use below
+mf <- model.frame(f_s, s_hi_lo)
+X_s <- model.matrix(mf, s_hi_lo)
+eta_tilde <- X_s%*%t(beta_tilde)     # simulations of linear predictor
+eta_hat <- X_s%*%coef(fit)           # ml estimate of linear predictor
+pi_hi_lo_tilde <- pnorm(eta_tilde)  # simulations of expected value 
+pi_hi_lo_hat <- pnorm(eta_hat)      # ml estimate of expected value
+
+# lo; hi
+s_lo_hi <- tibble(
+  neweduc = quantile(scobit$neweduc, probs = 0.1),
+  closing = quantile(scobit$neweduc, probs = 0.9),
+  age = median(scobit$age),
+  south = median(scobit$south),
+  gov = median(scobit$gov)) 
+f_s <- update(f, NULL ~ .)           # remove lhs for use below
+mf <- model.frame(f_s, s_lo_hi)
+X_s <- model.matrix(mf, s_lo_hi)
+eta_tilde <- X_s%*%t(beta_tilde)     # simulations of linear predictor
+eta_hat <- X_s%*%coef(fit)           # ml estimate of linear predictor
+pi_lo_hi_tilde <- pnorm(eta_tilde)  # simulations of expected value 
+pi_lo_hi_hat <- pnorm(eta_hat)      # ml estimate of expected value
+
+# hi; hi
+s_hi_hi <- tibble(
+  neweduc = quantile(scobit$neweduc, probs = 0.9),
+  closing = quantile(scobit$neweduc, probs = 0.9),
+  age = median(scobit$age),
+  south = median(scobit$south),
+  gov = median(scobit$gov)) 
+f_s <- update(f, NULL ~ .)           # remove lhs for use below
+mf <- model.frame(f_s, s_hi_hi)
+X_s <- model.matrix(mf, s_hi_hi)
+eta_tilde <- X_s%*%t(beta_tilde)     # simulations of linear predictor
+eta_hat <- X_s%*%coef(fit)           # ml estimate of linear predictor
+pi_hi_hi_tilde <- pnorm(eta_tilde)  # simulations of expected value 
+pi_hi_hi_hat <- pnorm(eta_hat)      # ml estimate of expected value
+
+# ml estimate
+(pi_hi_hi_hat - pi_lo_hi_hat) -   # effect of education when closing is high
+  (pi_hi_lo_hat - pi_lo_lo_hat)   # effect of education when closing is low
+# note: this is a difference between differences or a "second difference"
+
+# ktw simulations of second difference
+dd_tilde <- (pi_hi_hi_tilde - pi_lo_hi_tilde) -   # effect of education when closing is high
+  (pi_hi_lo_tilde - pi_lo_lo_tilde)               # effect of education when closing is low
+
+# 90% CI using ktw simulations
+quantile(dd_tilde, probs = c(0.05, 0.95))
+```
+
+We can compare this to Nagler's specification using the AIC and BIC. (BDE use a "likelihood ratio test" that we'll talk about soon).
+
+```{r, cache = TRUE}
+f <- newvote ~ poly(neweduc, 2, raw = TRUE)*closing + poly(age, 2, raw = TRUE) + south + gov
+fit1 <- glm(f, data = scobit, family = binomial(link = "probit"))
+
+AIC(fit, fit1)
+BIC(fit, fit1)
+```
+The AIC *barely* prefers the model with the product terms. The BIC *strongly* prefers the model that *omits* the product terms.
+
+If we wanted, we could compute the second difference from Nagler's specification and compare it to Wolfinger and Rosenstone's.
+
+```{r, cache = TRUE}
+# simulate beta_tildes using KTW's method
+beta_tilde <- mvtnorm::rmvnorm(2000, mean = coef(fit1), sigma = vcov(fit1))
+
+# four scenarios of the second difference; 10th to 90th percentile for both
+# note: 1st lo/hi refers to neweduc; 2nd refers to closing
+s_lo_lo <- tibble(
+  neweduc = quantile(scobit$neweduc, probs = 0.1),
+  closing = quantile(scobit$neweduc, probs = 0.1),
+  age = median(scobit$age),
+  south = median(scobit$south),
+  gov = median(scobit$gov)) 
+f_s <- update(f, NULL ~ .)           # remove lhs for use below
+mf <- model.frame(f_s, s_lo_lo)
+X_s <- model.matrix(mf, s_lo_lo)
+eta_tilde <- X_s%*%t(beta_tilde)     # simulations of linear predictor
+eta_hat <- X_s%*%coef(fit1)           # ml estimate of linear predictor
+pi_lo_lo_tilde <- pnorm(eta_tilde)  # simulations of expected value 
+pi_lo_lo_hat <- pnorm(eta_hat)      # ml estimate of expected value
+# note: I only care to "keep" things with the _lo_lo tag, everything 
+#   else gets overwritten below.
+
+# hi; lo
+s_hi_lo <- tibble(
+  neweduc = quantile(scobit$neweduc, probs = 0.9),
+  closing = quantile(scobit$neweduc, probs = 0.1),
+  age = median(scobit$age),
+  south = median(scobit$south),
+  gov = median(scobit$gov)) 
+f_s <- update(f, NULL ~ .)           # remove lhs for use below
+mf <- model.frame(f_s, s_hi_lo)
+X_s <- model.matrix(mf, s_hi_lo)
+eta_tilde <- X_s%*%t(beta_tilde)     # simulations of linear predictor
+eta_hat <- X_s%*%coef(fit1)           # ml estimate of linear predictor
+pi_hi_lo_tilde <- pnorm(eta_tilde)  # simulations of expected value 
+pi_hi_lo_hat <- pnorm(eta_hat)      # ml estimate of expected value
+
+# lo; hi
+s_lo_hi <- tibble(
+  neweduc = quantile(scobit$neweduc, probs = 0.1),
+  closing = quantile(scobit$neweduc, probs = 0.9),
+  age = median(scobit$age),
+  south = median(scobit$south),
+  gov = median(scobit$gov)) 
+f_s <- update(f, NULL ~ .)           # remove lhs for use below
+mf <- model.frame(f_s, s_lo_hi)
+X_s <- model.matrix(mf, s_lo_hi)
+eta_tilde <- X_s%*%t(beta_tilde)     # simulations of linear predictor
+eta_hat <- X_s%*%coef(fit1)           # ml estimate of linear predictor
+pi_lo_hi_tilde <- pnorm(eta_tilde)  # simulations of expected value 
+pi_lo_hi_hat <- pnorm(eta_hat)      # ml estimate of expected value
+
+# hi; hi
+s_hi_hi <- tibble(
+  neweduc = quantile(scobit$neweduc, probs = 0.9),
+  closing = quantile(scobit$neweduc, probs = 0.9),
+  age = median(scobit$age),
+  south = median(scobit$south),
+  gov = median(scobit$gov)) 
+f_s <- update(f, NULL ~ .)           # remove lhs for use below
+mf <- model.frame(f_s, s_hi_hi)
+X_s <- model.matrix(mf, s_hi_hi)
+eta_tilde <- X_s%*%t(beta_tilde)     # simulations of linear predictor
+eta_hat <- X_s%*%coef(fit1)           # ml estimate of linear predictor
+pi_hi_hi_tilde <- pnorm(eta_tilde)  # simulations of expected value 
+pi_hi_hi_hat <- pnorm(eta_hat)      # ml estimate of expected value
+
+# ml estimate
+(pi_hi_hi_hat - pi_lo_hi_hat) -   # effect of education when closing is high
+  (pi_hi_lo_hat - pi_lo_lo_hat)   # effect of education when closing is low
+# note: this is a difference between differences or a "second difference"
+
+# ktw simulations of second difference
+dd_tilde <- (pi_hi_hi_tilde - pi_lo_hi_tilde) -   # effect of education when closing is high
+  (pi_hi_lo_tilde - pi_lo_lo_tilde)               # effect of education when closing is low
+
+# 90% CI using ktw simulations
+quantile(dd_tilde, probs = c(0.05, 0.95))
+```
+
+Contrary to what you might expect, the model *with* the product term exhibits *less* interaction than the model without product terms (this is BDE's basic point).
+
+## Rainey (2016)
+
+Rainey (2016) ammends BDE (2010) slightly. BDE suggest that if one theorized interaction on the grounds of compression along (i.e., the coefficient of the product term equals zero), then there is no reason to include a product term in the regression equation. Rainey points out that this leads to a hypothesis test that performs poorly, because a statistically significant coefficient for $x$ and $z$ implies a statistically significant interaction effect in most cases. Somewhat counter-intuitively, Rainey points out that researchers need to include the product term so that interaction can be *absent* from the model.
+
+
+
+
+

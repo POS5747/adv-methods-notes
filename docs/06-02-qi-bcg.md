@@ -32,20 +32,7 @@ As an example, let's reproduce Figure 1 on p. 701 of Clark and Golder (2006). Th
 # load data
 cg <- read_csv("data/parties.csv") %>%
   filter(established_democracy == 1)  # keep only established democracies
-```
 
-```
-## Rows: 555 Columns: 11
-## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: ","
-## chr (3): country, social_heterogeneity, electoral_system
-## dbl (8): year, average_magnitude, eneg, enep, upper_tier, en_pres, proximity...
-## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-```
-
-```r
 # fit model; reproduces coefficients reported in Table 2, p. 698, 1946-2000 Established Democracys of Clark and Golder (2006)
 fit <- lm(enep ~ eneg*log(average_magnitude) + eneg*upper_tier + en_pres*proximity, data = cg)
 

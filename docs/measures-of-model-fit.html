@@ -23,7 +23,7 @@
 <meta name="author" content="Carlisle Rainey" />
 
 
-<meta name="date" content="2022-09-27" />
+<meta name="date" content="2022-10-04" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -297,15 +297,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.2.6" data-path="models-of-binary-outcomes.html"><a href="models-of-binary-outcomes.html#heteroskedastic-probit"><i class="fa fa-check"></i><b>5.2.6</b> Heteroskedastic Probit<span></span></a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="week-6-an-explosion-of-quantities-of-interest.html"><a href="week-6-an-explosion-of-quantities-of-interest.html"><i class="fa fa-check"></i><b>6</b> Week 6: An Explosion of Quantities of Interest<span></span></a>
-<ul>
-<li class="chapter" data-level="6.1" data-path="king-tomz-and-wittenberg-2001.html"><a href="king-tomz-and-wittenberg-2001.html"><i class="fa fa-check"></i><b>6.1</b> King, Tomz, and Wittenberg (2001)<span></span></a></li>
-<li class="chapter" data-level="6.2" data-path="brambor-clark-and-golder-2006.html"><a href="brambor-clark-and-golder-2006.html"><i class="fa fa-check"></i><b>6.2</b> Brambor, Clark, and Golder (2006)<span></span></a>
-<ul>
-<li class="chapter" data-level="6.2.1" data-path="brambor-clark-and-golder-2006.html"><a href="brambor-clark-and-golder-2006.html#a-warning-about-misinterpreting-marginal-effect-plots"><i class="fa fa-check"></i><b>6.2.1</b> A Warning about Misinterpreting Marginal Effect Plots<span></span></a></li>
-</ul></li>
-<li class="chapter" data-level="6.3" data-path="berry-golder-and-milton-2012.html"><a href="berry-golder-and-milton-2012.html"><i class="fa fa-check"></i><b>6.3</b> Berry, Golder, and Milton (2012)<span></span></a></li>
-</ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 
@@ -503,7 +494,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb248-6"><a href="measures-of-model-fit.html#cb248-6" aria-hidden="true" tabindex="-1"></a><span class="co"># multiply elapsed time times number of observations</span></span>
 <span id="cb248-7"><a href="measures-of-model-fit.html#cb248-7" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(time[<span class="st">&quot;elapsed&quot;</span>]<span class="sc">*</span><span class="fu">nrow</span>(krup)<span class="sc">/</span>(<span class="dv">60</span>), <span class="dv">1</span>)  <span class="co"># convert to minutes</span></span></code></pre></div>
 <pre><code>## elapsed 
-##     7.5</code></pre>
+##     6.5</code></pre>
 <p>Each model takes about 0.05 seconds to fit. This seems fast, but you need to do it about 6,000 times, which takes about 300 seconds or five minutes.</p>
 <div class="sourceCode" id="cb250"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb250-1"><a href="measures-of-model-fit.html#cb250-1" aria-hidden="true" tabindex="-1"></a><span class="co"># note system time</span></span>
 <span id="cb250-2"><a href="measures-of-model-fit.html#cb250-2" aria-hidden="true" tabindex="-1"></a>start_time <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
