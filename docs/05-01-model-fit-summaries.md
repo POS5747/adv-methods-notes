@@ -195,7 +195,7 @@ round(time["elapsed"]*nrow(krup)/(60), 1)  # convert to minutes
 
 ```
 ## elapsed 
-##     6.5
+##     9.7
 ```
 
 Each model takes about 0.05 seconds to fit. This seems fast, but you need to do it about 6,000 times, which takes about 300 seconds or five minutes.

@@ -70,6 +70,13 @@ gg2 <- ggplot(s, aes(x = neweduc, y = marginal_effect)) +
 
 # combine plots and print
 library(patchwork)
+```
+
+```
+## Warning: package 'patchwork' was built under R version 4.1.2
+```
+
+```r
 gg1 + gg2
 ```
 
@@ -511,7 +518,13 @@ gg1 + gg2
 ```r
 # load packages
 library(glmx)
+```
 
+```
+## Warning: package 'glmx' was built under R version 4.1.2
+```
+
+```r
 # fit model
 fit <- hetglm(newvote ~ neweduc + closing + age + south + gov | neweduc + closing + age + south + gov, 
               data = scobit, family = binomial(link = "probit"))
