@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>7.1 King, Tomz, and Wittenberg (2001) | Statistical Modeling: A Tools Approach</title>
+  <meta name="description" content="Lecture notes covering the key tools of regression modeling in political science." />
+  <meta name="generator" content="bookdown 0.30 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="7.1 King, Tomz, and Wittenberg (2001) | Statistical Modeling: A Tools Approach" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="Lecture notes covering the key tools of regression modeling in political science." />
+  <meta name="github-repo" content="pos5747/adv-methods-notes" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="7.1 King, Tomz, and Wittenberg (2001) | Statistical Modeling: A Tools Approach" />
+  
+  <meta name="twitter:description" content="Lecture notes covering the key tools of regression modeling in political science." />
+  
+
+<meta name="author" content="Carlisle Rainey" />
+
+
+<meta name="date" content="2022-10-06" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="week-6-an-explosion-of-quantities-of-interest-1.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.10.0/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
+<script>
+    $(document).ready(function () {
+        process_solutions();
+    });
+    function process_solutions() {
+        $("div.section[id^='solution']").each(function(i) {
+        var soln_wrapper_id = "cvxr_ex_" + i;
+        var solution_id = $(this).attr('id');
+        var button = $("<button onclick=\"toggle_solution('" + soln_wrapper_id + "')\">Show/Hide</button>");
+        var new_div = $("<div id='" + soln_wrapper_id + "' class='solution' style='display: none;'></div>");
+        var h = $(this).first();
+        var others = $(this).children().slice(1);
+        $(others).each(function() {
+            $(this).appendTo($(new_div));
+        });
+        $(button).insertAfter($(h));
+        $(new_div).insertAfter($(button));
+        })
+    }
+    function toggle_solution(el_id) {
+      $("#" + el_id).toggle();
+    } 
+</script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Advanced Methods Notes</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> url: your book url like <span>https://bookdown.org/yihui/bookdown</span></a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="class-agenda.html"><a href="class-agenda.html"><i class="fa fa-check"></i><b>1.1</b> Class agenda</a></li>
+<li class="chapter" data-level="1.2" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html"><i class="fa fa-check"></i><b>1.2</b> Maximum Likelihood</a>
+<ul>
+<li class="chapter" data-level="1.2.1" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#example-bernoulli-distribution"><i class="fa fa-check"></i><b>1.2.1</b> Example: Bernoulli Distribution</a></li>
+<li class="chapter" data-level="1.2.2" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#example-poisson-distribution"><i class="fa fa-check"></i><b>1.2.2</b> Example: Poisson Distribution</a></li>
+<li class="chapter" data-level="1.2.3" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#remarks"><i class="fa fa-check"></i><b>1.2.3</b> Remarks</a></li>
+<li class="chapter" data-level="1.2.4" data-path="maximum-likelihood.html"><a href="maximum-likelihood.html#example-beta-distribution"><i class="fa fa-check"></i><b>1.2.4</b> Example: Beta Distribution</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="the-invariance-property.html"><a href="the-invariance-property.html"><i class="fa fa-check"></i><b>1.3</b> The Invariance Property</a>
+<ul>
+<li class="chapter" data-level="1.3.1" data-path="the-invariance-property.html"><a href="the-invariance-property.html#example-bernoulli-odds"><i class="fa fa-check"></i><b>1.3.1</b> Example: Bernoulli Odds</a></li>
+<li class="chapter" data-level="1.3.2" data-path="the-invariance-property.html"><a href="the-invariance-property.html#example-poisson-sd"><i class="fa fa-check"></i><b>1.3.2</b> Example: Poisson SD</a></li>
+<li class="chapter" data-level="1.3.3" data-path="the-invariance-property.html"><a href="the-invariance-property.html#example-beta-mean-and-variance"><i class="fa fa-check"></i><b>1.3.3</b> Example: Beta Mean and Variance</a></li>
+</ul></li>
+<li class="chapter" data-level="1.4" data-path="the-parametric-bootstrap.html"><a href="the-parametric-bootstrap.html"><i class="fa fa-check"></i><b>1.4</b> The Parametric Bootstrap</a>
+<ul>
+<li class="chapter" data-level="1.4.1" data-path="the-parametric-bootstrap.html"><a href="the-parametric-bootstrap.html#example-toothpaste-cap-problm"><i class="fa fa-check"></i><b>1.4.1</b> Example: Toothpaste Cap Problm</a></li>
+<li class="chapter" data-level="1.4.2" data-path="the-parametric-bootstrap.html"><a href="the-parametric-bootstrap.html#example-beta-distribution-1"><i class="fa fa-check"></i><b>1.4.2</b> Example: Beta Distribution</a></li>
+</ul></li>
+<li class="chapter" data-level="1.5" data-path="sampling-distribution.html"><a href="sampling-distribution.html"><i class="fa fa-check"></i><b>1.5</b> Sampling Distribution</a>
+<ul>
+<li class="chapter" data-level="1.5.1" data-path="sampling-distribution.html"><a href="sampling-distribution.html#example-the-toothpaste-cap-problem"><i class="fa fa-check"></i><b>1.5.1</b> Example: The Toothpaste Cap Problem</a></li>
+</ul></li>
+<li class="chapter" data-level="1.6" data-path="bias.html"><a href="bias.html"><i class="fa fa-check"></i><b>1.6</b> Bias</a>
+<ul>
+<li class="chapter" data-level="1.6.1" data-path="bias.html"><a href="bias.html#example-bernoulli-distribution-1"><i class="fa fa-check"></i><b>1.6.1</b> Example: Bernoulli Distribution</a></li>
+<li class="chapter" data-level="1.6.2" data-path="bias.html"><a href="bias.html#example-poisson-distribution-1"><i class="fa fa-check"></i><b>1.6.2</b> Example: Poisson Distribution</a></li>
+</ul></li>
+<li class="chapter" data-level="1.7" data-path="consistency.html"><a href="consistency.html"><i class="fa fa-check"></i><b>1.7</b> Consistency</a>
+<ul>
+<li class="chapter" data-level="1.7.1" data-path="consistency.html"><a href="consistency.html#example-illustrative"><i class="fa fa-check"></i><b>1.7.1</b> Example: Illustrative</a></li>
+<li class="chapter" data-level="1.7.2" data-path="consistency.html"><a href="consistency.html#example-bernoulli-odds-1"><i class="fa fa-check"></i><b>1.7.2</b> Example: Bernoulli Odds</a></li>
+</ul></li>
+<li class="chapter" data-level="1.8" data-path="predictive-distribution.html"><a href="predictive-distribution.html"><i class="fa fa-check"></i><b>1.8</b> Predictive Distribution</a>
+<ul>
+<li class="chapter" data-level="1.8.1" data-path="predictive-distribution.html"><a href="predictive-distribution.html#example-poisson-distribution-2"><i class="fa fa-check"></i><b>1.8.1</b> Example: Poisson Distribution</a></li>
+<li class="chapter" data-level="1.8.2" data-path="predictive-distribution.html"><a href="predictive-distribution.html#example-beta-distribution-2"><i class="fa fa-check"></i><b>1.8.2</b> Example: Beta Distribution</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="week-2-bayesian-inference.html"><a href="week-2-bayesian-inference.html"><i class="fa fa-check"></i><b>2</b> Week 2: Bayesian Inference</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="bayesian-inference.html"><a href="bayesian-inference.html"><i class="fa fa-check"></i><b>2.1</b> Bayesian Inference</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="bayesian-inference.html"><a href="bayesian-inference.html#mechanics"><i class="fa fa-check"></i><b>2.1.1</b> Mechanics</a></li>
+<li class="chapter" data-level="2.1.2" data-path="bayesian-inference.html"><a href="bayesian-inference.html#posterior-summaries"><i class="fa fa-check"></i><b>2.1.2</b> Posterior Summaries</a></li>
+<li class="chapter" data-level="2.1.3" data-path="bayesian-inference.html"><a href="bayesian-inference.html#posterior-simulation"><i class="fa fa-check"></i><b>2.1.3</b> Posterior Simulation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="example-bernoulli.html"><a href="example-bernoulli.html"><i class="fa fa-check"></i><b>2.2</b> Example: Bernoulli</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="example-bernoulli.html"><a href="example-bernoulli.html#likelihood"><i class="fa fa-check"></i><b>2.2.1</b> The Likelihood</a></li>
+<li class="chapter" data-level="2.2.2" data-path="example-bernoulli.html"><a href="example-bernoulli.html#the-prior"><i class="fa fa-check"></i><b>2.2.2</b> The Prior</a></li>
+<li class="chapter" data-level="2.2.3" data-path="example-bernoulli.html"><a href="example-bernoulli.html#the-posterior"><i class="fa fa-check"></i><b>2.2.3</b> The Posterior</a></li>
+<li class="chapter" data-level="2.2.4" data-path="example-bernoulli.html"><a href="example-bernoulli.html#point-estimates"><i class="fa fa-check"></i><b>2.2.4</b> Point Estimates</a></li>
+<li class="chapter" data-level="2.2.5" data-path="example-bernoulli.html"><a href="example-bernoulli.html#credible-interval"><i class="fa fa-check"></i><b>2.2.5</b> Credible Interval</a></li>
+<li class="chapter" data-level="2.2.6" data-path="example-bernoulli.html"><a href="example-bernoulli.html#simulation"><i class="fa fa-check"></i><b>2.2.6</b> Simulation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="example-poisson-distribution-3.html"><a href="example-poisson-distribution-3.html"><i class="fa fa-check"></i><b>2.3</b> Example: Poisson Distribution</a></li>
+<li class="chapter" data-level="2.4" data-path="remarks-1.html"><a href="remarks-1.html"><i class="fa fa-check"></i><b>2.4</b> Remarks</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="week-3-adding-predictors.html"><a href="week-3-adding-predictors.html"><i class="fa fa-check"></i><b>3</b> Week 3: Adding Predictors</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html"><i class="fa fa-check"></i><b>3.1</b> Review: The Normal Model</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html#distribution"><i class="fa fa-check"></i><b>3.1.1</b> Distribution</a></li>
+<li class="chapter" data-level="3.1.2" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html#linear-predictor"><i class="fa fa-check"></i><b>3.1.2</b> Linear Predictor</a></li>
+<li class="chapter" data-level="3.1.3" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html#fitting-the-normal-linear-model"><i class="fa fa-check"></i><b>3.1.3</b> Fitting the Normal-Linear Model</a></li>
+<li class="chapter" data-level="3.1.4" data-path="review-the-normal-model.html"><a href="review-the-normal-model.html#applied-example"><i class="fa fa-check"></i><b>3.1.4</b> Applied Example</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="bernoulli-model.html"><a href="bernoulli-model.html"><i class="fa fa-check"></i><b>3.2</b> Bernoulli Model</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="bernoulli-model.html"><a href="bernoulli-model.html#the-linear-probability-model"><i class="fa fa-check"></i><b>3.2.1</b> The Linear Probability Model</a></li>
+<li class="chapter" data-level="3.2.2" data-path="bernoulli-model.html"><a href="bernoulli-model.html#the-logit-model"><i class="fa fa-check"></i><b>3.2.2</b> The Logit Model</a></li>
+<li class="chapter" data-level="3.2.3" data-path="bernoulli-model.html"><a href="bernoulli-model.html#fitting-a-logit-model"><i class="fa fa-check"></i><b>3.2.3</b> Fitting a Logit Model</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="poisson-model.html"><a href="poisson-model.html"><i class="fa fa-check"></i><b>3.3</b> Poisson Model</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="poisson-model.html"><a href="poisson-model.html#predictive-distribution-1"><i class="fa fa-check"></i><b>3.3.1</b> Predictive Distribution</a></li>
+<li class="chapter" data-level="3.3.2" data-path="poisson-model.html"><a href="poisson-model.html#posterior-predictive-distribution"><i class="fa fa-check"></i><b>3.3.2</b> Posterior Predictive Distribution</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="posterior-predictive-distribution-1.html"><a href="posterior-predictive-distribution-1.html"><i class="fa fa-check"></i><b>3.4</b> [Posterior] Predictive Distribution</a>
+<ul>
+<li class="chapter" data-level="3.4.1" data-path="posterior-predictive-distribution-1.html"><a href="posterior-predictive-distribution-1.html#for-the-logit-model"><i class="fa fa-check"></i><b>3.4.1</b> … for the logit model</a></li>
+<li class="chapter" data-level="3.4.2" data-path="posterior-predictive-distribution-1.html"><a href="posterior-predictive-distribution-1.html#for-the-poisson-model"><i class="fa fa-check"></i><b>3.4.2</b> … for the Poisson model</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="quantities-of-interest.html"><a href="quantities-of-interest.html"><i class="fa fa-check"></i><b>3.5</b> Quantities of Interest</a>
+<ul>
+<li class="chapter" data-level="3.5.1" data-path="quantities-of-interest.html"><a href="quantities-of-interest.html#expected-value"><i class="fa fa-check"></i><b>3.5.1</b> Expected Value</a></li>
+<li class="chapter" data-level="3.5.2" data-path="quantities-of-interest.html"><a href="quantities-of-interest.html#first-difference"><i class="fa fa-check"></i><b>3.5.2</b> First Difference</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="week-4-confidence-intervals.html"><a href="week-4-confidence-intervals.html"><i class="fa fa-check"></i><b>4</b> Week 4: Confidence Intervals</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="the-parametric-bootstrap-1.html"><a href="the-parametric-bootstrap-1.html"><i class="fa fa-check"></i><b>4.1</b> The Parametric Bootstrap</a></li>
+<li class="chapter" data-level="4.2" data-path="the-nonparametric-bootstrap.html"><a href="the-nonparametric-bootstrap.html"><i class="fa fa-check"></i><b>4.2</b> The <em>Non</em>parametric Bootstrap</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="the-nonparametric-bootstrap.html"><a href="the-nonparametric-bootstrap.html#example-coefficients-from-the-civilian-casualties-model"><i class="fa fa-check"></i><b>4.2.1</b> Example: Coefficients from the Civilian Casualties Model</a></li>
+<li class="chapter" data-level="4.2.2" data-path="the-nonparametric-bootstrap.html"><a href="the-nonparametric-bootstrap.html#example-first-difference-from-the-civilian-casualties-model"><i class="fa fa-check"></i><b>4.2.2</b> Example: First Difference from the Civilian Casualties Model</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html"><i class="fa fa-check"></i><b>4.3</b> Wald Confidence Intervals</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html#curvature-in-a-single-dimmension"><i class="fa fa-check"></i><b>4.3.1</b> Curvature in a Single Dimmension</a></li>
+<li class="chapter" data-level="4.3.2" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html#curvature-in-a-multiple-dimmensions"><i class="fa fa-check"></i><b>4.3.2</b> Curvature in a Multiple Dimmensions</a></li>
+<li class="chapter" data-level="4.3.3" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html#from-curvature-to-confidence-intervals"><i class="fa fa-check"></i><b>4.3.3</b> From Curvature to Confidence Intervals</a></li>
+<li class="chapter" data-level="4.3.4" data-path="wald-confidence-intervals.html"><a href="wald-confidence-intervals.html#final-notes"><i class="fa fa-check"></i><b>4.3.4</b> Final Notes</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="evaluating-confidence-intervals.html"><a href="evaluating-confidence-intervals.html"><i class="fa fa-check"></i><b>4.4</b> Evaluating Confidence Intervals</a>
+<ul>
+<li class="chapter" data-level="4.4.1" data-path="evaluating-confidence-intervals.html"><a href="evaluating-confidence-intervals.html#coverage"><i class="fa fa-check"></i><b>4.4.1</b> Coverage</a></li>
+<li class="chapter" data-level="4.4.2" data-path="evaluating-confidence-intervals.html"><a href="evaluating-confidence-intervals.html#monte-carlo-simulation-to-assess-coverage"><i class="fa fa-check"></i><b>4.4.2</b> Monte Carlo Simulation to Assess Coverage</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="week-5-models-of-binary-outcomes-and-model-fit-summaries.html"><a href="week-5-models-of-binary-outcomes-and-model-fit-summaries.html"><i class="fa fa-check"></i><b>5</b> Week 5: Models of Binary Outcomes and Model Fit Summaries</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="measures-of-model-fit.html"><a href="measures-of-model-fit.html"><i class="fa fa-check"></i><b>5.1</b> Measures of Model Fit</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="measures-of-model-fit.html"><a href="measures-of-model-fit.html#scoring-binary-predictions"><i class="fa fa-check"></i><b>5.1.1</b> Scoring Binary Predictions</a></li>
+<li class="chapter" data-level="5.1.2" data-path="measures-of-model-fit.html"><a href="measures-of-model-fit.html#cross-validation"><i class="fa fa-check"></i><b>5.1.2</b> Cross-Validation</a></li>
+<li class="chapter" data-level="5.1.3" data-path="measures-of-model-fit.html"><a href="measures-of-model-fit.html#information-criteria"><i class="fa fa-check"></i><b>5.1.3</b> Information Criteria</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="models-of-binary-outcomes.html"><a href="models-of-binary-outcomes.html"><i class="fa fa-check"></i><b>5.2</b> Models of Binary Outcomes</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="models-of-binary-outcomes.html"><a href="models-of-binary-outcomes.html#logit"><i class="fa fa-check"></i><b>5.2.1</b> Logit</a></li>
+<li class="chapter" data-level="5.2.2" data-path="models-of-binary-outcomes.html"><a href="models-of-binary-outcomes.html#probit"><i class="fa fa-check"></i><b>5.2.2</b> Probit</a></li>
+<li class="chapter" data-level="5.2.3" data-path="models-of-binary-outcomes.html"><a href="models-of-binary-outcomes.html#cloglog"><i class="fa fa-check"></i><b>5.2.3</b> Cloglog</a></li>
+<li class="chapter" data-level="5.2.4" data-path="models-of-binary-outcomes.html"><a href="models-of-binary-outcomes.html#cauchit"><i class="fa fa-check"></i><b>5.2.4</b> Cauchit</a></li>
+<li class="chapter" data-level="5.2.5" data-path="models-of-binary-outcomes.html"><a href="models-of-binary-outcomes.html#scobit"><i class="fa fa-check"></i><b>5.2.5</b> Scobit</a></li>
+<li class="chapter" data-level="5.2.6" data-path="models-of-binary-outcomes.html"><a href="models-of-binary-outcomes.html#heteroskedastic-probit"><i class="fa fa-check"></i><b>5.2.6</b> Heteroskedastic Probit</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="week-6-an-explosion-of-quantities-of-interest.html"><a href="week-6-an-explosion-of-quantities-of-interest.html"><i class="fa fa-check"></i><b>6</b> Week 6: An Explosion of Quantities of Interest</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="king-tomz-and-wittenberg-2001.html"><a href="king-tomz-and-wittenberg-2001.html"><i class="fa fa-check"></i><b>6.1</b> King, Tomz, and Wittenberg (2001)</a></li>
+<li class="chapter" data-level="6.2" data-path="brambor-clark-and-golder-2006.html"><a href="brambor-clark-and-golder-2006.html"><i class="fa fa-check"></i><b>6.2</b> Brambor, Clark, and Golder (2006)</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="brambor-clark-and-golder-2006.html"><a href="brambor-clark-and-golder-2006.html#a-warning-about-misinterpreting-marginal-effect-plots"><i class="fa fa-check"></i><b>6.2.1</b> A Warning about Misinterpreting Marginal Effect Plots</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="berry-golder-and-milton-2012.html"><a href="berry-golder-and-milton-2012.html"><i class="fa fa-check"></i><b>6.3</b> Berry, Golder, and Milton (2012)</a></li>
+<li class="chapter" data-level="6.4" data-path="berry-demeritt-and-esarey-2010.html"><a href="berry-demeritt-and-esarey-2010.html"><i class="fa fa-check"></i><b>6.4</b> Berry, DeMeritt, and Esarey (2010)</a></li>
+<li class="chapter" data-level="6.5" data-path="rainey-2016.html"><a href="rainey-2016.html"><i class="fa fa-check"></i><b>6.5</b> Rainey (2016)</a></li>
+<li class="chapter" data-level="6.6" data-path="hanmer-and-kalkan-2013.html"><a href="hanmer-and-kalkan-2013.html"><i class="fa fa-check"></i><b>6.6</b> Hanmer and Kalkan (2013)</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="week-6-an-explosion-of-quantities-of-interest-1.html"><a href="week-6-an-explosion-of-quantities-of-interest-1.html"><i class="fa fa-check"></i><b>7</b> Week 6: An Explosion of Quantities of Interest</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="king-tomz-and-wittenberg-2001-1.html"><a href="king-tomz-and-wittenberg-2001-1.html"><i class="fa fa-check"></i><b>7.1</b> King, Tomz, and Wittenberg (2001)</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistical Modeling: A Tools Approach</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="king-tomz-and-wittenberg-2001-1" class="section level2 hasAnchor" number="7.1">
+<h2><span class="header-section-number">7.1</span> King, Tomz, and Wittenberg (2001)<a href="king-tomz-and-wittenberg-2001-1.html#king-tomz-and-wittenberg-2001-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>King, Tomz, and Wittenberg (2001, KTW) suggest an alternative to the [non]parametric bootstrap (or delta method) to obtain confidence intervals for quantities of interest. I see their approach as simulation from an approximate posterior distribution. However, we might think of it as a faster version of the [non]parametric bootstrap.</p>
+<p>Suppose that we have ML estimates <span class="math inline">\(\hat{\beta}\)</span> and estimated covariance matrix <span class="math inline">\(\widehat{\text{Var}}(\hat{\beta})\)</span>. Then we can approximate the [non]parametric bootstrap replications <span class="math inline">\(\hat{\beta}^{bs}\)</span> or the posterior simulations <span class="math inline">\(\tilde{\beta}\)</span> by sampling from <span class="math inline">\(\tilde{\beta}^{KTW} \sim MVN(\hat{\beta}, \widehat{\text{Var}}(\hat{\beta}))\)</span>, where <span class="math inline">\(MVN\)</span> is the multivariate normal distribution.</p>
+<p>We can then transform each simulation of <span class="math inline">\(\tilde{\beta}^{KTW}_i\)</span> into the quantity of interest <span class="math inline">\(\tilde{\tau}^{KTW}_i = \tau \left( \tilde{\beta}^{KTW}_i \right)\)</span> and compute a confidence interval using using the percentiles (the same way we would for the bootstrap replicates or posterior simulations of the quantity of interest).</p>
+<p>In practice, while we can understand KTW’s methods as a Bayesian method, we refer to the resulting intervals as “confidence intervals.”</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="king-tomz-and-wittenberg-2001-1.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load data</span></span>
+<span id="cb1-2"><a href="king-tomz-and-wittenberg-2001-1.html#cb1-2" aria-hidden="true" tabindex="-1"></a>scobit <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">&quot;data/scobit.dta&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb1-3"><a href="king-tomz-and-wittenberg-2001-1.html#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(newvote <span class="sc">!=</span> <span class="sc">-</span><span class="dv">1</span>) </span>
+<span id="cb1-4"><a href="king-tomz-and-wittenberg-2001-1.html#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="king-tomz-and-wittenberg-2001-1.html#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># fit model</span></span>
+<span id="cb1-6"><a href="king-tomz-and-wittenberg-2001-1.html#cb1-6" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> newvote <span class="sc">~</span> <span class="fu">poly</span>(neweduc, <span class="dv">2</span>, <span class="at">raw =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> closing <span class="sc">+</span> <span class="fu">poly</span>(age, <span class="dv">2</span>, <span class="at">raw =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> south <span class="sc">+</span> gov</span>
+<span id="cb1-7"><a href="king-tomz-and-wittenberg-2001-1.html#cb1-7" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(f, <span class="at">data =</span> scobit, <span class="at">family =</span> binomial)</span>
+<span id="cb1-8"><a href="king-tomz-and-wittenberg-2001-1.html#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="king-tomz-and-wittenberg-2001-1.html#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate beta_tildes using KTW&#39;s method</span></span>
+<span id="cb1-10"><a href="king-tomz-and-wittenberg-2001-1.html#cb1-10" aria-hidden="true" tabindex="-1"></a>beta_tilde <span class="ot">&lt;-</span> mvtnorm<span class="sc">::</span><span class="fu">rmvnorm</span>(<span class="dv">2000</span>, <span class="at">mean =</span> <span class="fu">coef</span>(fit), <span class="at">sigma =</span> <span class="fu">vcov</span>(fit))</span>
+<span id="cb1-11"><a href="king-tomz-and-wittenberg-2001-1.html#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="king-tomz-and-wittenberg-2001-1.html#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># print first few rows</span></span>
+<span id="cb1-13"><a href="king-tomz-and-wittenberg-2001-1.html#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(beta_tilde)</span></code></pre></div>
+<pre><code>##      (Intercept) poly(neweduc, 2, raw = TRUE)1 poly(neweduc, 2, raw = TRUE)2
+## [1,]   -4.065489                     0.2220392                    0.03140296
+## [2,]   -3.985407                     0.2353074                    0.02873909
+## [3,]   -4.280297                     0.2724858                    0.02636673
+## [4,]   -4.070978                     0.2384723                    0.02820945
+## [5,]   -4.028201                     0.2378574                    0.02891081
+## [6,]   -4.137127                     0.2641155                    0.02643900
+##          closing poly(age, 2, raw = TRUE)1 poly(age, 2, raw = TRUE)2      south
+## [1,] -0.01300743                 0.1144443             -0.0008276268 -0.2060127
+## [2,] -0.01302557                 0.1102135             -0.0007810229 -0.1612825
+## [3,] -0.01277371                 0.1177225             -0.0008440025 -0.2143250
+## [4,] -0.01363083                 0.1156539             -0.0008345336 -0.2300673
+## [5,] -0.01342172                 0.1129648             -0.0008129749 -0.2088139
+## [6,] -0.01379829                 0.1149999             -0.0008236183 -0.1915163
+##              gov
+## [1,]  0.03438074
+## [2,]  0.04641149
+## [3,]  0.02546124
+## [4,] -0.03032746
+## [5,]  0.01522087
+## [6,] -0.03305416</code></pre>
+<p>Now we “simply” need to compute the quantity of interest for the scenario(s) of interest.</p>
+<p>Let’s use two examples, first, let’s compute the predicted probability as <code>closing</code> varies from its minimum to its maximum. This will be a bit trickier than using <code>predict()</code> because we need to do the matrix multiplication manually.</p>
+<p>You should work through this code carefully. It’s subtle, but <em>critical</em>.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create scenario of interest</span></span>
+<span id="cb3-2"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-2" aria-hidden="true" tabindex="-1"></a>scenario <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb3-3"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">neweduc =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>neweduc),</span>
+<span id="cb3-4"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">closing =</span> <span class="fu">min</span>(scobit<span class="sc">$</span>closing)<span class="sc">:</span><span class="fu">max</span>(scobit<span class="sc">$</span>closing),</span>
+<span id="cb3-5"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>age),</span>
+<span id="cb3-6"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">south =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>south),</span>
+<span id="cb3-7"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">gov =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>gov)) </span>
+<span id="cb3-8"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># convert scenario data frame to matrix X_s</span></span>
+<span id="cb3-10"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-10" aria-hidden="true" tabindex="-1"></a>f_scenario <span class="ot">&lt;-</span> <span class="fu">update</span>(f, <span class="cn">NULL</span> <span class="sc">~</span> .)  <span class="co"># remove lhs for use below</span></span>
+<span id="cb3-11"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-11" aria-hidden="true" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(f_scenario, scenario)</span>
+<span id="cb3-12"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-12" aria-hidden="true" tabindex="-1"></a>X_s <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(mf, scenario)</span>
+<span id="cb3-13"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co"># transform simulations of beta into eta and pi</span></span>
+<span id="cb3-15"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-15" aria-hidden="true" tabindex="-1"></a>eta_tilde <span class="ot">&lt;-</span> X_s<span class="sc">%*%</span><span class="fu">t</span>(beta_tilde)  <span class="co"># simulations of linear predictor</span></span>
+<span id="cb3-16"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-16" aria-hidden="true" tabindex="-1"></a>pi_tilde <span class="ot">&lt;-</span> <span class="fu">plogis</span>(eta_tilde)  <span class="co"># simulations of expected value or, in this case, &quot;predicted probability&quot;</span></span>
+<span id="cb3-17"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co"># compute 90% ci with percentiles</span></span>
+<span id="cb3-19"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-19" aria-hidden="true" tabindex="-1"></a>pi_ci <span class="ot">&lt;-</span> <span class="fu">apply</span>(pi_tilde, <span class="dv">1</span>, quantile, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>))</span>
+<span id="cb3-20"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co"># compute ML estimates</span></span>
+<span id="cb3-22"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co"># note: we could use predict(), but I do the matrix computations</span></span>
+<span id="cb3-23"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co"># another note: I don&#39;t recommend using the mean of the *_tildes</span></span>
+<span id="cb3-24"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-24" aria-hidden="true" tabindex="-1"></a>eta_hat <span class="ot">&lt;-</span> X_s<span class="sc">%*%</span><span class="fu">coef</span>(fit)</span>
+<span id="cb3-25"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-25" aria-hidden="true" tabindex="-1"></a>pi_hat <span class="ot">&lt;-</span> <span class="fu">plogis</span>(eta_hat)</span>
+<span id="cb3-26"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-27"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="co"># add all of this back into scenario</span></span>
+<span id="cb3-28"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-28" aria-hidden="true" tabindex="-1"></a>scenario<span class="sc">$</span>pi_hat <span class="ot">&lt;-</span> pi_hat</span>
+<span id="cb3-29"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-29" aria-hidden="true" tabindex="-1"></a>scenario<span class="sc">$</span>pi_lwr <span class="ot">&lt;-</span> pi_ci[<span class="dv">1</span>, ]</span>
+<span id="cb3-30"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-30" aria-hidden="true" tabindex="-1"></a>scenario<span class="sc">$</span>pi_upr <span class="ot">&lt;-</span> pi_ci[<span class="dv">2</span>, ]</span>
+<span id="cb3-31"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-32"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the results</span></span>
+<span id="cb3-33"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(scenario, <span class="fu">aes</span>(<span class="at">x =</span> closing, <span class="at">y =</span> pi_hat, <span class="at">ymin =</span> pi_lwr, <span class="at">ymax =</span> pi_upr)) <span class="sc">+</span> </span>
+<span id="cb3-34"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">fill =</span> <span class="st">&quot;grey50&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb3-35"><a href="king-tomz-and-wittenberg-2001-1.html#cb3-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code></pre></div>
+<p><img src="12-01-hierarchical_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>Now let’s use KTW’s method to obtain a 90% CI around the first-difference as <code>closing</code> in increases from its 25th to its 75th percentile.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create scenarios of interest</span></span>
+<span id="cb4-2"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-2" aria-hidden="true" tabindex="-1"></a>scenario_lo <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb4-3"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">neweduc =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>neweduc),</span>
+<span id="cb4-4"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">closing =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>closing, <span class="at">probs =</span> <span class="fl">0.0</span>),</span>
+<span id="cb4-5"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>age),</span>
+<span id="cb4-6"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">south =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>south),</span>
+<span id="cb4-7"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">gov =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>gov))</span>
+<span id="cb4-8"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-8" aria-hidden="true" tabindex="-1"></a>scenario_hi <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb4-9"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">neweduc =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>neweduc),</span>
+<span id="cb4-10"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">closing =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>closing, <span class="at">probs =</span> <span class="fl">1.0</span>),</span>
+<span id="cb4-11"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>age),</span>
+<span id="cb4-12"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">south =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>south),</span>
+<span id="cb4-13"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">gov =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>gov))</span>
+<span id="cb4-14"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co"># convert scenario data frame to matrix X_s</span></span>
+<span id="cb4-16"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-16" aria-hidden="true" tabindex="-1"></a>f_scenario <span class="ot">&lt;-</span> <span class="fu">update</span>(f, <span class="cn">NULL</span> <span class="sc">~</span> .)  <span class="co"># remove lhs for use below</span></span>
+<span id="cb4-17"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-17" aria-hidden="true" tabindex="-1"></a>mf_lo <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(f_scenario, scenario_lo)</span>
+<span id="cb4-18"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-18" aria-hidden="true" tabindex="-1"></a>X_lo <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(mf, scenario_lo)</span>
+<span id="cb4-19"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-19" aria-hidden="true" tabindex="-1"></a>mf_hi <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(f_scenario, scenario_hi)</span>
+<span id="cb4-20"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-20" aria-hidden="true" tabindex="-1"></a>X_hi <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(mf, scenario_hi)</span>
+<span id="cb4-21"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="co"># transform simulations of beta into eta, pi, and fd</span></span>
+<span id="cb4-23"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-23" aria-hidden="true" tabindex="-1"></a>eta_lo_tilde <span class="ot">&lt;-</span> X_lo<span class="sc">%*%</span><span class="fu">t</span>(beta_tilde)  <span class="co"># simulations of linear predictor</span></span>
+<span id="cb4-24"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-24" aria-hidden="true" tabindex="-1"></a>eta_hi_tilde <span class="ot">&lt;-</span> X_hi<span class="sc">%*%</span><span class="fu">t</span>(beta_tilde)</span>
+<span id="cb4-25"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-25" aria-hidden="true" tabindex="-1"></a>pi_lo_tilde <span class="ot">&lt;-</span> <span class="fu">plogis</span>(eta_lo_tilde)  <span class="co"># simulations of expected value or, in this case, &quot;predicted probability&quot;</span></span>
+<span id="cb4-26"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-26" aria-hidden="true" tabindex="-1"></a>pi_hi_tilde <span class="ot">&lt;-</span> <span class="fu">plogis</span>(eta_hi_tilde) </span>
+<span id="cb4-27"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-27" aria-hidden="true" tabindex="-1"></a>fd_tilde <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(pi_hi_tilde <span class="sc">-</span> pi_lo_tilde) <span class="co"># simulations of first-difference; as.numeric() needed b/c it&#39;s a matrix and I to simplify it to a vector</span></span>
+<span id="cb4-28"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-29"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="co"># compute 90% ci with percentiles</span></span>
+<span id="cb4-30"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-30" aria-hidden="true" tabindex="-1"></a>fd_ci <span class="ot">&lt;-</span> <span class="fu">quantile</span>(fd_tilde, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>))</span>
+<span id="cb4-31"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-32"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="co"># compute ML estimates</span></span>
+<span id="cb4-33"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-33" aria-hidden="true" tabindex="-1"></a><span class="co"># note: we could use predict(), but I do the matrix computations; predict() will be more reliable</span></span>
+<span id="cb4-34"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-34" aria-hidden="true" tabindex="-1"></a><span class="co"># another note: I don&#39;t recommend using the mean of the *_tildes</span></span>
+<span id="cb4-35"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-35" aria-hidden="true" tabindex="-1"></a>eta_lo_hat <span class="ot">&lt;-</span> X_lo<span class="sc">%*%</span><span class="fu">coef</span>(fit)</span>
+<span id="cb4-36"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-36" aria-hidden="true" tabindex="-1"></a>eta_hi_hat <span class="ot">&lt;-</span> X_hi<span class="sc">%*%</span><span class="fu">coef</span>(fit)</span>
+<span id="cb4-37"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-37" aria-hidden="true" tabindex="-1"></a>pi_lo_hat <span class="ot">&lt;-</span> <span class="fu">plogis</span>(eta_lo_hat)</span>
+<span id="cb4-38"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-38" aria-hidden="true" tabindex="-1"></a>pi_hi_hat <span class="ot">&lt;-</span> <span class="fu">plogis</span>(eta_hi_hat)</span>
+<span id="cb4-39"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-39" aria-hidden="true" tabindex="-1"></a>fd_hat <span class="ot">&lt;-</span> pi_hi_hat <span class="sc">-</span> pi_lo_hat</span>
+<span id="cb4-40"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-41"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-41" aria-hidden="true" tabindex="-1"></a><span class="co"># print the results</span></span>
+<span id="cb4-42"><a href="king-tomz-and-wittenberg-2001-1.html#cb4-42" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fd_hat, <span class="at">digits =</span> <span class="dv">2</span>)</span></code></pre></div>
+<pre><code>##    [,1]
+## 1 -0.14</code></pre>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="king-tomz-and-wittenberg-2001-1.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fd_ci, <span class="at">digits =</span> <span class="dv">4</span>)</span></code></pre></div>
+<pre><code>##      5%     95% 
+## -0.1558 -0.1292</code></pre>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="king-tomz-and-wittenberg-2001-1.html#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the results</span></span>
+<span id="cb8-2"><a href="king-tomz-and-wittenberg-2001-1.html#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(scenario, <span class="fu">aes</span>(<span class="at">x =</span> closing, <span class="at">y =</span> pi_hat, <span class="at">ymin =</span> pi_lwr, <span class="at">ymax =</span> pi_upr)) <span class="sc">+</span> </span>
+<span id="cb8-3"><a href="king-tomz-and-wittenberg-2001-1.html#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">fill =</span> <span class="st">&quot;grey50&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb8-4"><a href="king-tomz-and-wittenberg-2001-1.html#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code></pre></div>
+<p><img src="12-01-hierarchical_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>And lastly, for the marginal effect of <code>closing</code> as closing varies from its minimum to it’s maximum.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create scenario of interest</span></span>
+<span id="cb9-2"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-2" aria-hidden="true" tabindex="-1"></a>scenario <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb9-3"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">neweduc =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>neweduc),</span>
+<span id="cb9-4"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">closing =</span> <span class="fu">min</span>(scobit<span class="sc">$</span>closing)<span class="sc">:</span><span class="fu">max</span>(scobit<span class="sc">$</span>closing),</span>
+<span id="cb9-5"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>age),</span>
+<span id="cb9-6"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">south =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>south),</span>
+<span id="cb9-7"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">gov =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>gov)) </span>
+<span id="cb9-8"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co"># convert scenario data frame to matrix X_s</span></span>
+<span id="cb9-10"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-10" aria-hidden="true" tabindex="-1"></a>f_scenario <span class="ot">&lt;-</span> <span class="fu">update</span>(f, <span class="cn">NULL</span> <span class="sc">~</span> .)  <span class="co"># remove lhs for use below</span></span>
+<span id="cb9-11"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-11" aria-hidden="true" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(f_scenario, scenario)</span>
+<span id="cb9-12"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-12" aria-hidden="true" tabindex="-1"></a>X_s <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(mf, scenario)</span>
+<span id="cb9-13"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co"># transform simulations of beta into eta, pi, and me</span></span>
+<span id="cb9-15"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-15" aria-hidden="true" tabindex="-1"></a>eta_tilde <span class="ot">&lt;-</span> X_s<span class="sc">%*%</span><span class="fu">t</span>(beta_tilde)  <span class="co"># simulations of linear predictor</span></span>
+<span id="cb9-16"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-16" aria-hidden="true" tabindex="-1"></a>pi_tilde <span class="ot">&lt;-</span> <span class="fu">plogis</span>(eta_tilde)  <span class="co"># simulations of expected value or, in this case, &quot;predicted probability&quot;</span></span>
+<span id="cb9-17"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-17" aria-hidden="true" tabindex="-1"></a>me_tilde <span class="ot">&lt;-</span> beta_tilde[, <span class="st">&quot;closing&quot;</span>]<span class="sc">*</span>pi_tilde<span class="sc">*</span>(<span class="dv">1</span> <span class="sc">-</span> pi_tilde)</span>
+<span id="cb9-18"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-19"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="co"># compute 90% ci with percentiles</span></span>
+<span id="cb9-20"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-20" aria-hidden="true" tabindex="-1"></a>me_ci <span class="ot">&lt;-</span> <span class="fu">apply</span>(me_tilde, <span class="dv">1</span>, quantile, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>))</span>
+<span id="cb9-21"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-22"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="co"># compute ML estimates</span></span>
+<span id="cb9-23"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="co"># note: we could use predict(), but I do the matrix computations</span></span>
+<span id="cb9-24"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="co"># another note: I don&#39;t recommend using the mean of the *_tildes</span></span>
+<span id="cb9-25"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-25" aria-hidden="true" tabindex="-1"></a>eta_hat <span class="ot">&lt;-</span> X_s<span class="sc">%*%</span><span class="fu">coef</span>(fit)</span>
+<span id="cb9-26"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-26" aria-hidden="true" tabindex="-1"></a>pi_hat <span class="ot">&lt;-</span> <span class="fu">plogis</span>(eta_hat)</span>
+<span id="cb9-27"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-27" aria-hidden="true" tabindex="-1"></a>me_hat <span class="ot">&lt;-</span> <span class="fu">coef</span>(fit)[<span class="st">&quot;closing&quot;</span>]<span class="sc">*</span>pi_hat<span class="sc">*</span>(<span class="dv">1</span> <span class="sc">-</span> pi_hat)</span>
+<span id="cb9-28"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-28" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-29"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="co"># add all of this back into scenario</span></span>
+<span id="cb9-30"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-30" aria-hidden="true" tabindex="-1"></a>scenario<span class="sc">$</span>me_hat <span class="ot">&lt;-</span> me_hat</span>
+<span id="cb9-31"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-31" aria-hidden="true" tabindex="-1"></a>scenario<span class="sc">$</span>me_lwr <span class="ot">&lt;-</span> me_ci[<span class="dv">1</span>, ]</span>
+<span id="cb9-32"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-32" aria-hidden="true" tabindex="-1"></a>scenario<span class="sc">$</span>me_upr <span class="ot">&lt;-</span> me_ci[<span class="dv">2</span>, ]</span>
+<span id="cb9-33"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-34"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-34" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the results</span></span>
+<span id="cb9-35"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-35" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(scenario, <span class="fu">aes</span>(<span class="at">x =</span> closing, <span class="at">y =</span> me_hat, <span class="at">ymin =</span> me_lwr, <span class="at">ymax =</span> me_upr)) <span class="sc">+</span> </span>
+<span id="cb9-36"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">fill =</span> <span class="st">&quot;grey50&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb9-37"><a href="king-tomz-and-wittenberg-2001-1.html#cb9-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code></pre></div>
+<p><img src="12-01-hierarchical_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+
+</div>
+<!-- </div> -->
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="week-6-an-explosion-of-quantities-of-interest-1.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["adv-methods-notes.pdf", "adv-methods-notes.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

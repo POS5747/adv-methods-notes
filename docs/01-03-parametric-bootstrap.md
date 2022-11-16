@@ -30,7 +30,7 @@ print(quantile(bs_est, probs = c(0.025, 0.975)), digits = 2)  # 95% ci
 
 ```
 ##  2.5% 97.5% 
-## 0.020 0.093
+## 0.020 0.087
 ```
 
 We leave an evaluation of this confidence interval (i.e., Does it capture $\theta$ 95% of the time?) to later in the semester.

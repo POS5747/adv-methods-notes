@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>6.6 Hanmer and Kalkan (2013) | Statistical Modeling: A Tools Approach</title>
   <meta name="description" content="Lecture notes covering the key tools of regression modeling in political science." />
-  <meta name="generator" content="bookdown 0.29 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.30 and GitBook 2.6.7" />
 
   <meta property="og:title" content="6.6 Hanmer and Kalkan (2013) | Statistical Modeling: A Tools Approach" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 <meta name="author" content="Carlisle Rainey" />
 
 
-<meta name="date" content="2022-10-06" />
+<meta name="date" content="2022-11-15" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -31,7 +31,7 @@
   
   
 <link rel="prev" href="rainey-2016.html"/>
-
+<link rel="next" href="week-12-hierarchical-models.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -53,12 +53,12 @@
 <link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 <script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
-<script src="libs/plotly-binding-4.10.0/plotly.js"></script>
+<script src="libs/plotly-binding-4.10.1/plotly.js"></script>
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
 <link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
 <script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
-<link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
-<script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
 <script>
     $(document).ready(function () {
         process_solutions();
@@ -309,6 +309,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6.5" data-path="rainey-2016.html"><a href="rainey-2016.html"><i class="fa fa-check"></i><b>6.5</b> Rainey (2016)</a></li>
 <li class="chapter" data-level="6.6" data-path="hanmer-and-kalkan-2013.html"><a href="hanmer-and-kalkan-2013.html"><i class="fa fa-check"></i><b>6.6</b> Hanmer and Kalkan (2013)</a></li>
 </ul></li>
+<li class="chapter" data-level="7" data-path="week-12-hierarchical-models.html"><a href="week-12-hierarchical-models.html"><i class="fa fa-check"></i><b>7</b> Week 12: Hierarchical Models</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="example-contact-in-finland.html"><a href="example-contact-in-finland.html"><i class="fa fa-check"></i><b>7.1</b> Example: Contact in Finland</a></li>
+<li class="chapter" data-level="7.2" data-path="example-contact-in-the-uk.html"><a href="example-contact-in-the-uk.html"><i class="fa fa-check"></i><b>7.2</b> Example: Contact in the UK</a></li>
+<li class="chapter" data-level="7.3" data-path="hierarchical-models-in-general.html"><a href="hierarchical-models-in-general.html"><i class="fa fa-check"></i><b>7.3</b> Hierarchical Models in General</a></li>
+<li class="chapter" data-level="7.4" data-path="rainey-2015.html"><a href="rainey-2015.html"><i class="fa fa-check"></i><b>7.4</b> Rainey (2015)</a></li>
+</ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 
@@ -335,112 +342,112 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>To remedy these concerns, they suggest setting the “other” covariate to all combinations that appear in the data set, compute the quantity of interest for all those scenarios, and then average them.</p>
 <p>First, let’s see how the second difference from the previous chapter varies across all the existing combinations of the other covariates. We don’t need a CI, so we don’t need to use KTW’s simulation method–we can just use <code>predict()</code>.</p>
 <p>This can be numerically demanding, so I’m taking a random sample of 5,000 observations from BDE’s example data set to illustrate the computation.</p>
-<div class="sourceCode" id="cb340"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb340-1"><a href="hanmer-and-kalkan-2013.html#cb340-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load data</span></span>
-<span id="cb340-2"><a href="hanmer-and-kalkan-2013.html#cb340-2" aria-hidden="true" tabindex="-1"></a>scobit <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">&quot;data/scobit.dta&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb340-3"><a href="hanmer-and-kalkan-2013.html#cb340-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(newvote <span class="sc">!=</span> <span class="sc">-</span><span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb340-4"><a href="hanmer-and-kalkan-2013.html#cb340-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sample_n</span>(<span class="dv">5000</span>)</span>
-<span id="cb340-5"><a href="hanmer-and-kalkan-2013.html#cb340-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb340-6"><a href="hanmer-and-kalkan-2013.html#cb340-6" aria-hidden="true" tabindex="-1"></a><span class="co"># fit model (nagler&#39;s specification in bde table 1 on p. 263)</span></span>
-<span id="cb340-7"><a href="hanmer-and-kalkan-2013.html#cb340-7" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> newvote <span class="sc">~</span> <span class="fu">poly</span>(neweduc, <span class="dv">2</span>, <span class="at">raw =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> closing <span class="sc">+</span> <span class="fu">poly</span>(age, <span class="dv">2</span>, <span class="at">raw =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> south <span class="sc">+</span> gov</span>
-<span id="cb340-8"><a href="hanmer-and-kalkan-2013.html#cb340-8" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(f, <span class="at">data =</span> scobit, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">&quot;probit&quot;</span>))</span>
-<span id="cb340-9"><a href="hanmer-and-kalkan-2013.html#cb340-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb340-10"><a href="hanmer-and-kalkan-2013.html#cb340-10" aria-hidden="true" tabindex="-1"></a><span class="co"># four scenarios of the second difference; 10th to 90th percentile for both</span></span>
-<span id="cb340-11"><a href="hanmer-and-kalkan-2013.html#cb340-11" aria-hidden="true" tabindex="-1"></a><span class="co"># note: 1st lo/hi refers to neweduc; 2nd refers to closing</span></span>
-<span id="cb340-12"><a href="hanmer-and-kalkan-2013.html#cb340-12" aria-hidden="true" tabindex="-1"></a>s_lo_lo <span class="ot">&lt;-</span> scobit <span class="sc">%&gt;%</span>           <span class="co"># start with the observed data set</span></span>
-<span id="cb340-13"><a href="hanmer-and-kalkan-2013.html#cb340-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(age, south, gov) <span class="sc">%&gt;%</span>   <span class="co"># select the &quot;other&quot; covariates</span></span>
-<span id="cb340-14"><a href="hanmer-and-kalkan-2013.html#cb340-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">neweduc =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.1</span>),</span>
-<span id="cb340-15"><a href="hanmer-and-kalkan-2013.html#cb340-15" aria-hidden="true" tabindex="-1"></a>         <span class="at">closing =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.1</span>))</span>
-<span id="cb340-16"><a href="hanmer-and-kalkan-2013.html#cb340-16" aria-hidden="true" tabindex="-1"></a>pi_lo_lo_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> s_lo_lo, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
-<span id="cb340-17"><a href="hanmer-and-kalkan-2013.html#cb340-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb340-18"><a href="hanmer-and-kalkan-2013.html#cb340-18" aria-hidden="true" tabindex="-1"></a>s_hi_lo <span class="ot">&lt;-</span> scobit <span class="sc">%&gt;%</span>           <span class="co"># start with the observed data set</span></span>
-<span id="cb340-19"><a href="hanmer-and-kalkan-2013.html#cb340-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(age, south, gov) <span class="sc">%&gt;%</span>   <span class="co"># select the &quot;other&quot; covariates</span></span>
-<span id="cb340-20"><a href="hanmer-and-kalkan-2013.html#cb340-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">neweduc =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.9</span>),</span>
-<span id="cb340-21"><a href="hanmer-and-kalkan-2013.html#cb340-21" aria-hidden="true" tabindex="-1"></a>         <span class="at">closing =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.1</span>))</span>
-<span id="cb340-22"><a href="hanmer-and-kalkan-2013.html#cb340-22" aria-hidden="true" tabindex="-1"></a>pi_hi_lo_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> s_hi_lo, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
-<span id="cb340-23"><a href="hanmer-and-kalkan-2013.html#cb340-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb340-24"><a href="hanmer-and-kalkan-2013.html#cb340-24" aria-hidden="true" tabindex="-1"></a>s_lo_hi <span class="ot">&lt;-</span> scobit <span class="sc">%&gt;%</span>           <span class="co"># start with the observed data set</span></span>
-<span id="cb340-25"><a href="hanmer-and-kalkan-2013.html#cb340-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(age, south, gov) <span class="sc">%&gt;%</span>   <span class="co"># select the &quot;other&quot; covariates</span></span>
-<span id="cb340-26"><a href="hanmer-and-kalkan-2013.html#cb340-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">neweduc =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.1</span>),</span>
-<span id="cb340-27"><a href="hanmer-and-kalkan-2013.html#cb340-27" aria-hidden="true" tabindex="-1"></a>         <span class="at">closing =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.9</span>))</span>
-<span id="cb340-28"><a href="hanmer-and-kalkan-2013.html#cb340-28" aria-hidden="true" tabindex="-1"></a>pi_lo_hi_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> s_lo_hi, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
-<span id="cb340-29"><a href="hanmer-and-kalkan-2013.html#cb340-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb340-30"><a href="hanmer-and-kalkan-2013.html#cb340-30" aria-hidden="true" tabindex="-1"></a>s_hi_hi <span class="ot">&lt;-</span> scobit <span class="sc">%&gt;%</span>           <span class="co"># start with the observed data set</span></span>
-<span id="cb340-31"><a href="hanmer-and-kalkan-2013.html#cb340-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(age, south, gov) <span class="sc">%&gt;%</span>   <span class="co"># select the &quot;other&quot; covariates</span></span>
-<span id="cb340-32"><a href="hanmer-and-kalkan-2013.html#cb340-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">neweduc =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.9</span>),</span>
-<span id="cb340-33"><a href="hanmer-and-kalkan-2013.html#cb340-33" aria-hidden="true" tabindex="-1"></a>         <span class="at">closing =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.9</span>))</span>
-<span id="cb340-34"><a href="hanmer-and-kalkan-2013.html#cb340-34" aria-hidden="true" tabindex="-1"></a>pi_hi_hi_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> s_hi_hi, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
-<span id="cb340-35"><a href="hanmer-and-kalkan-2013.html#cb340-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb340-36"><a href="hanmer-and-kalkan-2013.html#cb340-36" aria-hidden="true" tabindex="-1"></a><span class="co"># ml estimate</span></span>
-<span id="cb340-37"><a href="hanmer-and-kalkan-2013.html#cb340-37" aria-hidden="true" tabindex="-1"></a>dd_hat <span class="ot">&lt;-</span> (pi_hi_hi_hat <span class="sc">-</span> pi_lo_hi_hat) <span class="sc">-</span>   <span class="co"># effect of education when closing is high</span></span>
-<span id="cb340-38"><a href="hanmer-and-kalkan-2013.html#cb340-38" aria-hidden="true" tabindex="-1"></a>  (pi_hi_lo_hat <span class="sc">-</span> pi_lo_lo_hat)   <span class="co"># effect of education when closing is low</span></span>
-<span id="cb340-39"><a href="hanmer-and-kalkan-2013.html#cb340-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb340-40"><a href="hanmer-and-kalkan-2013.html#cb340-40" aria-hidden="true" tabindex="-1"></a><span class="fu">qplot</span>(dd_hat, <span class="at">bins =</span> <span class="dv">100</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb337"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb337-1"><a href="hanmer-and-kalkan-2013.html#cb337-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load data</span></span>
+<span id="cb337-2"><a href="hanmer-and-kalkan-2013.html#cb337-2" aria-hidden="true" tabindex="-1"></a>scobit <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">&quot;data/scobit.dta&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb337-3"><a href="hanmer-and-kalkan-2013.html#cb337-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(newvote <span class="sc">!=</span> <span class="sc">-</span><span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb337-4"><a href="hanmer-and-kalkan-2013.html#cb337-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sample_n</span>(<span class="dv">5000</span>)</span>
+<span id="cb337-5"><a href="hanmer-and-kalkan-2013.html#cb337-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb337-6"><a href="hanmer-and-kalkan-2013.html#cb337-6" aria-hidden="true" tabindex="-1"></a><span class="co"># fit model (nagler&#39;s specification in bde table 1 on p. 263)</span></span>
+<span id="cb337-7"><a href="hanmer-and-kalkan-2013.html#cb337-7" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> newvote <span class="sc">~</span> <span class="fu">poly</span>(neweduc, <span class="dv">2</span>, <span class="at">raw =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> closing <span class="sc">+</span> <span class="fu">poly</span>(age, <span class="dv">2</span>, <span class="at">raw =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> south <span class="sc">+</span> gov</span>
+<span id="cb337-8"><a href="hanmer-and-kalkan-2013.html#cb337-8" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(f, <span class="at">data =</span> scobit, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">&quot;probit&quot;</span>))</span>
+<span id="cb337-9"><a href="hanmer-and-kalkan-2013.html#cb337-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb337-10"><a href="hanmer-and-kalkan-2013.html#cb337-10" aria-hidden="true" tabindex="-1"></a><span class="co"># four scenarios of the second difference; 10th to 90th percentile for both</span></span>
+<span id="cb337-11"><a href="hanmer-and-kalkan-2013.html#cb337-11" aria-hidden="true" tabindex="-1"></a><span class="co"># note: 1st lo/hi refers to neweduc; 2nd refers to closing</span></span>
+<span id="cb337-12"><a href="hanmer-and-kalkan-2013.html#cb337-12" aria-hidden="true" tabindex="-1"></a>s_lo_lo <span class="ot">&lt;-</span> scobit <span class="sc">%&gt;%</span>           <span class="co"># start with the observed data set</span></span>
+<span id="cb337-13"><a href="hanmer-and-kalkan-2013.html#cb337-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(age, south, gov) <span class="sc">%&gt;%</span>   <span class="co"># select the &quot;other&quot; covariates</span></span>
+<span id="cb337-14"><a href="hanmer-and-kalkan-2013.html#cb337-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">neweduc =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.1</span>),</span>
+<span id="cb337-15"><a href="hanmer-and-kalkan-2013.html#cb337-15" aria-hidden="true" tabindex="-1"></a>         <span class="at">closing =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.1</span>))</span>
+<span id="cb337-16"><a href="hanmer-and-kalkan-2013.html#cb337-16" aria-hidden="true" tabindex="-1"></a>pi_lo_lo_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> s_lo_lo, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
+<span id="cb337-17"><a href="hanmer-and-kalkan-2013.html#cb337-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb337-18"><a href="hanmer-and-kalkan-2013.html#cb337-18" aria-hidden="true" tabindex="-1"></a>s_hi_lo <span class="ot">&lt;-</span> scobit <span class="sc">%&gt;%</span>           <span class="co"># start with the observed data set</span></span>
+<span id="cb337-19"><a href="hanmer-and-kalkan-2013.html#cb337-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(age, south, gov) <span class="sc">%&gt;%</span>   <span class="co"># select the &quot;other&quot; covariates</span></span>
+<span id="cb337-20"><a href="hanmer-and-kalkan-2013.html#cb337-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">neweduc =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.9</span>),</span>
+<span id="cb337-21"><a href="hanmer-and-kalkan-2013.html#cb337-21" aria-hidden="true" tabindex="-1"></a>         <span class="at">closing =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.1</span>))</span>
+<span id="cb337-22"><a href="hanmer-and-kalkan-2013.html#cb337-22" aria-hidden="true" tabindex="-1"></a>pi_hi_lo_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> s_hi_lo, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
+<span id="cb337-23"><a href="hanmer-and-kalkan-2013.html#cb337-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb337-24"><a href="hanmer-and-kalkan-2013.html#cb337-24" aria-hidden="true" tabindex="-1"></a>s_lo_hi <span class="ot">&lt;-</span> scobit <span class="sc">%&gt;%</span>           <span class="co"># start with the observed data set</span></span>
+<span id="cb337-25"><a href="hanmer-and-kalkan-2013.html#cb337-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(age, south, gov) <span class="sc">%&gt;%</span>   <span class="co"># select the &quot;other&quot; covariates</span></span>
+<span id="cb337-26"><a href="hanmer-and-kalkan-2013.html#cb337-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">neweduc =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.1</span>),</span>
+<span id="cb337-27"><a href="hanmer-and-kalkan-2013.html#cb337-27" aria-hidden="true" tabindex="-1"></a>         <span class="at">closing =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.9</span>))</span>
+<span id="cb337-28"><a href="hanmer-and-kalkan-2013.html#cb337-28" aria-hidden="true" tabindex="-1"></a>pi_lo_hi_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> s_lo_hi, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
+<span id="cb337-29"><a href="hanmer-and-kalkan-2013.html#cb337-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb337-30"><a href="hanmer-and-kalkan-2013.html#cb337-30" aria-hidden="true" tabindex="-1"></a>s_hi_hi <span class="ot">&lt;-</span> scobit <span class="sc">%&gt;%</span>           <span class="co"># start with the observed data set</span></span>
+<span id="cb337-31"><a href="hanmer-and-kalkan-2013.html#cb337-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(age, south, gov) <span class="sc">%&gt;%</span>   <span class="co"># select the &quot;other&quot; covariates</span></span>
+<span id="cb337-32"><a href="hanmer-and-kalkan-2013.html#cb337-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">neweduc =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.9</span>),</span>
+<span id="cb337-33"><a href="hanmer-and-kalkan-2013.html#cb337-33" aria-hidden="true" tabindex="-1"></a>         <span class="at">closing =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.9</span>))</span>
+<span id="cb337-34"><a href="hanmer-and-kalkan-2013.html#cb337-34" aria-hidden="true" tabindex="-1"></a>pi_hi_hi_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> s_hi_hi, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
+<span id="cb337-35"><a href="hanmer-and-kalkan-2013.html#cb337-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb337-36"><a href="hanmer-and-kalkan-2013.html#cb337-36" aria-hidden="true" tabindex="-1"></a><span class="co"># ml estimate</span></span>
+<span id="cb337-37"><a href="hanmer-and-kalkan-2013.html#cb337-37" aria-hidden="true" tabindex="-1"></a>dd_hat <span class="ot">&lt;-</span> (pi_hi_hi_hat <span class="sc">-</span> pi_lo_hi_hat) <span class="sc">-</span>   <span class="co"># effect of education when closing is high</span></span>
+<span id="cb337-38"><a href="hanmer-and-kalkan-2013.html#cb337-38" aria-hidden="true" tabindex="-1"></a>  (pi_hi_lo_hat <span class="sc">-</span> pi_lo_lo_hat)   <span class="co"># effect of education when closing is low</span></span>
+<span id="cb337-39"><a href="hanmer-and-kalkan-2013.html#cb337-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb337-40"><a href="hanmer-and-kalkan-2013.html#cb337-40" aria-hidden="true" tabindex="-1"></a><span class="fu">qplot</span>(dd_hat, <span class="at">bins =</span> <span class="dv">100</span>)</span></code></pre></div>
 <p><img src="06-04-hk_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-<div class="sourceCode" id="cb341"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb341-1"><a href="hanmer-and-kalkan-2013.html#cb341-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(dd_hat)</span></code></pre></div>
+<div class="sourceCode" id="cb338"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb338-1"><a href="hanmer-and-kalkan-2013.html#cb338-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(dd_hat)</span></code></pre></div>
 <pre><code>## [1] 0.002918702</code></pre>
-<div class="sourceCode" id="cb343"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb343-1"><a href="hanmer-and-kalkan-2013.html#cb343-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(dd_hat)</span></code></pre></div>
+<div class="sourceCode" id="cb340"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb340-1"><a href="hanmer-and-kalkan-2013.html#cb340-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(dd_hat)</span></code></pre></div>
 <pre><code>## [1] 0.002185804</code></pre>
 <p>You can see that we get quite a lot of variation in the quantity of interest, depending on the value we choose for the other covariates.</p>
 <p>I’ve chatting with Michael Hanmer about this, and I think he agrees with me that it’s valuable to at least compute (if not present in the paper) the variation in the quantity of interest across all observed values of the other covariates. Knowing the distribution (in addition to the average) is helpful. We might descibe the second difference here as about 0.005, give or take 0.003 or so, depending on the values of the other covariates.</p>
 <p>The we can use KTW’s method to get a confidence interval for the average across the observed values.</p>
-<div class="sourceCode" id="cb345"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb345-1"><a href="hanmer-and-kalkan-2013.html#cb345-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate beta_tildes using KTW&#39;s method</span></span>
-<span id="cb345-2"><a href="hanmer-and-kalkan-2013.html#cb345-2" aria-hidden="true" tabindex="-1"></a>beta_tilde <span class="ot">&lt;-</span> mvtnorm<span class="sc">::</span><span class="fu">rmvnorm</span>(<span class="dv">2000</span>, <span class="at">mean =</span> <span class="fu">coef</span>(fit), <span class="at">sigma =</span> <span class="fu">vcov</span>(fit))</span>
-<span id="cb345-3"><a href="hanmer-and-kalkan-2013.html#cb345-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb345-4"><a href="hanmer-and-kalkan-2013.html#cb345-4" aria-hidden="true" tabindex="-1"></a><span class="co"># four scenarios of the second difference; 10th to 90th percentile for both</span></span>
-<span id="cb345-5"><a href="hanmer-and-kalkan-2013.html#cb345-5" aria-hidden="true" tabindex="-1"></a><span class="co"># note: 1st lo/hi refers to neweduc; 2nd refers to closing</span></span>
-<span id="cb345-6"><a href="hanmer-and-kalkan-2013.html#cb345-6" aria-hidden="true" tabindex="-1"></a>s_lo_lo <span class="ot">&lt;-</span> scobit <span class="sc">%&gt;%</span>           <span class="co"># start with the observed data set</span></span>
-<span id="cb345-7"><a href="hanmer-and-kalkan-2013.html#cb345-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(age, south, gov) <span class="sc">%&gt;%</span>   <span class="co"># select the &quot;other&quot; covariates</span></span>
-<span id="cb345-8"><a href="hanmer-and-kalkan-2013.html#cb345-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">neweduc =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.1</span>),</span>
-<span id="cb345-9"><a href="hanmer-and-kalkan-2013.html#cb345-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">closing =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.1</span>))</span>
-<span id="cb345-10"><a href="hanmer-and-kalkan-2013.html#cb345-10" aria-hidden="true" tabindex="-1"></a>f_s <span class="ot">&lt;-</span> <span class="fu">update</span>(f, <span class="cn">NULL</span> <span class="sc">~</span> .)           <span class="co"># remove lhs for use below</span></span>
-<span id="cb345-11"><a href="hanmer-and-kalkan-2013.html#cb345-11" aria-hidden="true" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(f_s, s_lo_lo)</span>
-<span id="cb345-12"><a href="hanmer-and-kalkan-2013.html#cb345-12" aria-hidden="true" tabindex="-1"></a>X_s <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(mf, s_lo_lo)</span>
-<span id="cb345-13"><a href="hanmer-and-kalkan-2013.html#cb345-13" aria-hidden="true" tabindex="-1"></a>eta_tilde <span class="ot">&lt;-</span> X_s<span class="sc">%*%</span><span class="fu">t</span>(beta_tilde)     <span class="co"># simulations of linear predictor</span></span>
-<span id="cb345-14"><a href="hanmer-and-kalkan-2013.html#cb345-14" aria-hidden="true" tabindex="-1"></a>pi_lo_lo_tilde <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(eta_tilde)  <span class="co"># simulations of expected value </span></span>
-<span id="cb345-15"><a href="hanmer-and-kalkan-2013.html#cb345-15" aria-hidden="true" tabindex="-1"></a><span class="co"># note: I only care to &quot;keep&quot; things with the _lo_lo tag, everything </span></span>
-<span id="cb345-16"><a href="hanmer-and-kalkan-2013.html#cb345-16" aria-hidden="true" tabindex="-1"></a><span class="co">#   else gets overwritten below.</span></span>
-<span id="cb345-17"><a href="hanmer-and-kalkan-2013.html#cb345-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb345-18"><a href="hanmer-and-kalkan-2013.html#cb345-18" aria-hidden="true" tabindex="-1"></a><span class="co"># hi; lo</span></span>
-<span id="cb345-19"><a href="hanmer-and-kalkan-2013.html#cb345-19" aria-hidden="true" tabindex="-1"></a>s_hi_lo <span class="ot">&lt;-</span> scobit <span class="sc">%&gt;%</span>           <span class="co"># start with the observed data set</span></span>
-<span id="cb345-20"><a href="hanmer-and-kalkan-2013.html#cb345-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(age, south, gov) <span class="sc">%&gt;%</span>   <span class="co"># select the &quot;other&quot; covariates</span></span>
-<span id="cb345-21"><a href="hanmer-and-kalkan-2013.html#cb345-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">neweduc =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.9</span>),</span>
-<span id="cb345-22"><a href="hanmer-and-kalkan-2013.html#cb345-22" aria-hidden="true" tabindex="-1"></a>         <span class="at">closing =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.1</span>)) </span>
-<span id="cb345-23"><a href="hanmer-and-kalkan-2013.html#cb345-23" aria-hidden="true" tabindex="-1"></a>f_s <span class="ot">&lt;-</span> <span class="fu">update</span>(f, <span class="cn">NULL</span> <span class="sc">~</span> .)           <span class="co"># remove lhs for use below</span></span>
-<span id="cb345-24"><a href="hanmer-and-kalkan-2013.html#cb345-24" aria-hidden="true" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(f_s, s_hi_lo)</span>
-<span id="cb345-25"><a href="hanmer-and-kalkan-2013.html#cb345-25" aria-hidden="true" tabindex="-1"></a>X_s <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(mf, s_hi_lo)</span>
-<span id="cb345-26"><a href="hanmer-and-kalkan-2013.html#cb345-26" aria-hidden="true" tabindex="-1"></a>eta_tilde <span class="ot">&lt;-</span> X_s<span class="sc">%*%</span><span class="fu">t</span>(beta_tilde)     <span class="co"># simulations of linear predictor</span></span>
-<span id="cb345-27"><a href="hanmer-and-kalkan-2013.html#cb345-27" aria-hidden="true" tabindex="-1"></a>pi_hi_lo_tilde <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(eta_tilde)  <span class="co"># simulations of expected value </span></span>
-<span id="cb345-28"><a href="hanmer-and-kalkan-2013.html#cb345-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb345-29"><a href="hanmer-and-kalkan-2013.html#cb345-29" aria-hidden="true" tabindex="-1"></a><span class="co"># lo; hi</span></span>
-<span id="cb345-30"><a href="hanmer-and-kalkan-2013.html#cb345-30" aria-hidden="true" tabindex="-1"></a>s_lo_hi <span class="ot">&lt;-</span> scobit <span class="sc">%&gt;%</span>           <span class="co"># start with the observed data set</span></span>
-<span id="cb345-31"><a href="hanmer-and-kalkan-2013.html#cb345-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(age, south, gov) <span class="sc">%&gt;%</span>   <span class="co"># select the &quot;other&quot; covariates</span></span>
-<span id="cb345-32"><a href="hanmer-and-kalkan-2013.html#cb345-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">neweduc =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.1</span>),</span>
-<span id="cb345-33"><a href="hanmer-and-kalkan-2013.html#cb345-33" aria-hidden="true" tabindex="-1"></a>         <span class="at">closing =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.9</span>)) </span>
-<span id="cb345-34"><a href="hanmer-and-kalkan-2013.html#cb345-34" aria-hidden="true" tabindex="-1"></a>f_s <span class="ot">&lt;-</span> <span class="fu">update</span>(f, <span class="cn">NULL</span> <span class="sc">~</span> .)           <span class="co"># remove lhs for use below</span></span>
-<span id="cb345-35"><a href="hanmer-and-kalkan-2013.html#cb345-35" aria-hidden="true" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(f_s, s_lo_hi)</span>
-<span id="cb345-36"><a href="hanmer-and-kalkan-2013.html#cb345-36" aria-hidden="true" tabindex="-1"></a>X_s <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(mf, s_lo_hi)</span>
-<span id="cb345-37"><a href="hanmer-and-kalkan-2013.html#cb345-37" aria-hidden="true" tabindex="-1"></a>eta_tilde <span class="ot">&lt;-</span> X_s<span class="sc">%*%</span><span class="fu">t</span>(beta_tilde)     <span class="co"># simulations of linear predictor</span></span>
-<span id="cb345-38"><a href="hanmer-and-kalkan-2013.html#cb345-38" aria-hidden="true" tabindex="-1"></a>pi_lo_hi_tilde <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(eta_tilde)  <span class="co"># simulations of expected value </span></span>
-<span id="cb345-39"><a href="hanmer-and-kalkan-2013.html#cb345-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb345-40"><a href="hanmer-and-kalkan-2013.html#cb345-40" aria-hidden="true" tabindex="-1"></a><span class="co"># hi; hi</span></span>
-<span id="cb345-41"><a href="hanmer-and-kalkan-2013.html#cb345-41" aria-hidden="true" tabindex="-1"></a>s_hi_hi <span class="ot">&lt;-</span> scobit <span class="sc">%&gt;%</span>           <span class="co"># start with the observed data set</span></span>
-<span id="cb345-42"><a href="hanmer-and-kalkan-2013.html#cb345-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(age, south, gov) <span class="sc">%&gt;%</span>   <span class="co"># select the &quot;other&quot; covariates</span></span>
-<span id="cb345-43"><a href="hanmer-and-kalkan-2013.html#cb345-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">neweduc =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.9</span>),</span>
-<span id="cb345-44"><a href="hanmer-and-kalkan-2013.html#cb345-44" aria-hidden="true" tabindex="-1"></a>         <span class="at">closing =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.9</span>)) </span>
-<span id="cb345-45"><a href="hanmer-and-kalkan-2013.html#cb345-45" aria-hidden="true" tabindex="-1"></a>f_s <span class="ot">&lt;-</span> <span class="fu">update</span>(f, <span class="cn">NULL</span> <span class="sc">~</span> .)           <span class="co"># remove lhs for use below</span></span>
-<span id="cb345-46"><a href="hanmer-and-kalkan-2013.html#cb345-46" aria-hidden="true" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(f_s, s_hi_hi)</span>
-<span id="cb345-47"><a href="hanmer-and-kalkan-2013.html#cb345-47" aria-hidden="true" tabindex="-1"></a>X_s <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(mf, s_hi_hi)</span>
-<span id="cb345-48"><a href="hanmer-and-kalkan-2013.html#cb345-48" aria-hidden="true" tabindex="-1"></a>eta_tilde <span class="ot">&lt;-</span> X_s<span class="sc">%*%</span><span class="fu">t</span>(beta_tilde)     <span class="co"># simulations of linear predictor</span></span>
-<span id="cb345-49"><a href="hanmer-and-kalkan-2013.html#cb345-49" aria-hidden="true" tabindex="-1"></a>pi_hi_hi_tilde <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(eta_tilde)  <span class="co"># simulations of expected value </span></span>
-<span id="cb345-50"><a href="hanmer-and-kalkan-2013.html#cb345-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb345-51"><a href="hanmer-and-kalkan-2013.html#cb345-51" aria-hidden="true" tabindex="-1"></a><span class="co"># ktw simulations of second difference</span></span>
-<span id="cb345-52"><a href="hanmer-and-kalkan-2013.html#cb345-52" aria-hidden="true" tabindex="-1"></a>dd_tilde <span class="ot">&lt;-</span> (pi_hi_hi_tilde <span class="sc">-</span> pi_lo_hi_tilde) <span class="sc">-</span>   <span class="co"># effect of education when closing is high</span></span>
-<span id="cb345-53"><a href="hanmer-and-kalkan-2013.html#cb345-53" aria-hidden="true" tabindex="-1"></a>  (pi_hi_lo_tilde <span class="sc">-</span> pi_lo_lo_tilde)               <span class="co"># effect of education when closing is low</span></span>
-<span id="cb345-54"><a href="hanmer-and-kalkan-2013.html#cb345-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb345-55"><a href="hanmer-and-kalkan-2013.html#cb345-55" aria-hidden="true" tabindex="-1"></a>avg_dd_tilde <span class="ot">&lt;-</span> <span class="fu">apply</span>(dd_tilde, <span class="dv">2</span>, mean)</span>
-<span id="cb345-56"><a href="hanmer-and-kalkan-2013.html#cb345-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb345-57"><a href="hanmer-and-kalkan-2013.html#cb345-57" aria-hidden="true" tabindex="-1"></a><span class="co"># 90% CI using ktw simulations</span></span>
-<span id="cb345-58"><a href="hanmer-and-kalkan-2013.html#cb345-58" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(avg_dd_tilde, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb342"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb342-1"><a href="hanmer-and-kalkan-2013.html#cb342-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate beta_tildes using KTW&#39;s method</span></span>
+<span id="cb342-2"><a href="hanmer-and-kalkan-2013.html#cb342-2" aria-hidden="true" tabindex="-1"></a>beta_tilde <span class="ot">&lt;-</span> mvtnorm<span class="sc">::</span><span class="fu">rmvnorm</span>(<span class="dv">2000</span>, <span class="at">mean =</span> <span class="fu">coef</span>(fit), <span class="at">sigma =</span> <span class="fu">vcov</span>(fit))</span>
+<span id="cb342-3"><a href="hanmer-and-kalkan-2013.html#cb342-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb342-4"><a href="hanmer-and-kalkan-2013.html#cb342-4" aria-hidden="true" tabindex="-1"></a><span class="co"># four scenarios of the second difference; 10th to 90th percentile for both</span></span>
+<span id="cb342-5"><a href="hanmer-and-kalkan-2013.html#cb342-5" aria-hidden="true" tabindex="-1"></a><span class="co"># note: 1st lo/hi refers to neweduc; 2nd refers to closing</span></span>
+<span id="cb342-6"><a href="hanmer-and-kalkan-2013.html#cb342-6" aria-hidden="true" tabindex="-1"></a>s_lo_lo <span class="ot">&lt;-</span> scobit <span class="sc">%&gt;%</span>           <span class="co"># start with the observed data set</span></span>
+<span id="cb342-7"><a href="hanmer-and-kalkan-2013.html#cb342-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(age, south, gov) <span class="sc">%&gt;%</span>   <span class="co"># select the &quot;other&quot; covariates</span></span>
+<span id="cb342-8"><a href="hanmer-and-kalkan-2013.html#cb342-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">neweduc =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.1</span>),</span>
+<span id="cb342-9"><a href="hanmer-and-kalkan-2013.html#cb342-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">closing =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.1</span>))</span>
+<span id="cb342-10"><a href="hanmer-and-kalkan-2013.html#cb342-10" aria-hidden="true" tabindex="-1"></a>f_s <span class="ot">&lt;-</span> <span class="fu">update</span>(f, <span class="cn">NULL</span> <span class="sc">~</span> .)           <span class="co"># remove lhs for use below</span></span>
+<span id="cb342-11"><a href="hanmer-and-kalkan-2013.html#cb342-11" aria-hidden="true" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(f_s, s_lo_lo)</span>
+<span id="cb342-12"><a href="hanmer-and-kalkan-2013.html#cb342-12" aria-hidden="true" tabindex="-1"></a>X_s <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(mf, s_lo_lo)</span>
+<span id="cb342-13"><a href="hanmer-and-kalkan-2013.html#cb342-13" aria-hidden="true" tabindex="-1"></a>eta_tilde <span class="ot">&lt;-</span> X_s<span class="sc">%*%</span><span class="fu">t</span>(beta_tilde)     <span class="co"># simulations of linear predictor</span></span>
+<span id="cb342-14"><a href="hanmer-and-kalkan-2013.html#cb342-14" aria-hidden="true" tabindex="-1"></a>pi_lo_lo_tilde <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(eta_tilde)  <span class="co"># simulations of expected value </span></span>
+<span id="cb342-15"><a href="hanmer-and-kalkan-2013.html#cb342-15" aria-hidden="true" tabindex="-1"></a><span class="co"># note: I only care to &quot;keep&quot; things with the _lo_lo tag, everything </span></span>
+<span id="cb342-16"><a href="hanmer-and-kalkan-2013.html#cb342-16" aria-hidden="true" tabindex="-1"></a><span class="co">#   else gets overwritten below.</span></span>
+<span id="cb342-17"><a href="hanmer-and-kalkan-2013.html#cb342-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb342-18"><a href="hanmer-and-kalkan-2013.html#cb342-18" aria-hidden="true" tabindex="-1"></a><span class="co"># hi; lo</span></span>
+<span id="cb342-19"><a href="hanmer-and-kalkan-2013.html#cb342-19" aria-hidden="true" tabindex="-1"></a>s_hi_lo <span class="ot">&lt;-</span> scobit <span class="sc">%&gt;%</span>           <span class="co"># start with the observed data set</span></span>
+<span id="cb342-20"><a href="hanmer-and-kalkan-2013.html#cb342-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(age, south, gov) <span class="sc">%&gt;%</span>   <span class="co"># select the &quot;other&quot; covariates</span></span>
+<span id="cb342-21"><a href="hanmer-and-kalkan-2013.html#cb342-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">neweduc =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.9</span>),</span>
+<span id="cb342-22"><a href="hanmer-and-kalkan-2013.html#cb342-22" aria-hidden="true" tabindex="-1"></a>         <span class="at">closing =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.1</span>)) </span>
+<span id="cb342-23"><a href="hanmer-and-kalkan-2013.html#cb342-23" aria-hidden="true" tabindex="-1"></a>f_s <span class="ot">&lt;-</span> <span class="fu">update</span>(f, <span class="cn">NULL</span> <span class="sc">~</span> .)           <span class="co"># remove lhs for use below</span></span>
+<span id="cb342-24"><a href="hanmer-and-kalkan-2013.html#cb342-24" aria-hidden="true" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(f_s, s_hi_lo)</span>
+<span id="cb342-25"><a href="hanmer-and-kalkan-2013.html#cb342-25" aria-hidden="true" tabindex="-1"></a>X_s <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(mf, s_hi_lo)</span>
+<span id="cb342-26"><a href="hanmer-and-kalkan-2013.html#cb342-26" aria-hidden="true" tabindex="-1"></a>eta_tilde <span class="ot">&lt;-</span> X_s<span class="sc">%*%</span><span class="fu">t</span>(beta_tilde)     <span class="co"># simulations of linear predictor</span></span>
+<span id="cb342-27"><a href="hanmer-and-kalkan-2013.html#cb342-27" aria-hidden="true" tabindex="-1"></a>pi_hi_lo_tilde <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(eta_tilde)  <span class="co"># simulations of expected value </span></span>
+<span id="cb342-28"><a href="hanmer-and-kalkan-2013.html#cb342-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb342-29"><a href="hanmer-and-kalkan-2013.html#cb342-29" aria-hidden="true" tabindex="-1"></a><span class="co"># lo; hi</span></span>
+<span id="cb342-30"><a href="hanmer-and-kalkan-2013.html#cb342-30" aria-hidden="true" tabindex="-1"></a>s_lo_hi <span class="ot">&lt;-</span> scobit <span class="sc">%&gt;%</span>           <span class="co"># start with the observed data set</span></span>
+<span id="cb342-31"><a href="hanmer-and-kalkan-2013.html#cb342-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(age, south, gov) <span class="sc">%&gt;%</span>   <span class="co"># select the &quot;other&quot; covariates</span></span>
+<span id="cb342-32"><a href="hanmer-and-kalkan-2013.html#cb342-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">neweduc =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.1</span>),</span>
+<span id="cb342-33"><a href="hanmer-and-kalkan-2013.html#cb342-33" aria-hidden="true" tabindex="-1"></a>         <span class="at">closing =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.9</span>)) </span>
+<span id="cb342-34"><a href="hanmer-and-kalkan-2013.html#cb342-34" aria-hidden="true" tabindex="-1"></a>f_s <span class="ot">&lt;-</span> <span class="fu">update</span>(f, <span class="cn">NULL</span> <span class="sc">~</span> .)           <span class="co"># remove lhs for use below</span></span>
+<span id="cb342-35"><a href="hanmer-and-kalkan-2013.html#cb342-35" aria-hidden="true" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(f_s, s_lo_hi)</span>
+<span id="cb342-36"><a href="hanmer-and-kalkan-2013.html#cb342-36" aria-hidden="true" tabindex="-1"></a>X_s <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(mf, s_lo_hi)</span>
+<span id="cb342-37"><a href="hanmer-and-kalkan-2013.html#cb342-37" aria-hidden="true" tabindex="-1"></a>eta_tilde <span class="ot">&lt;-</span> X_s<span class="sc">%*%</span><span class="fu">t</span>(beta_tilde)     <span class="co"># simulations of linear predictor</span></span>
+<span id="cb342-38"><a href="hanmer-and-kalkan-2013.html#cb342-38" aria-hidden="true" tabindex="-1"></a>pi_lo_hi_tilde <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(eta_tilde)  <span class="co"># simulations of expected value </span></span>
+<span id="cb342-39"><a href="hanmer-and-kalkan-2013.html#cb342-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb342-40"><a href="hanmer-and-kalkan-2013.html#cb342-40" aria-hidden="true" tabindex="-1"></a><span class="co"># hi; hi</span></span>
+<span id="cb342-41"><a href="hanmer-and-kalkan-2013.html#cb342-41" aria-hidden="true" tabindex="-1"></a>s_hi_hi <span class="ot">&lt;-</span> scobit <span class="sc">%&gt;%</span>           <span class="co"># start with the observed data set</span></span>
+<span id="cb342-42"><a href="hanmer-and-kalkan-2013.html#cb342-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(age, south, gov) <span class="sc">%&gt;%</span>   <span class="co"># select the &quot;other&quot; covariates</span></span>
+<span id="cb342-43"><a href="hanmer-and-kalkan-2013.html#cb342-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">neweduc =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.9</span>),</span>
+<span id="cb342-44"><a href="hanmer-and-kalkan-2013.html#cb342-44" aria-hidden="true" tabindex="-1"></a>         <span class="at">closing =</span> <span class="fu">quantile</span>(scobit<span class="sc">$</span>neweduc, <span class="at">probs =</span> <span class="fl">0.9</span>)) </span>
+<span id="cb342-45"><a href="hanmer-and-kalkan-2013.html#cb342-45" aria-hidden="true" tabindex="-1"></a>f_s <span class="ot">&lt;-</span> <span class="fu">update</span>(f, <span class="cn">NULL</span> <span class="sc">~</span> .)           <span class="co"># remove lhs for use below</span></span>
+<span id="cb342-46"><a href="hanmer-and-kalkan-2013.html#cb342-46" aria-hidden="true" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(f_s, s_hi_hi)</span>
+<span id="cb342-47"><a href="hanmer-and-kalkan-2013.html#cb342-47" aria-hidden="true" tabindex="-1"></a>X_s <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(mf, s_hi_hi)</span>
+<span id="cb342-48"><a href="hanmer-and-kalkan-2013.html#cb342-48" aria-hidden="true" tabindex="-1"></a>eta_tilde <span class="ot">&lt;-</span> X_s<span class="sc">%*%</span><span class="fu">t</span>(beta_tilde)     <span class="co"># simulations of linear predictor</span></span>
+<span id="cb342-49"><a href="hanmer-and-kalkan-2013.html#cb342-49" aria-hidden="true" tabindex="-1"></a>pi_hi_hi_tilde <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(eta_tilde)  <span class="co"># simulations of expected value </span></span>
+<span id="cb342-50"><a href="hanmer-and-kalkan-2013.html#cb342-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb342-51"><a href="hanmer-and-kalkan-2013.html#cb342-51" aria-hidden="true" tabindex="-1"></a><span class="co"># ktw simulations of second difference</span></span>
+<span id="cb342-52"><a href="hanmer-and-kalkan-2013.html#cb342-52" aria-hidden="true" tabindex="-1"></a>dd_tilde <span class="ot">&lt;-</span> (pi_hi_hi_tilde <span class="sc">-</span> pi_lo_hi_tilde) <span class="sc">-</span>   <span class="co"># effect of education when closing is high</span></span>
+<span id="cb342-53"><a href="hanmer-and-kalkan-2013.html#cb342-53" aria-hidden="true" tabindex="-1"></a>  (pi_hi_lo_tilde <span class="sc">-</span> pi_lo_lo_tilde)               <span class="co"># effect of education when closing is low</span></span>
+<span id="cb342-54"><a href="hanmer-and-kalkan-2013.html#cb342-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb342-55"><a href="hanmer-and-kalkan-2013.html#cb342-55" aria-hidden="true" tabindex="-1"></a>avg_dd_tilde <span class="ot">&lt;-</span> <span class="fu">apply</span>(dd_tilde, <span class="dv">2</span>, mean)</span>
+<span id="cb342-56"><a href="hanmer-and-kalkan-2013.html#cb342-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb342-57"><a href="hanmer-and-kalkan-2013.html#cb342-57" aria-hidden="true" tabindex="-1"></a><span class="co"># 90% CI using ktw simulations</span></span>
+<span id="cb342-58"><a href="hanmer-and-kalkan-2013.html#cb342-58" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(avg_dd_tilde, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>))</span></code></pre></div>
 <pre><code>##          5%         95% 
 ## 0.002731359 0.014179453</code></pre>
 
@@ -451,8 +458,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="rainey-2016.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="rainey-2016.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="week-12-hierarchical-models.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

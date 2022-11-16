@@ -7,6 +7,12 @@ We can easily use the log-likelihood function to obtain point estimates. It turn
 
 As an example, consider the following two log-likelihood functions:
 
+
+```
+## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+## ℹ Please use `linewidth` instead.
+```
+
 <img src="04-02-wald-cis_files/figure-html/unnamed-chunk-2-1.png" width="480" />
 Which of these two log-likelihood functions do you think provides a more *precise* estimate? 
 

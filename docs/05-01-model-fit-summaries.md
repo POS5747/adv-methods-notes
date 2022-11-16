@@ -157,7 +157,7 @@ ggplot(data, aes(x, y)) +
 ```
 
 ```
-## `geom_smooth()` using formula 'y ~ x'
+## `geom_smooth()` using formula = 'y ~ x'
 ```
 
 <img src="05-01-model-fit-summaries_files/figure-html/unnamed-chunk-7-1.png" width="384" />
@@ -195,7 +195,7 @@ round(time["elapsed"]*nrow(krup)/(60), 1)  # convert to minutes
 
 ```
 ## elapsed 
-##     9.7
+##     7.6
 ```
 
 Each model takes about 0.05 seconds to fit. This seems fast, but you need to do it about 6,000 times, which takes about 300 seconds or five minutes.

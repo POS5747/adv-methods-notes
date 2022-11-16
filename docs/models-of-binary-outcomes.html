@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>5.2 Models of Binary Outcomes | Statistical Modeling: A Tools Approach</title>
   <meta name="description" content="Lecture notes covering the key tools of regression modeling in political science." />
-  <meta name="generator" content="bookdown 0.29 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.30 and GitBook 2.6.7" />
 
   <meta property="og:title" content="5.2 Models of Binary Outcomes | Statistical Modeling: A Tools Approach" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 <meta name="author" content="Carlisle Rainey" />
 
 
-<meta name="date" content="2022-10-06" />
+<meta name="date" content="2022-11-15" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -53,12 +53,12 @@
 <link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 <script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
-<script src="libs/plotly-binding-4.10.0/plotly.js"></script>
+<script src="libs/plotly-binding-4.10.1/plotly.js"></script>
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
 <link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
 <script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
-<link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
-<script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
 <script>
     $(document).ready(function () {
         process_solutions();
@@ -309,6 +309,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6.5" data-path="rainey-2016.html"><a href="rainey-2016.html"><i class="fa fa-check"></i><b>6.5</b> Rainey (2016)</a></li>
 <li class="chapter" data-level="6.6" data-path="hanmer-and-kalkan-2013.html"><a href="hanmer-and-kalkan-2013.html"><i class="fa fa-check"></i><b>6.6</b> Hanmer and Kalkan (2013)</a></li>
 </ul></li>
+<li class="chapter" data-level="7" data-path="week-12-hierarchical-models.html"><a href="week-12-hierarchical-models.html"><i class="fa fa-check"></i><b>7</b> Week 12: Hierarchical Models</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="example-contact-in-finland.html"><a href="example-contact-in-finland.html"><i class="fa fa-check"></i><b>7.1</b> Example: Contact in Finland</a></li>
+<li class="chapter" data-level="7.2" data-path="example-contact-in-the-uk.html"><a href="example-contact-in-the-uk.html"><i class="fa fa-check"></i><b>7.2</b> Example: Contact in the UK</a></li>
+<li class="chapter" data-level="7.3" data-path="hierarchical-models-in-general.html"><a href="hierarchical-models-in-general.html"><i class="fa fa-check"></i><b>7.3</b> Hierarchical Models in General</a></li>
+<li class="chapter" data-level="7.4" data-path="rainey-2015.html"><a href="rainey-2015.html"><i class="fa fa-check"></i><b>7.4</b> Rainey (2015)</a></li>
+</ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 
@@ -335,7 +342,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="logit" class="section level3 hasAnchor" number="5.2.1">
 <h3><span class="header-section-number">5.2.1</span> Logit<a href="models-of-binary-outcomes.html#logit" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p><span class="math display">\[
-y_i \sim \text{Bernoulli}(\pi_i), \text{ where } \pi_i = \text{logit}^{-1}(X_i\beta) \text{ and } \text{logit}^{-1}(x) = \frac{e^x}{1 + e^x} 
+y_i \sim \text{Bernoulli}(\pi_i), \text{ where } \pi_i = \text{logit}^{-1}(X_i\beta) \text{ and } \text{logit}^{-1}(x) = \frac{e^x}{1 + e^x}
 \]</span></p>
 <table>
 <colgroup>
@@ -384,50 +391,49 @@ y_i \sim \text{Bernoulli}(\pi_i), \text{ where } \pi_i = \text{logit}^{-1}(X_i\b
 </tbody>
 </table>
 <p>Note: the marginal effect above assumes that <span class="math inline">\(x_j\)</span> is included in the model <em>linearly</em> with no polynomial or interactions.</p>
-<div class="sourceCode" id="cb270"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb270-1"><a href="models-of-binary-outcomes.html#cb270-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load nagler&#39;s scobit data</span></span>
-<span id="cb270-2"><a href="models-of-binary-outcomes.html#cb270-2" aria-hidden="true" tabindex="-1"></a>scobit <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">&quot;data/scobit.dta&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb270-3"><a href="models-of-binary-outcomes.html#cb270-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(newvote <span class="sc">!=</span> <span class="sc">-</span><span class="dv">1</span>)  <span class="co"># weird -1s in data; unsure if sufficient</span></span>
-<span id="cb270-4"><a href="models-of-binary-outcomes.html#cb270-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb270-5"><a href="models-of-binary-outcomes.html#cb270-5" aria-hidden="true" tabindex="-1"></a><span class="co"># simplest model specification; no polynomials or interactions</span></span>
-<span id="cb270-6"><a href="models-of-binary-outcomes.html#cb270-6" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> newvote <span class="sc">~</span> neweduc <span class="sc">+</span> closing <span class="sc">+</span> age <span class="sc">+</span> south <span class="sc">+</span> gov</span>
-<span id="cb270-7"><a href="models-of-binary-outcomes.html#cb270-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb270-8"><a href="models-of-binary-outcomes.html#cb270-8" aria-hidden="true" tabindex="-1"></a><span class="co"># fit model</span></span>
-<span id="cb270-9"><a href="models-of-binary-outcomes.html#cb270-9" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(f, <span class="at">data =</span> scobit, <span class="at">family =</span> <span class="fu">binomial</span>())</span></code></pre></div>
+<div class="sourceCode" id="cb271"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb271-1"><a href="models-of-binary-outcomes.html#cb271-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load nagler&#39;s scobit data</span></span>
+<span id="cb271-2"><a href="models-of-binary-outcomes.html#cb271-2" aria-hidden="true" tabindex="-1"></a>scobit <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">&quot;data/scobit.dta&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb271-3"><a href="models-of-binary-outcomes.html#cb271-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(newvote <span class="sc">!=</span> <span class="sc">-</span><span class="dv">1</span>)  <span class="co"># weird -1s in data; unsure if sufficient</span></span>
+<span id="cb271-4"><a href="models-of-binary-outcomes.html#cb271-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb271-5"><a href="models-of-binary-outcomes.html#cb271-5" aria-hidden="true" tabindex="-1"></a><span class="co"># simplest model specification; no polynomials or interactions</span></span>
+<span id="cb271-6"><a href="models-of-binary-outcomes.html#cb271-6" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> newvote <span class="sc">~</span> neweduc <span class="sc">+</span> closing <span class="sc">+</span> age <span class="sc">+</span> south <span class="sc">+</span> gov</span>
+<span id="cb271-7"><a href="models-of-binary-outcomes.html#cb271-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb271-8"><a href="models-of-binary-outcomes.html#cb271-8" aria-hidden="true" tabindex="-1"></a><span class="co"># fit model</span></span>
+<span id="cb271-9"><a href="models-of-binary-outcomes.html#cb271-9" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(f, <span class="at">data =</span> scobit, <span class="at">family =</span> <span class="fu">binomial</span>())</span></code></pre></div>
 <p>Now let’s compute quantities of interest. Let’s first compute the expected value or “predicted probability” as <code>closing</code> varies from zero to 50 with all other variables at their medians.</p>
-<div class="sourceCode" id="cb271"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb271-1"><a href="models-of-binary-outcomes.html#cb271-1" aria-hidden="true" tabindex="-1"></a><span class="co"># let education vary across all possible values; else median</span></span>
-<span id="cb271-2"><a href="models-of-binary-outcomes.html#cb271-2" aria-hidden="true" tabindex="-1"></a>s <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb271-3"><a href="models-of-binary-outcomes.html#cb271-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">neweduc =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>,</span>
-<span id="cb271-4"><a href="models-of-binary-outcomes.html#cb271-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">closing =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>closing),</span>
-<span id="cb271-5"><a href="models-of-binary-outcomes.html#cb271-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>age),</span>
-<span id="cb271-6"><a href="models-of-binary-outcomes.html#cb271-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">south =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>south),</span>
-<span id="cb271-7"><a href="models-of-binary-outcomes.html#cb271-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">gov =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>gov)</span>
-<span id="cb271-8"><a href="models-of-binary-outcomes.html#cb271-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb271-9"><a href="models-of-binary-outcomes.html#cb271-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb271-10"><a href="models-of-binary-outcomes.html#cb271-10" aria-hidden="true" tabindex="-1"></a><span class="co"># expected value or &quot;predicted probability&quot; </span></span>
-<span id="cb271-11"><a href="models-of-binary-outcomes.html#cb271-11" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>expected_value <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> s, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
-<span id="cb271-12"><a href="models-of-binary-outcomes.html#cb271-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb271-13"><a href="models-of-binary-outcomes.html#cb271-13" aria-hidden="true" tabindex="-1"></a><span class="co"># marginal effect of closing on expected value</span></span>
-<span id="cb271-14"><a href="models-of-binary-outcomes.html#cb271-14" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>marginal_effect <span class="ot">&lt;-</span> <span class="fu">coef</span>(fit)[<span class="st">&quot;neweduc&quot;</span>]<span class="sc">*</span>s<span class="sc">$</span>expected_value<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>s<span class="sc">$</span>expected_value)</span></code></pre></div>
+<div class="sourceCode" id="cb272"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb272-1"><a href="models-of-binary-outcomes.html#cb272-1" aria-hidden="true" tabindex="-1"></a><span class="co"># let education vary across all possible values; else median</span></span>
+<span id="cb272-2"><a href="models-of-binary-outcomes.html#cb272-2" aria-hidden="true" tabindex="-1"></a>s <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb272-3"><a href="models-of-binary-outcomes.html#cb272-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">neweduc =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>,</span>
+<span id="cb272-4"><a href="models-of-binary-outcomes.html#cb272-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">closing =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>closing),</span>
+<span id="cb272-5"><a href="models-of-binary-outcomes.html#cb272-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>age),</span>
+<span id="cb272-6"><a href="models-of-binary-outcomes.html#cb272-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">south =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>south),</span>
+<span id="cb272-7"><a href="models-of-binary-outcomes.html#cb272-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">gov =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>gov)</span>
+<span id="cb272-8"><a href="models-of-binary-outcomes.html#cb272-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb272-9"><a href="models-of-binary-outcomes.html#cb272-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb272-10"><a href="models-of-binary-outcomes.html#cb272-10" aria-hidden="true" tabindex="-1"></a><span class="co"># expected value or &quot;predicted probability&quot; </span></span>
+<span id="cb272-11"><a href="models-of-binary-outcomes.html#cb272-11" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>expected_value <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> s, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
+<span id="cb272-12"><a href="models-of-binary-outcomes.html#cb272-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb272-13"><a href="models-of-binary-outcomes.html#cb272-13" aria-hidden="true" tabindex="-1"></a><span class="co"># marginal effect of closing on expected value</span></span>
+<span id="cb272-14"><a href="models-of-binary-outcomes.html#cb272-14" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>marginal_effect <span class="ot">&lt;-</span> <span class="fu">coef</span>(fit)[<span class="st">&quot;neweduc&quot;</span>]<span class="sc">*</span>s<span class="sc">$</span>expected_value<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>s<span class="sc">$</span>expected_value)</span></code></pre></div>
 <p>Now let’s make a plot of the expected values and marginal effects.</p>
-<div class="sourceCode" id="cb272"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb272-1"><a href="models-of-binary-outcomes.html#cb272-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot </span></span>
-<span id="cb272-2"><a href="models-of-binary-outcomes.html#cb272-2" aria-hidden="true" tabindex="-1"></a>gg1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(s, <span class="fu">aes</span>(<span class="at">x =</span> neweduc, <span class="at">y =</span> expected_value)) <span class="sc">+</span> </span>
-<span id="cb272-3"><a href="models-of-binary-outcomes.html#cb272-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb272-4"><a href="models-of-binary-outcomes.html#cb272-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
-<span id="cb272-5"><a href="models-of-binary-outcomes.html#cb272-5" aria-hidden="true" tabindex="-1"></a>gg2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(s, <span class="fu">aes</span>(<span class="at">x =</span> neweduc, <span class="at">y =</span> marginal_effect)) <span class="sc">+</span> </span>
-<span id="cb272-6"><a href="models-of-binary-outcomes.html#cb272-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb272-7"><a href="models-of-binary-outcomes.html#cb272-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
-<span id="cb272-8"><a href="models-of-binary-outcomes.html#cb272-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb272-9"><a href="models-of-binary-outcomes.html#cb272-9" aria-hidden="true" tabindex="-1"></a><span class="co"># combine plots and print</span></span>
-<span id="cb272-10"><a href="models-of-binary-outcomes.html#cb272-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span></code></pre></div>
-<pre><code>## Warning: package &#39;patchwork&#39; was built under R version 4.1.2</code></pre>
-<div class="sourceCode" id="cb274"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb274-1"><a href="models-of-binary-outcomes.html#cb274-1" aria-hidden="true" tabindex="-1"></a>gg1 <span class="sc">+</span> gg2</span></code></pre></div>
+<div class="sourceCode" id="cb273"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb273-1"><a href="models-of-binary-outcomes.html#cb273-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot </span></span>
+<span id="cb273-2"><a href="models-of-binary-outcomes.html#cb273-2" aria-hidden="true" tabindex="-1"></a>gg1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(s, <span class="fu">aes</span>(<span class="at">x =</span> neweduc, <span class="at">y =</span> expected_value)) <span class="sc">+</span> </span>
+<span id="cb273-3"><a href="models-of-binary-outcomes.html#cb273-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb273-4"><a href="models-of-binary-outcomes.html#cb273-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb273-5"><a href="models-of-binary-outcomes.html#cb273-5" aria-hidden="true" tabindex="-1"></a>gg2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(s, <span class="fu">aes</span>(<span class="at">x =</span> neweduc, <span class="at">y =</span> marginal_effect)) <span class="sc">+</span> </span>
+<span id="cb273-6"><a href="models-of-binary-outcomes.html#cb273-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb273-7"><a href="models-of-binary-outcomes.html#cb273-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb273-8"><a href="models-of-binary-outcomes.html#cb273-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb273-9"><a href="models-of-binary-outcomes.html#cb273-9" aria-hidden="true" tabindex="-1"></a><span class="co"># combine plots and print</span></span>
+<span id="cb273-10"><a href="models-of-binary-outcomes.html#cb273-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb273-11"><a href="models-of-binary-outcomes.html#cb273-11" aria-hidden="true" tabindex="-1"></a>gg1 <span class="sc">+</span> gg2</span></code></pre></div>
 <p><img src="05-02-models-of-binary-outcomes_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>For this model, let’s briefly consider the <em>other</em> predictors in the model. In particular, let’s reproduce the figure above, but for every combination of the other covariates that appeared in the data set. (It turns out the <em>every</em> combination was overwhelming, so I used a sample of 100 other scenarios from the exhaustive list).</p>
 <p>You can see that as the <em>other</em> covariates change, the expected value changes. But more importantly, the maginal effect of education changes as the other covariates change. That’s why it’s <em>critical</em> to develop an appropriate scenario that specifies values for <em>all</em> the covariates in the model.</p>
 <p><img src="05-02-models-of-binary-outcomes_files/figure-html/unnamed-chunk-5-1.png" width="672" />
 Lastly, before we proceed to the next model, I’m going to save the expected values and marginal effects that I computed for the logit model to compare to the other models we discuss.</p>
-<div class="sourceCode" id="cb275"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb275-1"><a href="models-of-binary-outcomes.html#cb275-1" aria-hidden="true" tabindex="-1"></a>s_logit <span class="ot">&lt;-</span> s     <span class="co"># estimates of ev and me from logit model</span></span>
-<span id="cb275-2"><a href="models-of-binary-outcomes.html#cb275-2" aria-hidden="true" tabindex="-1"></a>fit_logit <span class="ot">&lt;-</span> fit <span class="co"># logit model fit</span></span></code></pre></div>
+<div class="sourceCode" id="cb274"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb274-1"><a href="models-of-binary-outcomes.html#cb274-1" aria-hidden="true" tabindex="-1"></a>s_logit <span class="ot">&lt;-</span> s     <span class="co"># estimates of ev and me from logit model</span></span>
+<span id="cb274-2"><a href="models-of-binary-outcomes.html#cb274-2" aria-hidden="true" tabindex="-1"></a>fit_logit <span class="ot">&lt;-</span> fit <span class="co"># logit model fit</span></span></code></pre></div>
 </div>
 <div id="probit" class="section level3 hasAnchor" number="5.2.2">
 <h3><span class="header-section-number">5.2.2</span> Probit<a href="models-of-binary-outcomes.html#probit" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -478,33 +484,33 @@ Lastly, before we proceed to the next model, I’m going to save the expected va
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb276"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb276-1"><a href="models-of-binary-outcomes.html#cb276-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit model</span></span>
-<span id="cb276-2"><a href="models-of-binary-outcomes.html#cb276-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(f, <span class="at">data =</span> scobit, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">&quot;probit&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb275"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb275-1"><a href="models-of-binary-outcomes.html#cb275-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit model</span></span>
+<span id="cb275-2"><a href="models-of-binary-outcomes.html#cb275-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(f, <span class="at">data =</span> scobit, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">&quot;probit&quot;</span>))</span></code></pre></div>
 <p>Now let’s compute quantities of interest. Let’s first compute the expected value or “predicted probability” as <code>neweduc</code> varies from 1 to 8 (all possible values) with all other variables at their medians.</p>
-<div class="sourceCode" id="cb277"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb277-1"><a href="models-of-binary-outcomes.html#cb277-1" aria-hidden="true" tabindex="-1"></a><span class="co"># let education vary across all possible values; else median</span></span>
-<span id="cb277-2"><a href="models-of-binary-outcomes.html#cb277-2" aria-hidden="true" tabindex="-1"></a>s <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb277-3"><a href="models-of-binary-outcomes.html#cb277-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">neweduc =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>,</span>
-<span id="cb277-4"><a href="models-of-binary-outcomes.html#cb277-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">closing =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>closing),</span>
-<span id="cb277-5"><a href="models-of-binary-outcomes.html#cb277-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>age),</span>
-<span id="cb277-6"><a href="models-of-binary-outcomes.html#cb277-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">south =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>south),</span>
-<span id="cb277-7"><a href="models-of-binary-outcomes.html#cb277-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">gov =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>gov)</span>
-<span id="cb277-8"><a href="models-of-binary-outcomes.html#cb277-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb277-9"><a href="models-of-binary-outcomes.html#cb277-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb277-10"><a href="models-of-binary-outcomes.html#cb277-10" aria-hidden="true" tabindex="-1"></a><span class="co"># expected value or &quot;predicted probability&quot; </span></span>
-<span id="cb277-11"><a href="models-of-binary-outcomes.html#cb277-11" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>expected_value <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> s, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
-<span id="cb277-12"><a href="models-of-binary-outcomes.html#cb277-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb277-13"><a href="models-of-binary-outcomes.html#cb277-13" aria-hidden="true" tabindex="-1"></a><span class="co"># marginal effect of closing on expected value</span></span>
-<span id="cb277-14"><a href="models-of-binary-outcomes.html#cb277-14" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>linpred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> s, <span class="at">type =</span> <span class="st">&quot;link&quot;</span>)</span>
-<span id="cb277-15"><a href="models-of-binary-outcomes.html#cb277-15" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>marginal_effect <span class="ot">&lt;-</span> <span class="fu">coef</span>(fit)[<span class="st">&quot;neweduc&quot;</span>]<span class="sc">*</span><span class="fu">dnorm</span>(s<span class="sc">$</span>linpred)</span></code></pre></div>
+<div class="sourceCode" id="cb276"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb276-1"><a href="models-of-binary-outcomes.html#cb276-1" aria-hidden="true" tabindex="-1"></a><span class="co"># let education vary across all possible values; else median</span></span>
+<span id="cb276-2"><a href="models-of-binary-outcomes.html#cb276-2" aria-hidden="true" tabindex="-1"></a>s <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb276-3"><a href="models-of-binary-outcomes.html#cb276-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">neweduc =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>,</span>
+<span id="cb276-4"><a href="models-of-binary-outcomes.html#cb276-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">closing =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>closing),</span>
+<span id="cb276-5"><a href="models-of-binary-outcomes.html#cb276-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>age),</span>
+<span id="cb276-6"><a href="models-of-binary-outcomes.html#cb276-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">south =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>south),</span>
+<span id="cb276-7"><a href="models-of-binary-outcomes.html#cb276-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">gov =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>gov)</span>
+<span id="cb276-8"><a href="models-of-binary-outcomes.html#cb276-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb276-9"><a href="models-of-binary-outcomes.html#cb276-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb276-10"><a href="models-of-binary-outcomes.html#cb276-10" aria-hidden="true" tabindex="-1"></a><span class="co"># expected value or &quot;predicted probability&quot; </span></span>
+<span id="cb276-11"><a href="models-of-binary-outcomes.html#cb276-11" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>expected_value <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> s, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
+<span id="cb276-12"><a href="models-of-binary-outcomes.html#cb276-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb276-13"><a href="models-of-binary-outcomes.html#cb276-13" aria-hidden="true" tabindex="-1"></a><span class="co"># marginal effect of closing on expected value</span></span>
+<span id="cb276-14"><a href="models-of-binary-outcomes.html#cb276-14" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>linpred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> s, <span class="at">type =</span> <span class="st">&quot;link&quot;</span>)</span>
+<span id="cb276-15"><a href="models-of-binary-outcomes.html#cb276-15" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>marginal_effect <span class="ot">&lt;-</span> <span class="fu">coef</span>(fit)[<span class="st">&quot;neweduc&quot;</span>]<span class="sc">*</span><span class="fu">dnorm</span>(s<span class="sc">$</span>linpred)</span></code></pre></div>
 <p>Now let’s make a plot of the expected values and marginal effects. The grey lines show the orginal logit estimates.</p>
 <p><img src="05-02-models-of-binary-outcomes_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
-<div class="sourceCode" id="cb278"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb278-1"><a href="models-of-binary-outcomes.html#cb278-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(fit, fit_logit) <span class="sc">%&gt;%</span></span>
-<span id="cb278-2"><a href="models-of-binary-outcomes.html#cb278-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diff_min =</span> <span class="fu">min</span>(AIC) <span class="sc">-</span> AIC, </span>
-<span id="cb278-3"><a href="models-of-binary-outcomes.html#cb278-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">rel_lik =</span> <span class="fu">exp</span>(diff_min<span class="sc">/</span><span class="dv">2</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb277"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb277-1"><a href="models-of-binary-outcomes.html#cb277-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(fit, fit_logit) <span class="sc">%&gt;%</span></span>
+<span id="cb277-2"><a href="models-of-binary-outcomes.html#cb277-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diff_min =</span> <span class="fu">min</span>(AIC) <span class="sc">-</span> AIC, </span>
+<span id="cb277-3"><a href="models-of-binary-outcomes.html#cb277-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">rel_lik =</span> <span class="fu">exp</span>(diff_min<span class="sc">/</span><span class="dv">2</span>))</span></code></pre></div>
 <pre><code>##           df      AIC  diff_min      rel_lik
 ## fit        6 113111.1 -182.1109 2.851781e-40
 ## fit_logit  6 112929.0    0.0000 1.000000e+00</code></pre>
-<div class="sourceCode" id="cb280"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb280-1"><a href="models-of-binary-outcomes.html#cb280-1" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(fit, fit_logit)</span></code></pre></div>
+<div class="sourceCode" id="cb279"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb279-1"><a href="models-of-binary-outcomes.html#cb279-1" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(fit, fit_logit)</span></code></pre></div>
 <pre><code>##           df      BIC
 ## fit        6 113168.2
 ## fit_logit  6 112986.1</code></pre>
@@ -557,36 +563,36 @@ Lastly, before we proceed to the next model, I’m going to save the expected va
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb282"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb282-1"><a href="models-of-binary-outcomes.html#cb282-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit model</span></span>
-<span id="cb282-2"><a href="models-of-binary-outcomes.html#cb282-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(f, <span class="at">data =</span> scobit, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">&quot;cloglog&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb281"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb281-1"><a href="models-of-binary-outcomes.html#cb281-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit model</span></span>
+<span id="cb281-2"><a href="models-of-binary-outcomes.html#cb281-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(f, <span class="at">data =</span> scobit, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">&quot;cloglog&quot;</span>))</span></code></pre></div>
 <p>Now let’s compute quantities of interest. Let’s first compute the expected value or “predicted probability” as <code>neweduc</code> varies from 1 to 8 (all possible values) with all other variables at their medians.</p>
-<div class="sourceCode" id="cb283"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb283-1"><a href="models-of-binary-outcomes.html#cb283-1" aria-hidden="true" tabindex="-1"></a><span class="co"># let education vary across all possible values; else median</span></span>
-<span id="cb283-2"><a href="models-of-binary-outcomes.html#cb283-2" aria-hidden="true" tabindex="-1"></a>s <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb283-3"><a href="models-of-binary-outcomes.html#cb283-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">neweduc =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>,</span>
-<span id="cb283-4"><a href="models-of-binary-outcomes.html#cb283-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">closing =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>closing),</span>
-<span id="cb283-5"><a href="models-of-binary-outcomes.html#cb283-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>age),</span>
-<span id="cb283-6"><a href="models-of-binary-outcomes.html#cb283-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">south =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>south),</span>
-<span id="cb283-7"><a href="models-of-binary-outcomes.html#cb283-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">gov =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>gov)</span>
-<span id="cb283-8"><a href="models-of-binary-outcomes.html#cb283-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb283-9"><a href="models-of-binary-outcomes.html#cb283-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb283-10"><a href="models-of-binary-outcomes.html#cb283-10" aria-hidden="true" tabindex="-1"></a><span class="co"># expected value or &quot;predicted probability&quot; </span></span>
-<span id="cb283-11"><a href="models-of-binary-outcomes.html#cb283-11" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>expected_value <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> s, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
-<span id="cb283-12"><a href="models-of-binary-outcomes.html#cb283-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb283-13"><a href="models-of-binary-outcomes.html#cb283-13" aria-hidden="true" tabindex="-1"></a><span class="co"># marginal effect of closing on expected value</span></span>
-<span id="cb283-14"><a href="models-of-binary-outcomes.html#cb283-14" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>linpred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> s, <span class="at">type =</span> <span class="st">&quot;link&quot;</span>)</span>
-<span id="cb283-15"><a href="models-of-binary-outcomes.html#cb283-15" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>marginal_effect <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fu">exp</span>(s<span class="sc">$</span>linpred))<span class="sc">*</span><span class="fu">exp</span>(s<span class="sc">$</span>linpred)<span class="sc">*</span><span class="fu">coef</span>(fit)[<span class="st">&quot;neweduc&quot;</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb282"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb282-1"><a href="models-of-binary-outcomes.html#cb282-1" aria-hidden="true" tabindex="-1"></a><span class="co"># let education vary across all possible values; else median</span></span>
+<span id="cb282-2"><a href="models-of-binary-outcomes.html#cb282-2" aria-hidden="true" tabindex="-1"></a>s <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb282-3"><a href="models-of-binary-outcomes.html#cb282-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">neweduc =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>,</span>
+<span id="cb282-4"><a href="models-of-binary-outcomes.html#cb282-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">closing =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>closing),</span>
+<span id="cb282-5"><a href="models-of-binary-outcomes.html#cb282-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>age),</span>
+<span id="cb282-6"><a href="models-of-binary-outcomes.html#cb282-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">south =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>south),</span>
+<span id="cb282-7"><a href="models-of-binary-outcomes.html#cb282-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">gov =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>gov)</span>
+<span id="cb282-8"><a href="models-of-binary-outcomes.html#cb282-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb282-9"><a href="models-of-binary-outcomes.html#cb282-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb282-10"><a href="models-of-binary-outcomes.html#cb282-10" aria-hidden="true" tabindex="-1"></a><span class="co"># expected value or &quot;predicted probability&quot; </span></span>
+<span id="cb282-11"><a href="models-of-binary-outcomes.html#cb282-11" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>expected_value <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> s, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
+<span id="cb282-12"><a href="models-of-binary-outcomes.html#cb282-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb282-13"><a href="models-of-binary-outcomes.html#cb282-13" aria-hidden="true" tabindex="-1"></a><span class="co"># marginal effect of closing on expected value</span></span>
+<span id="cb282-14"><a href="models-of-binary-outcomes.html#cb282-14" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>linpred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> s, <span class="at">type =</span> <span class="st">&quot;link&quot;</span>)</span>
+<span id="cb282-15"><a href="models-of-binary-outcomes.html#cb282-15" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>marginal_effect <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fu">exp</span>(s<span class="sc">$</span>linpred))<span class="sc">*</span><span class="fu">exp</span>(s<span class="sc">$</span>linpred)<span class="sc">*</span><span class="fu">coef</span>(fit)[<span class="st">&quot;neweduc&quot;</span>]</span></code></pre></div>
 <p>Now let’s make a plot of the expected values and marginal effects. The grey lines show the orginial logit estimates.</p>
 <p>Importantly, the cloglog model is not symmetric (like logit and probit) around 0.5.</p>
 <p><img src="05-02-models-of-binary-outcomes_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
-<div class="sourceCode" id="cb284"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb284-1"><a href="models-of-binary-outcomes.html#cb284-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(fit, fit_logit) <span class="sc">%&gt;%</span></span>
-<span id="cb284-2"><a href="models-of-binary-outcomes.html#cb284-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diff_min =</span> AIC <span class="sc">-</span> <span class="fu">min</span>(AIC),</span>
-<span id="cb284-3"><a href="models-of-binary-outcomes.html#cb284-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">akiaike_weights =</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)))</span></code></pre></div>
+<div class="sourceCode" id="cb283"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb283-1"><a href="models-of-binary-outcomes.html#cb283-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(fit, fit_logit) <span class="sc">%&gt;%</span></span>
+<span id="cb283-2"><a href="models-of-binary-outcomes.html#cb283-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diff_min =</span> AIC <span class="sc">-</span> <span class="fu">min</span>(AIC),</span>
+<span id="cb283-3"><a href="models-of-binary-outcomes.html#cb283-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">akiaike_weights =</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)))</span></code></pre></div>
 <pre><code>##           df    AIC diff_min akiaike_weights
 ## fit        6 113664 734.9586   2.545478e-160
 ## fit_logit  6 112929   0.0000    1.000000e+00</code></pre>
-<div class="sourceCode" id="cb286"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb286-1"><a href="models-of-binary-outcomes.html#cb286-1" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(fit, fit_logit) <span class="sc">%&gt;%</span></span>
-<span id="cb286-2"><a href="models-of-binary-outcomes.html#cb286-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diff_min =</span> BIC <span class="sc">-</span> <span class="fu">min</span>(BIC),</span>
-<span id="cb286-3"><a href="models-of-binary-outcomes.html#cb286-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">post_prob =</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)))</span></code></pre></div>
+<div class="sourceCode" id="cb285"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb285-1"><a href="models-of-binary-outcomes.html#cb285-1" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(fit, fit_logit) <span class="sc">%&gt;%</span></span>
+<span id="cb285-2"><a href="models-of-binary-outcomes.html#cb285-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diff_min =</span> BIC <span class="sc">-</span> <span class="fu">min</span>(BIC),</span>
+<span id="cb285-3"><a href="models-of-binary-outcomes.html#cb285-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">post_prob =</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)))</span></code></pre></div>
 <pre><code>##           df      BIC diff_min     post_prob
 ## fit        6 113721.0 734.9586 2.545478e-160
 ## fit_logit  6 112986.1   0.0000  1.000000e+00</code></pre>
@@ -646,35 +652,35 @@ Lastly, before we proceed to the next model, I’m going to save the expected va
 <li>The cauchit model seems to have three distinct sections a roughly linear portion below <span class="math inline">\(\pi = 0.15\)</span>, another roughly linear portion between between 0.25 and 0.75, and another roughly linear portion above about 0.85. Between these roughly linear portions, the curve changes slope changes dramatically.</li>
 </ol>
 <p><img src="05-02-models-of-binary-outcomes_files/figure-html/unnamed-chunk-15-1.png" width="768" /></p>
-<div class="sourceCode" id="cb288"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb288-1"><a href="models-of-binary-outcomes.html#cb288-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit model</span></span>
-<span id="cb288-2"><a href="models-of-binary-outcomes.html#cb288-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(f, <span class="at">data =</span> scobit, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">&quot;cauchit&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb287"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb287-1"><a href="models-of-binary-outcomes.html#cb287-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit model</span></span>
+<span id="cb287-2"><a href="models-of-binary-outcomes.html#cb287-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(f, <span class="at">data =</span> scobit, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">&quot;cauchit&quot;</span>))</span></code></pre></div>
 <p>Now let’s compute quantities of interest. Let’s first compute the expected value or “predicted probability” as <code>neweduc</code> varies from 1 to 8 (all possible values) with all other variables at their medians.</p>
-<div class="sourceCode" id="cb289"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb289-1"><a href="models-of-binary-outcomes.html#cb289-1" aria-hidden="true" tabindex="-1"></a><span class="co"># let education vary across all possible values; else median</span></span>
-<span id="cb289-2"><a href="models-of-binary-outcomes.html#cb289-2" aria-hidden="true" tabindex="-1"></a>s <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb289-3"><a href="models-of-binary-outcomes.html#cb289-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">neweduc =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>,</span>
-<span id="cb289-4"><a href="models-of-binary-outcomes.html#cb289-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">closing =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>closing),</span>
-<span id="cb289-5"><a href="models-of-binary-outcomes.html#cb289-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>age),</span>
-<span id="cb289-6"><a href="models-of-binary-outcomes.html#cb289-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">south =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>south),</span>
-<span id="cb289-7"><a href="models-of-binary-outcomes.html#cb289-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">gov =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>gov)</span>
-<span id="cb289-8"><a href="models-of-binary-outcomes.html#cb289-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb289-9"><a href="models-of-binary-outcomes.html#cb289-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb289-10"><a href="models-of-binary-outcomes.html#cb289-10" aria-hidden="true" tabindex="-1"></a><span class="co"># expected value or &quot;predicted probability&quot; </span></span>
-<span id="cb289-11"><a href="models-of-binary-outcomes.html#cb289-11" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>expected_value <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> s, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
-<span id="cb289-12"><a href="models-of-binary-outcomes.html#cb289-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb289-13"><a href="models-of-binary-outcomes.html#cb289-13" aria-hidden="true" tabindex="-1"></a><span class="co"># marginal effect of closing on expected value</span></span>
-<span id="cb289-14"><a href="models-of-binary-outcomes.html#cb289-14" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>linpred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> s, <span class="at">type =</span> <span class="st">&quot;link&quot;</span>)</span>
-<span id="cb289-15"><a href="models-of-binary-outcomes.html#cb289-15" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>marginal_effect <span class="ot">&lt;-</span> <span class="fu">dcauchy</span>(s<span class="sc">$</span>linpred)<span class="sc">*</span><span class="fu">coef</span>(fit)[<span class="st">&quot;neweduc&quot;</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb288"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb288-1"><a href="models-of-binary-outcomes.html#cb288-1" aria-hidden="true" tabindex="-1"></a><span class="co"># let education vary across all possible values; else median</span></span>
+<span id="cb288-2"><a href="models-of-binary-outcomes.html#cb288-2" aria-hidden="true" tabindex="-1"></a>s <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb288-3"><a href="models-of-binary-outcomes.html#cb288-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">neweduc =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>,</span>
+<span id="cb288-4"><a href="models-of-binary-outcomes.html#cb288-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">closing =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>closing),</span>
+<span id="cb288-5"><a href="models-of-binary-outcomes.html#cb288-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>age),</span>
+<span id="cb288-6"><a href="models-of-binary-outcomes.html#cb288-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">south =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>south),</span>
+<span id="cb288-7"><a href="models-of-binary-outcomes.html#cb288-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">gov =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>gov)</span>
+<span id="cb288-8"><a href="models-of-binary-outcomes.html#cb288-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb288-9"><a href="models-of-binary-outcomes.html#cb288-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb288-10"><a href="models-of-binary-outcomes.html#cb288-10" aria-hidden="true" tabindex="-1"></a><span class="co"># expected value or &quot;predicted probability&quot; </span></span>
+<span id="cb288-11"><a href="models-of-binary-outcomes.html#cb288-11" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>expected_value <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> s, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
+<span id="cb288-12"><a href="models-of-binary-outcomes.html#cb288-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb288-13"><a href="models-of-binary-outcomes.html#cb288-13" aria-hidden="true" tabindex="-1"></a><span class="co"># marginal effect of closing on expected value</span></span>
+<span id="cb288-14"><a href="models-of-binary-outcomes.html#cb288-14" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>linpred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> s, <span class="at">type =</span> <span class="st">&quot;link&quot;</span>)</span>
+<span id="cb288-15"><a href="models-of-binary-outcomes.html#cb288-15" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>marginal_effect <span class="ot">&lt;-</span> <span class="fu">dcauchy</span>(s<span class="sc">$</span>linpred)<span class="sc">*</span><span class="fu">coef</span>(fit)[<span class="st">&quot;neweduc&quot;</span>]</span></code></pre></div>
 <p>Now let’s make a plot of the expected values and marginal effects. The grey lines show the orginial logit estimates.</p>
 <p><img src="05-02-models-of-binary-outcomes_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
-<div class="sourceCode" id="cb290"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb290-1"><a href="models-of-binary-outcomes.html#cb290-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(fit, fit_logit) <span class="sc">%&gt;%</span></span>
-<span id="cb290-2"><a href="models-of-binary-outcomes.html#cb290-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diff_min =</span> AIC <span class="sc">-</span> <span class="fu">min</span>(AIC),</span>
-<span id="cb290-3"><a href="models-of-binary-outcomes.html#cb290-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">akiaike_weights =</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)))</span></code></pre></div>
+<div class="sourceCode" id="cb289"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb289-1"><a href="models-of-binary-outcomes.html#cb289-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(fit, fit_logit) <span class="sc">%&gt;%</span></span>
+<span id="cb289-2"><a href="models-of-binary-outcomes.html#cb289-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diff_min =</span> AIC <span class="sc">-</span> <span class="fu">min</span>(AIC),</span>
+<span id="cb289-3"><a href="models-of-binary-outcomes.html#cb289-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">akiaike_weights =</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)))</span></code></pre></div>
 <pre><code>##           df      AIC diff_min akiaike_weights
 ## fit        6 112650.1   0.0000    1.000000e+00
 ## fit_logit  6 112929.0 278.9223    2.708833e-61</code></pre>
-<div class="sourceCode" id="cb292"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb292-1"><a href="models-of-binary-outcomes.html#cb292-1" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(fit, fit_logit) <span class="sc">%&gt;%</span></span>
-<span id="cb292-2"><a href="models-of-binary-outcomes.html#cb292-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diff_min =</span> BIC <span class="sc">-</span> <span class="fu">min</span>(BIC),</span>
-<span id="cb292-3"><a href="models-of-binary-outcomes.html#cb292-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">post_prob =</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)))</span></code></pre></div>
+<div class="sourceCode" id="cb291"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb291-1"><a href="models-of-binary-outcomes.html#cb291-1" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(fit, fit_logit) <span class="sc">%&gt;%</span></span>
+<span id="cb291-2"><a href="models-of-binary-outcomes.html#cb291-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diff_min =</span> BIC <span class="sc">-</span> <span class="fu">min</span>(BIC),</span>
+<span id="cb291-3"><a href="models-of-binary-outcomes.html#cb291-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">post_prob =</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)))</span></code></pre></div>
 <pre><code>##           df      BIC diff_min    post_prob
 ## fit        6 112707.1   0.0000 1.000000e+00
 ## fit_logit  6 112986.1 278.9223 2.708833e-61</code></pre>
@@ -732,57 +738,57 @@ Lastly, before we proceed to the next model, I’m going to save the expected va
 </table>
 <p>These models are notoriously difficult to estimate. Fortunately, we’ve got very good MCMC algorithms to deal with difficult likelihoods. If you <em>must</em> fit this model, you should fit it with Stan and be extra careful.</p>
 <p>I’ve tried fitting this lots of different ways and not had much success. I suggest using Stan’s sampling algorithm (or perhaps its optimization routine) and using a fairly strong prior around <span class="math inline">\(\alpha\)</span> to keep it near 1.</p>
-<pre class="stan"><code>data {
-  int&lt;lower=0&gt; N;   // number of data items
-  int&lt;lower=0&gt; K;   // number of predictors
-  matrix[N, K] X;   // predictor matrix
-  int y[N];      // outcome vector
-}
-parameters {
-  vector[K] beta;       // coefficients for X
-  real&lt;lower=0&gt; alpha;  // nagler&#39;s shape parameter
-}
-transformed parameters {
-  vector[N] pi;
-  vector[N] linpred;
-  for (i in 1:N) {
-    linpred[i] = X[i, ]*beta;
-    pi[i] = 1/pow((1 + exp(-(X[i, ]*beta))), alpha);
-  }
-}
-model {
-  alpha ~ gamma(6, 5);  // alpha is &quot;near&quot; one; mode of gamma is (a - 1)/b; sd is sqrt(a)/b
-  //beta ~ cauchy(0, 10);     // weakly informative prior to rule out very large and small values
-  y ~ bernoulli(pi);  // likelihood
-}</code></pre>
-<div class="sourceCode" id="cb295"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb295-1"><a href="models-of-binary-outcomes.html#cb295-1" aria-hidden="true" tabindex="-1"></a><span class="co"># obtain the model matrix X</span></span>
-<span id="cb295-2"><a href="models-of-binary-outcomes.html#cb295-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
-<span id="cb295-3"><a href="models-of-binary-outcomes.html#cb295-3" aria-hidden="true" tabindex="-1"></a>scobit_small <span class="ot">=</span> <span class="fu">sample_n</span>(scobit, <span class="dv">1000</span>)  <span class="co"># small sample to save time</span></span>
-<span id="cb295-4"><a href="models-of-binary-outcomes.html#cb295-4" aria-hidden="true" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(f, <span class="at">data =</span> scobit_small)  <span class="co"># model frame</span></span>
-<span id="cb295-5"><a href="models-of-binary-outcomes.html#cb295-5" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(f, mf)         <span class="co"># model matrix X</span></span>
-<span id="cb295-6"><a href="models-of-binary-outcomes.html#cb295-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb295-7"><a href="models-of-binary-outcomes.html#cb295-7" aria-hidden="true" tabindex="-1"></a><span class="co"># obtain the outcome variable y</span></span>
-<span id="cb295-8"><a href="models-of-binary-outcomes.html#cb295-8" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">model.response</span>(mf)</span>
-<span id="cb295-9"><a href="models-of-binary-outcomes.html#cb295-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb295-10"><a href="models-of-binary-outcomes.html#cb295-10" aria-hidden="true" tabindex="-1"></a><span class="co"># fit stan model</span></span>
-<span id="cb295-11"><a href="models-of-binary-outcomes.html#cb295-11" aria-hidden="true" tabindex="-1"></a>stan_data <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y =</span> y, <span class="at">X =</span> X, <span class="at">N =</span> <span class="fu">nrow</span>(X), <span class="at">K =</span> <span class="fu">ncol</span>(X))</span>
-<span id="cb295-12"><a href="models-of-binary-outcomes.html#cb295-12" aria-hidden="true" tabindex="-1"></a>stan_opt <span class="ot">&lt;-</span> rstan<span class="sc">::</span><span class="fu">optimizing</span>(scobit_model, <span class="at">data =</span> stan_data, </span>
-<span id="cb295-13"><a href="models-of-binary-outcomes.html#cb295-13" aria-hidden="true" tabindex="-1"></a>                              <span class="at">algorithm =</span> <span class="st">&quot;Newton&quot;</span>)</span>
-<span id="cb295-14"><a href="models-of-binary-outcomes.html#cb295-14" aria-hidden="true" tabindex="-1"></a>stan_samp <span class="ot">&lt;-</span> rstan<span class="sc">::</span><span class="fu">sampling</span>(scobit_model, <span class="at">data =</span> stan_data,</span>
-<span id="cb295-15"><a href="models-of-binary-outcomes.html#cb295-15" aria-hidden="true" tabindex="-1"></a>                            <span class="at">pars =</span> <span class="fu">c</span>(<span class="st">&quot;beta&quot;</span>, <span class="st">&quot;alpha&quot;</span>),</span>
-<span id="cb295-16"><a href="models-of-binary-outcomes.html#cb295-16" aria-hidden="true" tabindex="-1"></a>                            <span class="at">cores =</span> <span class="dv">3</span>,</span>
-<span id="cb295-17"><a href="models-of-binary-outcomes.html#cb295-17" aria-hidden="true" tabindex="-1"></a>                            <span class="at">chains =</span> <span class="dv">3</span>,</span>
-<span id="cb295-18"><a href="models-of-binary-outcomes.html#cb295-18" aria-hidden="true" tabindex="-1"></a>                            <span class="at">iter =</span> <span class="dv">2000</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb296"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb296-1"><a href="models-of-binary-outcomes.html#cb296-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ML results from stan optimization of scobit</span></span>
-<span id="cb296-2"><a href="models-of-binary-outcomes.html#cb296-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(stan_opt<span class="sc">$</span>par[<span class="dv">1</span><span class="sc">:</span><span class="dv">7</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb293"><pre class="sourceCode stan"><code class="sourceCode stan"><span id="cb293-1"><a href="models-of-binary-outcomes.html#cb293-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> {</span>
+<span id="cb293-2"><a href="models-of-binary-outcomes.html#cb293-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span>&lt;<span class="kw">lower</span>=<span class="dv">0</span>&gt; N;   <span class="co">// number of data items</span></span>
+<span id="cb293-3"><a href="models-of-binary-outcomes.html#cb293-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span>&lt;<span class="kw">lower</span>=<span class="dv">0</span>&gt; K;   <span class="co">// number of predictors</span></span>
+<span id="cb293-4"><a href="models-of-binary-outcomes.html#cb293-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">matrix</span>[N, K] X;   <span class="co">// predictor matrix</span></span>
+<span id="cb293-5"><a href="models-of-binary-outcomes.html#cb293-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> y[N];      <span class="co">// outcome vector</span></span>
+<span id="cb293-6"><a href="models-of-binary-outcomes.html#cb293-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb293-7"><a href="models-of-binary-outcomes.html#cb293-7" aria-hidden="true" tabindex="-1"></a><span class="kw">parameters</span> {</span>
+<span id="cb293-8"><a href="models-of-binary-outcomes.html#cb293-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">vector</span>[K] beta;       <span class="co">// coefficients for X</span></span>
+<span id="cb293-9"><a href="models-of-binary-outcomes.html#cb293-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">real</span>&lt;<span class="kw">lower</span>=<span class="dv">0</span>&gt; alpha;  <span class="co">// nagler&#39;s shape parameter</span></span>
+<span id="cb293-10"><a href="models-of-binary-outcomes.html#cb293-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb293-11"><a href="models-of-binary-outcomes.html#cb293-11" aria-hidden="true" tabindex="-1"></a><span class="kw">transformed parameters</span> {</span>
+<span id="cb293-12"><a href="models-of-binary-outcomes.html#cb293-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">vector</span>[N] pi;</span>
+<span id="cb293-13"><a href="models-of-binary-outcomes.html#cb293-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">vector</span>[N] linpred;</span>
+<span id="cb293-14"><a href="models-of-binary-outcomes.html#cb293-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span>:N) {</span>
+<span id="cb293-15"><a href="models-of-binary-outcomes.html#cb293-15" aria-hidden="true" tabindex="-1"></a>    linpred[i] = X[i, ]*beta;</span>
+<span id="cb293-16"><a href="models-of-binary-outcomes.html#cb293-16" aria-hidden="true" tabindex="-1"></a>    pi[i] = <span class="dv">1</span>/pow((<span class="dv">1</span> + exp(-(X[i, ]*beta))), alpha);</span>
+<span id="cb293-17"><a href="models-of-binary-outcomes.html#cb293-17" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb293-18"><a href="models-of-binary-outcomes.html#cb293-18" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb293-19"><a href="models-of-binary-outcomes.html#cb293-19" aria-hidden="true" tabindex="-1"></a><span class="kw">model</span> {</span>
+<span id="cb293-20"><a href="models-of-binary-outcomes.html#cb293-20" aria-hidden="true" tabindex="-1"></a>  alpha ~ gamma(<span class="dv">6</span>, <span class="dv">5</span>);  <span class="co">// alpha is &quot;near&quot; one; mode of gamma is (a - 1)/b; sd is sqrt(a)/b</span></span>
+<span id="cb293-21"><a href="models-of-binary-outcomes.html#cb293-21" aria-hidden="true" tabindex="-1"></a>  <span class="co">//beta ~ cauchy(0, 10);     // weakly informative prior to rule out very large and small values</span></span>
+<span id="cb293-22"><a href="models-of-binary-outcomes.html#cb293-22" aria-hidden="true" tabindex="-1"></a>  y ~ bernoulli(pi);  <span class="co">// likelihood</span></span>
+<span id="cb293-23"><a href="models-of-binary-outcomes.html#cb293-23" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb294"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb294-1"><a href="models-of-binary-outcomes.html#cb294-1" aria-hidden="true" tabindex="-1"></a><span class="co"># obtain the model matrix X</span></span>
+<span id="cb294-2"><a href="models-of-binary-outcomes.html#cb294-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb294-3"><a href="models-of-binary-outcomes.html#cb294-3" aria-hidden="true" tabindex="-1"></a>scobit_small <span class="ot">=</span> <span class="fu">sample_n</span>(scobit, <span class="dv">1000</span>)  <span class="co"># small sample to save time</span></span>
+<span id="cb294-4"><a href="models-of-binary-outcomes.html#cb294-4" aria-hidden="true" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(f, <span class="at">data =</span> scobit_small)  <span class="co"># model frame</span></span>
+<span id="cb294-5"><a href="models-of-binary-outcomes.html#cb294-5" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(f, mf)         <span class="co"># model matrix X</span></span>
+<span id="cb294-6"><a href="models-of-binary-outcomes.html#cb294-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb294-7"><a href="models-of-binary-outcomes.html#cb294-7" aria-hidden="true" tabindex="-1"></a><span class="co"># obtain the outcome variable y</span></span>
+<span id="cb294-8"><a href="models-of-binary-outcomes.html#cb294-8" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">model.response</span>(mf)</span>
+<span id="cb294-9"><a href="models-of-binary-outcomes.html#cb294-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb294-10"><a href="models-of-binary-outcomes.html#cb294-10" aria-hidden="true" tabindex="-1"></a><span class="co"># fit stan model</span></span>
+<span id="cb294-11"><a href="models-of-binary-outcomes.html#cb294-11" aria-hidden="true" tabindex="-1"></a>stan_data <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y =</span> y, <span class="at">X =</span> X, <span class="at">N =</span> <span class="fu">nrow</span>(X), <span class="at">K =</span> <span class="fu">ncol</span>(X))</span>
+<span id="cb294-12"><a href="models-of-binary-outcomes.html#cb294-12" aria-hidden="true" tabindex="-1"></a>stan_opt <span class="ot">&lt;-</span> rstan<span class="sc">::</span><span class="fu">optimizing</span>(scobit_model, <span class="at">data =</span> stan_data, </span>
+<span id="cb294-13"><a href="models-of-binary-outcomes.html#cb294-13" aria-hidden="true" tabindex="-1"></a>                              <span class="at">algorithm =</span> <span class="st">&quot;Newton&quot;</span>)</span>
+<span id="cb294-14"><a href="models-of-binary-outcomes.html#cb294-14" aria-hidden="true" tabindex="-1"></a>stan_samp <span class="ot">&lt;-</span> rstan<span class="sc">::</span><span class="fu">sampling</span>(scobit_model, <span class="at">data =</span> stan_data,</span>
+<span id="cb294-15"><a href="models-of-binary-outcomes.html#cb294-15" aria-hidden="true" tabindex="-1"></a>                            <span class="at">pars =</span> <span class="fu">c</span>(<span class="st">&quot;beta&quot;</span>, <span class="st">&quot;alpha&quot;</span>),</span>
+<span id="cb294-16"><a href="models-of-binary-outcomes.html#cb294-16" aria-hidden="true" tabindex="-1"></a>                            <span class="at">cores =</span> <span class="dv">3</span>,</span>
+<span id="cb294-17"><a href="models-of-binary-outcomes.html#cb294-17" aria-hidden="true" tabindex="-1"></a>                            <span class="at">chains =</span> <span class="dv">3</span>,</span>
+<span id="cb294-18"><a href="models-of-binary-outcomes.html#cb294-18" aria-hidden="true" tabindex="-1"></a>                            <span class="at">iter =</span> <span class="dv">2000</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb295"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb295-1"><a href="models-of-binary-outcomes.html#cb295-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ML results from stan optimization of scobit</span></span>
+<span id="cb295-2"><a href="models-of-binary-outcomes.html#cb295-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(stan_opt<span class="sc">$</span>par[<span class="dv">1</span><span class="sc">:</span><span class="dv">7</span>])</span></code></pre></div>
 <pre><code>## beta[1] beta[2] beta[3] beta[4] beta[5] beta[6]   alpha 
 ##       0       0       0       0       0       0       1</code></pre>
-<div class="sourceCode" id="cb298"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb298-1"><a href="models-of-binary-outcomes.html#cb298-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ML results from glm() logit </span></span>
-<span id="cb298-2"><a href="models-of-binary-outcomes.html#cb298-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(<span class="fu">glm</span>(f, <span class="at">data =</span> scobit_small, <span class="at">family =</span> binomial))</span></code></pre></div>
+<div class="sourceCode" id="cb297"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb297-1"><a href="models-of-binary-outcomes.html#cb297-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ML results from glm() logit </span></span>
+<span id="cb297-2"><a href="models-of-binary-outcomes.html#cb297-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(<span class="fu">glm</span>(f, <span class="at">data =</span> scobit_small, <span class="at">family =</span> binomial))</span></code></pre></div>
 <pre><code>## (Intercept)     neweduc     closing         age       south         gov 
 ## -4.04393179  0.62708977 -0.02039651  0.04715321 -0.27764434  0.01848814</code></pre>
-<div class="sourceCode" id="cb300"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb300-1"><a href="models-of-binary-outcomes.html#cb300-1" aria-hidden="true" tabindex="-1"></a><span class="co"># summary of stan mcmc samples</span></span>
-<span id="cb300-2"><a href="models-of-binary-outcomes.html#cb300-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(stan_samp)</span></code></pre></div>
+<div class="sourceCode" id="cb299"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb299-1"><a href="models-of-binary-outcomes.html#cb299-1" aria-hidden="true" tabindex="-1"></a><span class="co"># summary of stan mcmc samples</span></span>
+<span id="cb299-2"><a href="models-of-binary-outcomes.html#cb299-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(stan_samp)</span></code></pre></div>
 <pre><code>## Inference for Stan model: 2ea053ffa7101a65d510af4b2cb5978b.
 ## 3 chains, each with iter=2000; warmup=1000; thin=1; 
 ## post-warmup draws per chain=1000, total post-warmup draws=3000.
@@ -808,51 +814,51 @@ model {
 <p>We can develop the probit model using a “latent variable” or “latent utility” approach.</p>
 <p>Suppose an unobserved (or “latent”) outcome variable <span class="math inline">\(y^*\)</span>, so that <span class="math inline">\(y^*_i \sim N(\mu_i, \sigma = 1)\)</span>, where <span class="math inline">\(\mu_i = X_i\beta\)</span>. Then suppose that if <span class="math inline">\(y^*_i \geq 0\)</span>, we observe <span class="math inline">\(y_i = 1\)</span>. If <span class="math inline">\(y^*_i &lt; 0\)</span>, we observe <span class="math inline">\(y_i = 0\)</span>.</p>
 <p>A little simulation might help.</p>
-<div class="sourceCode" id="cb302"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb302-1"><a href="models-of-binary-outcomes.html#cb302-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">500</span></span>
-<span id="cb302-2"><a href="models-of-binary-outcomes.html#cb302-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb302-3"><a href="models-of-binary-outcomes.html#cb302-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb302-4"><a href="models-of-binary-outcomes.html#cb302-4" aria-hidden="true" tabindex="-1"></a>b0 <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb302-5"><a href="models-of-binary-outcomes.html#cb302-5" aria-hidden="true" tabindex="-1"></a>b1 <span class="ot">&lt;-</span> <span class="fl">1.5</span></span>
-<span id="cb302-6"><a href="models-of-binary-outcomes.html#cb302-6" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> b0 <span class="sc">+</span> b1<span class="sc">*</span>x</span>
-<span id="cb302-7"><a href="models-of-binary-outcomes.html#cb302-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb302-8"><a href="models-of-binary-outcomes.html#cb302-8" aria-hidden="true" tabindex="-1"></a>y_star <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, mu, <span class="dv">1</span>)</span>
-<span id="cb302-9"><a href="models-of-binary-outcomes.html#cb302-9" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(y_star <span class="sc">&gt;=</span> <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb302-10"><a href="models-of-binary-outcomes.html#cb302-10" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(x, y_star, y)</span>
-<span id="cb302-11"><a href="models-of-binary-outcomes.html#cb302-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb302-12"><a href="models-of-binary-outcomes.html#cb302-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y_star, <span class="at">color =</span> <span class="fu">factor</span>(y))) <span class="sc">+</span> </span>
-<span id="cb302-13"><a href="models-of-binary-outcomes.html#cb302-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">&quot;grey50&quot;</span>) <span class="sc">+</span></span>
-<span id="cb302-14"><a href="models-of-binary-outcomes.html#cb302-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> b1, <span class="at">intercept =</span> b0, <span class="at">color =</span> <span class="st">&quot;black&quot;</span>) <span class="sc">+</span> </span>
-<span id="cb302-15"><a href="models-of-binary-outcomes.html#cb302-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() </span></code></pre></div>
+<div class="sourceCode" id="cb301"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb301-1"><a href="models-of-binary-outcomes.html#cb301-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">500</span></span>
+<span id="cb301-2"><a href="models-of-binary-outcomes.html#cb301-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb301-3"><a href="models-of-binary-outcomes.html#cb301-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb301-4"><a href="models-of-binary-outcomes.html#cb301-4" aria-hidden="true" tabindex="-1"></a>b0 <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb301-5"><a href="models-of-binary-outcomes.html#cb301-5" aria-hidden="true" tabindex="-1"></a>b1 <span class="ot">&lt;-</span> <span class="fl">1.5</span></span>
+<span id="cb301-6"><a href="models-of-binary-outcomes.html#cb301-6" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> b0 <span class="sc">+</span> b1<span class="sc">*</span>x</span>
+<span id="cb301-7"><a href="models-of-binary-outcomes.html#cb301-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb301-8"><a href="models-of-binary-outcomes.html#cb301-8" aria-hidden="true" tabindex="-1"></a>y_star <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, mu, <span class="dv">1</span>)</span>
+<span id="cb301-9"><a href="models-of-binary-outcomes.html#cb301-9" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(y_star <span class="sc">&gt;=</span> <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb301-10"><a href="models-of-binary-outcomes.html#cb301-10" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(x, y_star, y)</span>
+<span id="cb301-11"><a href="models-of-binary-outcomes.html#cb301-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb301-12"><a href="models-of-binary-outcomes.html#cb301-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y_star, <span class="at">color =</span> <span class="fu">factor</span>(y))) <span class="sc">+</span> </span>
+<span id="cb301-13"><a href="models-of-binary-outcomes.html#cb301-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">&quot;grey50&quot;</span>) <span class="sc">+</span></span>
+<span id="cb301-14"><a href="models-of-binary-outcomes.html#cb301-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> b1, <span class="at">intercept =</span> b0, <span class="at">color =</span> <span class="st">&quot;black&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb301-15"><a href="models-of-binary-outcomes.html#cb301-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() </span></code></pre></div>
 <p><img src="05-02-models-of-binary-outcomes_files/figure-html/unnamed-chunk-23-1.png" width="384" /></p>
 <p>An implication of this framework is that <span class="math inline">\(\Pr(y_i = 1 \mid X_i) = \Pr(y^*_i \geq 1 \mid X_i) = \Phi(X_i\beta)\)</span>, which gives us exactly the probit model. Long (1997) develops this further in Section 3.2.</p>
 <p>But we can use this framework to generalize the usual probit model into a <em>heteroskedastic probit model</em>. Rather than fix the error of the latent erors to <span class="math inline">\(\sigma = 1\)</span>, we could allow them to vary with a set of explanatory variables so that <span class="math inline">\(\sigma = e^{Z\gamma}\)</span>. (We use <span class="math inline">\(X\beta\)</span> for the linear predictor that belongs to the mean and <span class="math inline">\(Z\gamma\)</span> for the linear predictor that belongs to <span class="math inline">\(\sigma\)</span>.)</p>
 <p>The <span class="math inline">\(Z\)</span> variables have an interesting relationship to <span class="math inline">\(\Pr(y_i = 1 \mid X_i)\)</span>. If a variable drives the linear predictor <span class="math inline">\(Z\gamma\)</span> (and therefore the error variance <span class="math inline">\(\sigma^2\)</span>) higher, it pushes <span class="math inline">\(\Pr(y_i = 1 \mid X_i)\)</span> toward 0.5. That is, if the probability of an event is near one, increasing the latent variance <em>decreases</em> the chance of an event. But if the probability of an event is near zero, increasing the latent variance <em>increases</em> the chance of an event. Taken to an extreme, this can produce a non-monotic effect of a variable included linearly in both sets of explanatory variables.</p>
-<div class="sourceCode" id="cb303"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb303-1"><a href="models-of-binary-outcomes.html#cb303-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">500</span></span>
-<span id="cb303-2"><a href="models-of-binary-outcomes.html#cb303-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb303-3"><a href="models-of-binary-outcomes.html#cb303-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb303-4"><a href="models-of-binary-outcomes.html#cb303-4" aria-hidden="true" tabindex="-1"></a>b0 <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb303-5"><a href="models-of-binary-outcomes.html#cb303-5" aria-hidden="true" tabindex="-1"></a>b1 <span class="ot">&lt;-</span> <span class="dv">2</span></span>
-<span id="cb303-6"><a href="models-of-binary-outcomes.html#cb303-6" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> b0 <span class="sc">+</span> b1<span class="sc">*</span>x</span>
-<span id="cb303-7"><a href="models-of-binary-outcomes.html#cb303-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb303-8"><a href="models-of-binary-outcomes.html#cb303-8" aria-hidden="true" tabindex="-1"></a>g0 <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb303-9"><a href="models-of-binary-outcomes.html#cb303-9" aria-hidden="true" tabindex="-1"></a>g1 <span class="ot">&lt;-</span> <span class="dv">2</span></span>
-<span id="cb303-10"><a href="models-of-binary-outcomes.html#cb303-10" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="fu">exp</span>(g0 <span class="sc">+</span> g1<span class="sc">*</span>x)</span>
-<span id="cb303-11"><a href="models-of-binary-outcomes.html#cb303-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb303-12"><a href="models-of-binary-outcomes.html#cb303-12" aria-hidden="true" tabindex="-1"></a>y_star <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, mu, sigma)</span>
-<span id="cb303-13"><a href="models-of-binary-outcomes.html#cb303-13" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(y_star <span class="sc">&gt;=</span> <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb303-14"><a href="models-of-binary-outcomes.html#cb303-14" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(x, y_star, y)</span>
-<span id="cb303-15"><a href="models-of-binary-outcomes.html#cb303-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb303-16"><a href="models-of-binary-outcomes.html#cb303-16" aria-hidden="true" tabindex="-1"></a>gg1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y_star, <span class="at">color =</span> <span class="fu">factor</span>(y))) <span class="sc">+</span> </span>
-<span id="cb303-17"><a href="models-of-binary-outcomes.html#cb303-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">&quot;grey50&quot;</span>) <span class="sc">+</span></span>
-<span id="cb303-18"><a href="models-of-binary-outcomes.html#cb303-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> b1, <span class="at">intercept =</span> b0, <span class="at">color =</span> <span class="st">&quot;black&quot;</span>) <span class="sc">+</span> </span>
-<span id="cb303-19"><a href="models-of-binary-outcomes.html#cb303-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() </span>
-<span id="cb303-20"><a href="models-of-binary-outcomes.html#cb303-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb303-21"><a href="models-of-binary-outcomes.html#cb303-21" aria-hidden="true" tabindex="-1"></a>pr <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="at">by =</span> <span class="fl">0.01</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb303-22"><a href="models-of-binary-outcomes.html#cb303-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pr =</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">pnorm</span>(<span class="dv">0</span>, <span class="at">mean =</span> b0 <span class="sc">+</span> b1<span class="sc">*</span>x, <span class="at">sd =</span> <span class="fu">exp</span>(g0 <span class="sc">+</span> g1<span class="sc">*</span>x)))</span>
-<span id="cb303-23"><a href="models-of-binary-outcomes.html#cb303-23" aria-hidden="true" tabindex="-1"></a>gg2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(pr, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> pr)) <span class="sc">+</span> </span>
-<span id="cb303-24"><a href="models-of-binary-outcomes.html#cb303-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span>
-<span id="cb303-25"><a href="models-of-binary-outcomes.html#cb303-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb303-26"><a href="models-of-binary-outcomes.html#cb303-26" aria-hidden="true" tabindex="-1"></a>gg1 <span class="sc">+</span> gg2</span></code></pre></div>
+<div class="sourceCode" id="cb302"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb302-1"><a href="models-of-binary-outcomes.html#cb302-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">500</span></span>
+<span id="cb302-2"><a href="models-of-binary-outcomes.html#cb302-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb302-3"><a href="models-of-binary-outcomes.html#cb302-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb302-4"><a href="models-of-binary-outcomes.html#cb302-4" aria-hidden="true" tabindex="-1"></a>b0 <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb302-5"><a href="models-of-binary-outcomes.html#cb302-5" aria-hidden="true" tabindex="-1"></a>b1 <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb302-6"><a href="models-of-binary-outcomes.html#cb302-6" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> b0 <span class="sc">+</span> b1<span class="sc">*</span>x</span>
+<span id="cb302-7"><a href="models-of-binary-outcomes.html#cb302-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb302-8"><a href="models-of-binary-outcomes.html#cb302-8" aria-hidden="true" tabindex="-1"></a>g0 <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb302-9"><a href="models-of-binary-outcomes.html#cb302-9" aria-hidden="true" tabindex="-1"></a>g1 <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb302-10"><a href="models-of-binary-outcomes.html#cb302-10" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="fu">exp</span>(g0 <span class="sc">+</span> g1<span class="sc">*</span>x)</span>
+<span id="cb302-11"><a href="models-of-binary-outcomes.html#cb302-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb302-12"><a href="models-of-binary-outcomes.html#cb302-12" aria-hidden="true" tabindex="-1"></a>y_star <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, mu, sigma)</span>
+<span id="cb302-13"><a href="models-of-binary-outcomes.html#cb302-13" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(y_star <span class="sc">&gt;=</span> <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb302-14"><a href="models-of-binary-outcomes.html#cb302-14" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(x, y_star, y)</span>
+<span id="cb302-15"><a href="models-of-binary-outcomes.html#cb302-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb302-16"><a href="models-of-binary-outcomes.html#cb302-16" aria-hidden="true" tabindex="-1"></a>gg1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y_star, <span class="at">color =</span> <span class="fu">factor</span>(y))) <span class="sc">+</span> </span>
+<span id="cb302-17"><a href="models-of-binary-outcomes.html#cb302-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">&quot;grey50&quot;</span>) <span class="sc">+</span></span>
+<span id="cb302-18"><a href="models-of-binary-outcomes.html#cb302-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> b1, <span class="at">intercept =</span> b0, <span class="at">color =</span> <span class="st">&quot;black&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb302-19"><a href="models-of-binary-outcomes.html#cb302-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() </span>
+<span id="cb302-20"><a href="models-of-binary-outcomes.html#cb302-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb302-21"><a href="models-of-binary-outcomes.html#cb302-21" aria-hidden="true" tabindex="-1"></a>pr <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="at">by =</span> <span class="fl">0.01</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb302-22"><a href="models-of-binary-outcomes.html#cb302-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pr =</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">pnorm</span>(<span class="dv">0</span>, <span class="at">mean =</span> b0 <span class="sc">+</span> b1<span class="sc">*</span>x, <span class="at">sd =</span> <span class="fu">exp</span>(g0 <span class="sc">+</span> g1<span class="sc">*</span>x)))</span>
+<span id="cb302-23"><a href="models-of-binary-outcomes.html#cb302-23" aria-hidden="true" tabindex="-1"></a>gg2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(pr, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> pr)) <span class="sc">+</span> </span>
+<span id="cb302-24"><a href="models-of-binary-outcomes.html#cb302-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span>
+<span id="cb302-25"><a href="models-of-binary-outcomes.html#cb302-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb302-26"><a href="models-of-binary-outcomes.html#cb302-26" aria-hidden="true" tabindex="-1"></a>gg1 <span class="sc">+</span> gg2</span></code></pre></div>
 <p><img src="05-02-models-of-binary-outcomes_files/figure-html/unnamed-chunk-24-1.png" width="768" /></p>
 <table>
 <colgroup>
@@ -900,126 +906,126 @@ model {
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb304"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb304-1"><a href="models-of-binary-outcomes.html#cb304-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load packages</span></span>
-<span id="cb304-2"><a href="models-of-binary-outcomes.html#cb304-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmx)</span></code></pre></div>
-<pre><code>## Warning: package &#39;glmx&#39; was built under R version 4.1.2</code></pre>
-<div class="sourceCode" id="cb306"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb306-1"><a href="models-of-binary-outcomes.html#cb306-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit model</span></span>
-<span id="cb306-2"><a href="models-of-binary-outcomes.html#cb306-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">hetglm</span>(newvote <span class="sc">~</span> neweduc <span class="sc">+</span> closing <span class="sc">+</span> age <span class="sc">+</span> south <span class="sc">+</span> gov <span class="sc">|</span> neweduc <span class="sc">+</span> closing <span class="sc">+</span> age <span class="sc">+</span> south <span class="sc">+</span> gov, </span>
-<span id="cb306-3"><a href="models-of-binary-outcomes.html#cb306-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> scobit, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">&quot;probit&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb303"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb303-1"><a href="models-of-binary-outcomes.html#cb303-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load packages</span></span>
+<span id="cb303-2"><a href="models-of-binary-outcomes.html#cb303-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmx)</span>
+<span id="cb303-3"><a href="models-of-binary-outcomes.html#cb303-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb303-4"><a href="models-of-binary-outcomes.html#cb303-4" aria-hidden="true" tabindex="-1"></a><span class="co"># fit model</span></span>
+<span id="cb303-5"><a href="models-of-binary-outcomes.html#cb303-5" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">hetglm</span>(newvote <span class="sc">~</span> neweduc <span class="sc">+</span> closing <span class="sc">+</span> age <span class="sc">+</span> south <span class="sc">+</span> gov <span class="sc">|</span> neweduc <span class="sc">+</span> closing <span class="sc">+</span> age <span class="sc">+</span> south <span class="sc">+</span> gov, </span>
+<span id="cb303-6"><a href="models-of-binary-outcomes.html#cb303-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> scobit, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">&quot;probit&quot;</span>))</span></code></pre></div>
 <p>Now let’s compute quantities of interest. Let’s first compute the expected value or “predicted probability” as <code>neweduc</code> varies from 1 to 8 (all possible values) with all other variables at their medians.</p>
-<div class="sourceCode" id="cb307"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb307-1"><a href="models-of-binary-outcomes.html#cb307-1" aria-hidden="true" tabindex="-1"></a><span class="co"># let education vary across all possible values; else median</span></span>
-<span id="cb307-2"><a href="models-of-binary-outcomes.html#cb307-2" aria-hidden="true" tabindex="-1"></a>s <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb307-3"><a href="models-of-binary-outcomes.html#cb307-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">neweduc =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>,</span>
-<span id="cb307-4"><a href="models-of-binary-outcomes.html#cb307-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">closing =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>closing),</span>
-<span id="cb307-5"><a href="models-of-binary-outcomes.html#cb307-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>age),</span>
-<span id="cb307-6"><a href="models-of-binary-outcomes.html#cb307-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">south =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>south),</span>
-<span id="cb307-7"><a href="models-of-binary-outcomes.html#cb307-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">gov =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>gov)</span>
-<span id="cb307-8"><a href="models-of-binary-outcomes.html#cb307-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb307-9"><a href="models-of-binary-outcomes.html#cb307-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb307-10"><a href="models-of-binary-outcomes.html#cb307-10" aria-hidden="true" tabindex="-1"></a><span class="co"># expected value or &quot;predicted probability&quot; </span></span>
-<span id="cb307-11"><a href="models-of-binary-outcomes.html#cb307-11" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>expected_value <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> s, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
-<span id="cb307-12"><a href="models-of-binary-outcomes.html#cb307-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb307-13"><a href="models-of-binary-outcomes.html#cb307-13" aria-hidden="true" tabindex="-1"></a><span class="co"># marginal effect of closing on expected value, analytically</span></span>
-<span id="cb307-14"><a href="models-of-binary-outcomes.html#cb307-14" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>expZg <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> s, <span class="at">type =</span> <span class="st">&quot;scale&quot;</span>)</span>
-<span id="cb307-15"><a href="models-of-binary-outcomes.html#cb307-15" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>Xb_over_expZg <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> s, <span class="at">type =</span> <span class="st">&quot;link&quot;</span>)  <span class="co"># &lt;- UNEXPECTED BEHAVIOR (FOR ME)</span></span>
-<span id="cb307-16"><a href="models-of-binary-outcomes.html#cb307-16" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>Xb <span class="ot">&lt;-</span> s<span class="sc">$</span>Xb_over_expZg<span class="sc">*</span>s<span class="sc">$</span>expZg</span>
-<span id="cb307-17"><a href="models-of-binary-outcomes.html#cb307-17" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>marginal_effect <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(s<span class="sc">$</span>Xb<span class="sc">/</span>s<span class="sc">$</span>expZg)<span class="sc">*</span>((<span class="fu">coef</span>(fit)[<span class="st">&quot;neweduc&quot;</span>] <span class="sc">-</span> s<span class="sc">$</span>Xb<span class="sc">*</span><span class="fu">coef</span>(fit)[<span class="st">&quot;(scale)_neweduc&quot;</span>])<span class="sc">/</span>s<span class="sc">$</span>expZg)</span>
-<span id="cb307-18"><a href="models-of-binary-outcomes.html#cb307-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb307-19"><a href="models-of-binary-outcomes.html#cb307-19" aria-hidden="true" tabindex="-1"></a><span class="co"># marginal effect of closing on expected value, *numerically*</span></span>
-<span id="cb307-20"><a href="models-of-binary-outcomes.html#cb307-20" aria-hidden="true" tabindex="-1"></a>delta <span class="ot">&lt;-</span> <span class="fl">0.00001</span></span>
-<span id="cb307-21"><a href="models-of-binary-outcomes.html#cb307-21" aria-hidden="true" tabindex="-1"></a>s_prime <span class="ot">&lt;-</span> s <span class="sc">%&gt;%</span></span>
-<span id="cb307-22"><a href="models-of-binary-outcomes.html#cb307-22" aria-hidden="true" tabindex="-1"></a> <span class="fu">mutate</span>(<span class="at">neweduc =</span> neweduc <span class="sc">+</span> delta)</span>
-<span id="cb307-23"><a href="models-of-binary-outcomes.html#cb307-23" aria-hidden="true" tabindex="-1"></a>s_prime<span class="sc">$</span>expected_value <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> s_prime, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
-<span id="cb307-24"><a href="models-of-binary-outcomes.html#cb307-24" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>marginal_effect <span class="ot">&lt;-</span> (s_prime<span class="sc">$</span>expected_value <span class="sc">-</span> s<span class="sc">$</span>expected_value)<span class="sc">/</span>delta</span></code></pre></div>
+<div class="sourceCode" id="cb304"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb304-1"><a href="models-of-binary-outcomes.html#cb304-1" aria-hidden="true" tabindex="-1"></a><span class="co"># let education vary across all possible values; else median</span></span>
+<span id="cb304-2"><a href="models-of-binary-outcomes.html#cb304-2" aria-hidden="true" tabindex="-1"></a>s <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb304-3"><a href="models-of-binary-outcomes.html#cb304-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">neweduc =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>,</span>
+<span id="cb304-4"><a href="models-of-binary-outcomes.html#cb304-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">closing =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>closing),</span>
+<span id="cb304-5"><a href="models-of-binary-outcomes.html#cb304-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>age),</span>
+<span id="cb304-6"><a href="models-of-binary-outcomes.html#cb304-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">south =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>south),</span>
+<span id="cb304-7"><a href="models-of-binary-outcomes.html#cb304-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">gov =</span> <span class="fu">median</span>(scobit<span class="sc">$</span>gov)</span>
+<span id="cb304-8"><a href="models-of-binary-outcomes.html#cb304-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb304-9"><a href="models-of-binary-outcomes.html#cb304-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb304-10"><a href="models-of-binary-outcomes.html#cb304-10" aria-hidden="true" tabindex="-1"></a><span class="co"># expected value or &quot;predicted probability&quot; </span></span>
+<span id="cb304-11"><a href="models-of-binary-outcomes.html#cb304-11" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>expected_value <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> s, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
+<span id="cb304-12"><a href="models-of-binary-outcomes.html#cb304-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb304-13"><a href="models-of-binary-outcomes.html#cb304-13" aria-hidden="true" tabindex="-1"></a><span class="co"># marginal effect of closing on expected value, analytically</span></span>
+<span id="cb304-14"><a href="models-of-binary-outcomes.html#cb304-14" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>expZg <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> s, <span class="at">type =</span> <span class="st">&quot;scale&quot;</span>)</span>
+<span id="cb304-15"><a href="models-of-binary-outcomes.html#cb304-15" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>Xb_over_expZg <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> s, <span class="at">type =</span> <span class="st">&quot;link&quot;</span>)  <span class="co"># &lt;- UNEXPECTED BEHAVIOR (FOR ME)</span></span>
+<span id="cb304-16"><a href="models-of-binary-outcomes.html#cb304-16" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>Xb <span class="ot">&lt;-</span> s<span class="sc">$</span>Xb_over_expZg<span class="sc">*</span>s<span class="sc">$</span>expZg</span>
+<span id="cb304-17"><a href="models-of-binary-outcomes.html#cb304-17" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>marginal_effect <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(s<span class="sc">$</span>Xb<span class="sc">/</span>s<span class="sc">$</span>expZg)<span class="sc">*</span>((<span class="fu">coef</span>(fit)[<span class="st">&quot;neweduc&quot;</span>] <span class="sc">-</span> s<span class="sc">$</span>Xb<span class="sc">*</span><span class="fu">coef</span>(fit)[<span class="st">&quot;(scale)_neweduc&quot;</span>])<span class="sc">/</span>s<span class="sc">$</span>expZg)</span>
+<span id="cb304-18"><a href="models-of-binary-outcomes.html#cb304-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb304-19"><a href="models-of-binary-outcomes.html#cb304-19" aria-hidden="true" tabindex="-1"></a><span class="co"># marginal effect of closing on expected value, *numerically*</span></span>
+<span id="cb304-20"><a href="models-of-binary-outcomes.html#cb304-20" aria-hidden="true" tabindex="-1"></a>delta <span class="ot">&lt;-</span> <span class="fl">0.00001</span></span>
+<span id="cb304-21"><a href="models-of-binary-outcomes.html#cb304-21" aria-hidden="true" tabindex="-1"></a>s_prime <span class="ot">&lt;-</span> s <span class="sc">%&gt;%</span></span>
+<span id="cb304-22"><a href="models-of-binary-outcomes.html#cb304-22" aria-hidden="true" tabindex="-1"></a> <span class="fu">mutate</span>(<span class="at">neweduc =</span> neweduc <span class="sc">+</span> delta)</span>
+<span id="cb304-23"><a href="models-of-binary-outcomes.html#cb304-23" aria-hidden="true" tabindex="-1"></a>s_prime<span class="sc">$</span>expected_value <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> s_prime, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
+<span id="cb304-24"><a href="models-of-binary-outcomes.html#cb304-24" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>marginal_effect <span class="ot">&lt;-</span> (s_prime<span class="sc">$</span>expected_value <span class="sc">-</span> s<span class="sc">$</span>expected_value)<span class="sc">/</span>delta</span></code></pre></div>
 <p>Now let’s make a plot of the expected values and marginal effects. The grey lines show the original logit estimates.</p>
 <p><img src="05-02-models-of-binary-outcomes_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
-<div class="sourceCode" id="cb308"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb308-1"><a href="models-of-binary-outcomes.html#cb308-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(fit, fit_logit) <span class="sc">%&gt;%</span></span>
-<span id="cb308-2"><a href="models-of-binary-outcomes.html#cb308-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diff_min =</span> AIC <span class="sc">-</span> <span class="fu">min</span>(AIC),</span>
-<span id="cb308-3"><a href="models-of-binary-outcomes.html#cb308-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">akiaike_weights =</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)))</span></code></pre></div>
+<div class="sourceCode" id="cb305"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb305-1"><a href="models-of-binary-outcomes.html#cb305-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(fit, fit_logit) <span class="sc">%&gt;%</span></span>
+<span id="cb305-2"><a href="models-of-binary-outcomes.html#cb305-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diff_min =</span> AIC <span class="sc">-</span> <span class="fu">min</span>(AIC),</span>
+<span id="cb305-3"><a href="models-of-binary-outcomes.html#cb305-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">akiaike_weights =</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)))</span></code></pre></div>
 <pre><code>##           df    AIC diff_min akiaike_weights
 ## fit       11 111876    0.000    1.000000e+00
 ## fit_logit  6 112929 1053.012   2.194214e-229</code></pre>
-<div class="sourceCode" id="cb310"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb310-1"><a href="models-of-binary-outcomes.html#cb310-1" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(fit, fit_logit) <span class="sc">%&gt;%</span></span>
-<span id="cb310-2"><a href="models-of-binary-outcomes.html#cb310-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diff_min =</span> BIC <span class="sc">-</span> <span class="fu">min</span>(BIC),</span>
-<span id="cb310-3"><a href="models-of-binary-outcomes.html#cb310-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">post_prob =</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)))</span></code></pre></div>
+<div class="sourceCode" id="cb307"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb307-1"><a href="models-of-binary-outcomes.html#cb307-1" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(fit, fit_logit) <span class="sc">%&gt;%</span></span>
+<span id="cb307-2"><a href="models-of-binary-outcomes.html#cb307-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diff_min =</span> BIC <span class="sc">-</span> <span class="fu">min</span>(BIC),</span>
+<span id="cb307-3"><a href="models-of-binary-outcomes.html#cb307-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">post_prob =</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)))</span></code></pre></div>
 <pre><code>##           df      BIC diff_min     post_prob
 ## fit       11 111980.6    0.000  1.000000e+00
 ## fit_logit  6 112986.1 1005.464 4.637491e-219</code></pre>
 <p>Lastly, here’s a replication of Alvarez and Brehm’s classic example modeling ambivalence within abortion attitudes.</p>
-<div class="sourceCode" id="cb312"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb312-1"><a href="models-of-binary-outcomes.html#cb312-1" aria-hidden="true" tabindex="-1"></a>col_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;abhlth&quot;</span>, <span class="st">&quot;abpoor&quot;</span>, <span class="st">&quot;absingle&quot;</span>, <span class="st">&quot;abnomore&quot;</span>, <span class="st">&quot;abdefect&quot;</span>, <span class="st">&quot;abany&quot;</span>, <span class="st">&quot;abrape&quot;</span>, <span class="st">&quot;sexlty&quot;</span>,</span>
-<span id="cb312-2"><a href="models-of-binary-outcomes.html#cb312-2" aria-hidden="true" tabindex="-1"></a>   <span class="st">&quot;relgty&quot;</span>, <span class="st">&quot;sprolfe&quot;</span>, <span class="st">&quot;sprochce&quot;</span>, <span class="st">&quot;abstrgth&quot;</span>, <span class="st">&quot;abimp&quot;</span>, <span class="st">&quot;abinfo&quot;</span>, <span class="st">&quot;abfirm&quot;</span>, </span>
-<span id="cb312-3"><a href="models-of-binary-outcomes.html#cb312-3" aria-hidden="true" tabindex="-1"></a>   <span class="st">&quot;abcare&quot;</span>, <span class="st">&quot;abproct&quot;</span>, <span class="st">&quot;abconct&quot;</span>, <span class="st">&quot;choice&quot;</span>, <span class="st">&quot;mhealth&quot;</span>, <span class="st">&quot;chealth&quot;</span>, <span class="st">&quot;prolife&quot;</span>, </span>
-<span id="cb312-4"><a href="models-of-binary-outcomes.html#cb312-4" aria-hidden="true" tabindex="-1"></a>   <span class="st">&quot;fechld&quot;</span>, <span class="st">&quot;fefam&quot;</span>, <span class="st">&quot;fehelp&quot;</span>, <span class="st">&quot;fepresch&quot;</span>, <span class="st">&quot;pill&quot;</span>, <span class="st">&quot;teenpill&quot;</span>, <span class="st">&quot;pillok&quot;</span>, </span>
-<span id="cb312-5"><a href="models-of-binary-outcomes.html#cb312-5" aria-hidden="true" tabindex="-1"></a>   <span class="st">&quot;sexeduc&quot;</span>, <span class="st">&quot;divlaw&quot;</span>, <span class="st">&quot;premarsx&quot;</span>, <span class="st">&quot;teensex&quot;</span>, <span class="st">&quot;xmarsex&quot;</span>, <span class="st">&quot;homosex&quot;</span>, <span class="st">&quot;black&quot;</span>,  </span>
-<span id="cb312-6"><a href="models-of-binary-outcomes.html#cb312-6" aria-hidden="true" tabindex="-1"></a>   <span class="st">&quot;male&quot;</span>, <span class="st">&quot;prot&quot;</span>, <span class="st">&quot;cath&quot;</span>, <span class="st">&quot;jew&quot;</span>, <span class="st">&quot;reliten&quot;</span>, <span class="st">&quot;attend&quot;</span>, <span class="st">&quot;prayer&quot;</span>,</span>
-<span id="cb312-7"><a href="models-of-binary-outcomes.html#cb312-7" aria-hidden="true" tabindex="-1"></a>   <span class="st">&quot;eraread&quot;</span>, <span class="st">&quot;erameans&quot;</span>, <span class="st">&quot;era&quot;</span>, <span class="st">&quot;eratell&quot;</span>)</span>
-<span id="cb312-8"><a href="models-of-binary-outcomes.html#cb312-8" aria-hidden="true" tabindex="-1"></a>ab <span class="ot">&lt;-</span> <span class="fu">read.fwf</span>(<span class="st">&quot;data/ABGSS.DAT&quot;</span>, </span>
-<span id="cb312-9"><a href="models-of-binary-outcomes.html#cb312-9" aria-hidden="true" tabindex="-1"></a>               <span class="at">widths =</span> <span class="fu">list</span>(<span class="fu">rep</span>(<span class="dv">15</span>, <span class="dv">17</span>), <span class="fu">rep</span>(<span class="dv">15</span>, <span class="dv">17</span>), <span class="fu">rep</span>(<span class="dv">15</span>, <span class="dv">13</span>)),</span>
-<span id="cb312-10"><a href="models-of-binary-outcomes.html#cb312-10" aria-hidden="true" tabindex="-1"></a>               <span class="at">col.names =</span> col_names) <span class="sc">%&gt;%</span></span>
-<span id="cb312-11"><a href="models-of-binary-outcomes.html#cb312-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="at">.cols =</span> <span class="fu">everything</span>(), <span class="sc">~</span> <span class="fu">na_if</span>(.,  <span class="dv">99999</span>)))</span>
-<span id="cb312-12"><a href="models-of-binary-outcomes.html#cb312-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb312-13"><a href="models-of-binary-outcomes.html#cb312-13" aria-hidden="true" tabindex="-1"></a>fit_probit <span class="ot">&lt;-</span> <span class="fu">glm</span>(abhlth <span class="sc">~</span> black <span class="sc">+</span> male <span class="sc">+</span> cath <span class="sc">+</span> reliten <span class="sc">+</span> attend <span class="sc">+</span> erameans <span class="sc">+</span> era, </span>
-<span id="cb312-14"><a href="models-of-binary-outcomes.html#cb312-14" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data =</span> ab, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">&quot;probit&quot;</span>))</span>
-<span id="cb312-15"><a href="models-of-binary-outcomes.html#cb312-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb312-16"><a href="models-of-binary-outcomes.html#cb312-16" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmx)</span>
-<span id="cb312-17"><a href="models-of-binary-outcomes.html#cb312-17" aria-hidden="true" tabindex="-1"></a>fit_hetprobit <span class="ot">&lt;-</span> <span class="fu">hetglm</span>(abhlth <span class="sc">~</span> black <span class="sc">+</span> male <span class="sc">+</span> cath <span class="sc">+</span> reliten <span class="sc">+</span> attend <span class="sc">+</span> erameans <span class="sc">+</span> era <span class="sc">|</span> </span>
-<span id="cb312-18"><a href="models-of-binary-outcomes.html#cb312-18" aria-hidden="true" tabindex="-1"></a>                       abproct<span class="sc">*</span>abconct <span class="sc">+</span> abimp <span class="sc">+</span> abinfo <span class="sc">+</span> abfirm, </span>
-<span id="cb312-19"><a href="models-of-binary-outcomes.html#cb312-19" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data =</span> ab, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">&quot;probit&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb309"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb309-1"><a href="models-of-binary-outcomes.html#cb309-1" aria-hidden="true" tabindex="-1"></a>col_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;abhlth&quot;</span>, <span class="st">&quot;abpoor&quot;</span>, <span class="st">&quot;absingle&quot;</span>, <span class="st">&quot;abnomore&quot;</span>, <span class="st">&quot;abdefect&quot;</span>, <span class="st">&quot;abany&quot;</span>, <span class="st">&quot;abrape&quot;</span>, <span class="st">&quot;sexlty&quot;</span>,</span>
+<span id="cb309-2"><a href="models-of-binary-outcomes.html#cb309-2" aria-hidden="true" tabindex="-1"></a>   <span class="st">&quot;relgty&quot;</span>, <span class="st">&quot;sprolfe&quot;</span>, <span class="st">&quot;sprochce&quot;</span>, <span class="st">&quot;abstrgth&quot;</span>, <span class="st">&quot;abimp&quot;</span>, <span class="st">&quot;abinfo&quot;</span>, <span class="st">&quot;abfirm&quot;</span>, </span>
+<span id="cb309-3"><a href="models-of-binary-outcomes.html#cb309-3" aria-hidden="true" tabindex="-1"></a>   <span class="st">&quot;abcare&quot;</span>, <span class="st">&quot;abproct&quot;</span>, <span class="st">&quot;abconct&quot;</span>, <span class="st">&quot;choice&quot;</span>, <span class="st">&quot;mhealth&quot;</span>, <span class="st">&quot;chealth&quot;</span>, <span class="st">&quot;prolife&quot;</span>, </span>
+<span id="cb309-4"><a href="models-of-binary-outcomes.html#cb309-4" aria-hidden="true" tabindex="-1"></a>   <span class="st">&quot;fechld&quot;</span>, <span class="st">&quot;fefam&quot;</span>, <span class="st">&quot;fehelp&quot;</span>, <span class="st">&quot;fepresch&quot;</span>, <span class="st">&quot;pill&quot;</span>, <span class="st">&quot;teenpill&quot;</span>, <span class="st">&quot;pillok&quot;</span>, </span>
+<span id="cb309-5"><a href="models-of-binary-outcomes.html#cb309-5" aria-hidden="true" tabindex="-1"></a>   <span class="st">&quot;sexeduc&quot;</span>, <span class="st">&quot;divlaw&quot;</span>, <span class="st">&quot;premarsx&quot;</span>, <span class="st">&quot;teensex&quot;</span>, <span class="st">&quot;xmarsex&quot;</span>, <span class="st">&quot;homosex&quot;</span>, <span class="st">&quot;black&quot;</span>,  </span>
+<span id="cb309-6"><a href="models-of-binary-outcomes.html#cb309-6" aria-hidden="true" tabindex="-1"></a>   <span class="st">&quot;male&quot;</span>, <span class="st">&quot;prot&quot;</span>, <span class="st">&quot;cath&quot;</span>, <span class="st">&quot;jew&quot;</span>, <span class="st">&quot;reliten&quot;</span>, <span class="st">&quot;attend&quot;</span>, <span class="st">&quot;prayer&quot;</span>,</span>
+<span id="cb309-7"><a href="models-of-binary-outcomes.html#cb309-7" aria-hidden="true" tabindex="-1"></a>   <span class="st">&quot;eraread&quot;</span>, <span class="st">&quot;erameans&quot;</span>, <span class="st">&quot;era&quot;</span>, <span class="st">&quot;eratell&quot;</span>)</span>
+<span id="cb309-8"><a href="models-of-binary-outcomes.html#cb309-8" aria-hidden="true" tabindex="-1"></a>ab <span class="ot">&lt;-</span> <span class="fu">read.fwf</span>(<span class="st">&quot;data/ABGSS.DAT&quot;</span>, </span>
+<span id="cb309-9"><a href="models-of-binary-outcomes.html#cb309-9" aria-hidden="true" tabindex="-1"></a>               <span class="at">widths =</span> <span class="fu">list</span>(<span class="fu">rep</span>(<span class="dv">15</span>, <span class="dv">17</span>), <span class="fu">rep</span>(<span class="dv">15</span>, <span class="dv">17</span>), <span class="fu">rep</span>(<span class="dv">15</span>, <span class="dv">13</span>)),</span>
+<span id="cb309-10"><a href="models-of-binary-outcomes.html#cb309-10" aria-hidden="true" tabindex="-1"></a>               <span class="at">col.names =</span> col_names) <span class="sc">%&gt;%</span></span>
+<span id="cb309-11"><a href="models-of-binary-outcomes.html#cb309-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="at">.cols =</span> <span class="fu">everything</span>(), <span class="sc">~</span> <span class="fu">na_if</span>(.,  <span class="dv">99999</span>)))</span>
+<span id="cb309-12"><a href="models-of-binary-outcomes.html#cb309-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb309-13"><a href="models-of-binary-outcomes.html#cb309-13" aria-hidden="true" tabindex="-1"></a>fit_probit <span class="ot">&lt;-</span> <span class="fu">glm</span>(abhlth <span class="sc">~</span> black <span class="sc">+</span> male <span class="sc">+</span> cath <span class="sc">+</span> reliten <span class="sc">+</span> attend <span class="sc">+</span> erameans <span class="sc">+</span> era, </span>
+<span id="cb309-14"><a href="models-of-binary-outcomes.html#cb309-14" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data =</span> ab, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">&quot;probit&quot;</span>))</span>
+<span id="cb309-15"><a href="models-of-binary-outcomes.html#cb309-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb309-16"><a href="models-of-binary-outcomes.html#cb309-16" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmx)</span>
+<span id="cb309-17"><a href="models-of-binary-outcomes.html#cb309-17" aria-hidden="true" tabindex="-1"></a>fit_hetprobit <span class="ot">&lt;-</span> <span class="fu">hetglm</span>(abhlth <span class="sc">~</span> black <span class="sc">+</span> male <span class="sc">+</span> cath <span class="sc">+</span> reliten <span class="sc">+</span> attend <span class="sc">+</span> erameans <span class="sc">+</span> era <span class="sc">|</span> </span>
+<span id="cb309-18"><a href="models-of-binary-outcomes.html#cb309-18" aria-hidden="true" tabindex="-1"></a>                       abproct<span class="sc">*</span>abconct <span class="sc">+</span> abimp <span class="sc">+</span> abinfo <span class="sc">+</span> abfirm, </span>
+<span id="cb309-19"><a href="models-of-binary-outcomes.html#cb309-19" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data =</span> ab, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">&quot;probit&quot;</span>))</span></code></pre></div>
 <p>And here’s a bit of code to use Stan to simulate from the posterior.</p>
-<pre class="stan"><code>data {
-  int&lt;lower=0&gt; N;     // number of data items in X and Z
-  int&lt;lower=0&gt; K_x;   // number of predictors in X
-  int&lt;lower=0&gt; K_z;   // number of predictors in Z
-  matrix[N, K_x] X;   // predictor matrix Z
-  matrix[N, K_z] Z;   // predictor matrix Z
-  int y[N];           // outcome vector
-}
-parameters {
-  vector[K_x] beta;       // coefficients for X
-  vector[K_z] gamma;       // coefficients for Z
-}
-transformed parameters {
-  vector[N] pi;
-  vector[N] Xbeta;
-  vector[N] Zgamma;
-  for (i in 1:N) {
-    Xbeta[i] = X[i, ]*beta;
-    Zgamma[i] = Z[i, ]*gamma;
-    pi[i] = Phi(Xbeta[i]/exp(Zgamma[i]));
-  }
-}
-model {
-  y ~ bernoulli(pi);  // likelihood
-}</code></pre>
-<div class="sourceCode" id="cb314"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb314-1"><a href="models-of-binary-outcomes.html#cb314-1" aria-hidden="true" tabindex="-1"></a><span class="co"># listwise delete missing values from all variables of interest</span></span>
-<span id="cb314-2"><a href="models-of-binary-outcomes.html#cb314-2" aria-hidden="true" tabindex="-1"></a>ab_stan <span class="ot">&lt;-</span> ab <span class="sc">%&gt;%</span></span>
-<span id="cb314-3"><a href="models-of-binary-outcomes.html#cb314-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(abhlth, black, male, cath, reliten, attend, erameans, era, </span>
-<span id="cb314-4"><a href="models-of-binary-outcomes.html#cb314-4" aria-hidden="true" tabindex="-1"></a>         abproct, abconct, abimp, abinfo, abfirm) <span class="sc">%&gt;%</span></span>
-<span id="cb314-5"><a href="models-of-binary-outcomes.html#cb314-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span>
-<span id="cb314-6"><a href="models-of-binary-outcomes.html#cb314-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb314-7"><a href="models-of-binary-outcomes.html#cb314-7" aria-hidden="true" tabindex="-1"></a><span class="co"># create X</span></span>
-<span id="cb314-8"><a href="models-of-binary-outcomes.html#cb314-8" aria-hidden="true" tabindex="-1"></a>fx <span class="ot">&lt;-</span> abhlth <span class="sc">~</span> black <span class="sc">+</span> male <span class="sc">+</span> cath <span class="sc">+</span> reliten <span class="sc">+</span> attend <span class="sc">+</span> erameans <span class="sc">+</span> era</span>
-<span id="cb314-9"><a href="models-of-binary-outcomes.html#cb314-9" aria-hidden="true" tabindex="-1"></a>mfx <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(fx, <span class="at">data =</span> ab_stan)  <span class="co"># model frame</span></span>
-<span id="cb314-10"><a href="models-of-binary-outcomes.html#cb314-10" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(fx, mfx)         <span class="co"># model matrix X</span></span>
-<span id="cb314-11"><a href="models-of-binary-outcomes.html#cb314-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb314-12"><a href="models-of-binary-outcomes.html#cb314-12" aria-hidden="true" tabindex="-1"></a><span class="co"># obtain the outcome variable y</span></span>
-<span id="cb314-13"><a href="models-of-binary-outcomes.html#cb314-13" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">model.response</span>(mfx)</span>
-<span id="cb314-14"><a href="models-of-binary-outcomes.html#cb314-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb314-15"><a href="models-of-binary-outcomes.html#cb314-15" aria-hidden="true" tabindex="-1"></a><span class="co"># create Z</span></span>
-<span id="cb314-16"><a href="models-of-binary-outcomes.html#cb314-16" aria-hidden="true" tabindex="-1"></a>fz <span class="ot">&lt;-</span> <span class="er">~</span> abproct<span class="sc">*</span>abconct <span class="sc">+</span> abimp <span class="sc">+</span> abinfo <span class="sc">+</span> abfirm <span class="sc">-</span> <span class="dv">1</span></span>
-<span id="cb314-17"><a href="models-of-binary-outcomes.html#cb314-17" aria-hidden="true" tabindex="-1"></a>mfz <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(fz, <span class="at">data =</span> ab_stan)  <span class="co"># model frame</span></span>
-<span id="cb314-18"><a href="models-of-binary-outcomes.html#cb314-18" aria-hidden="true" tabindex="-1"></a>Z <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(fz, mfz)         <span class="co"># model matrix X</span></span>
-<span id="cb314-19"><a href="models-of-binary-outcomes.html#cb314-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb314-20"><a href="models-of-binary-outcomes.html#cb314-20" aria-hidden="true" tabindex="-1"></a><span class="co"># fit stan model</span></span>
-<span id="cb314-21"><a href="models-of-binary-outcomes.html#cb314-21" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstan); <span class="fu">options</span>(<span class="at">mc.cores =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span>
-<span id="cb314-22"><a href="models-of-binary-outcomes.html#cb314-22" aria-hidden="true" tabindex="-1"></a>stan_data <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y =</span> y, <span class="at">X =</span> X, <span class="at">Z =</span> Z,</span>
-<span id="cb314-23"><a href="models-of-binary-outcomes.html#cb314-23" aria-hidden="true" tabindex="-1"></a>                  <span class="at">N =</span> <span class="fu">nrow</span>(X), <span class="at">K_x =</span> <span class="fu">ncol</span>(X), <span class="at">K_z =</span> <span class="fu">ncol</span>(Z))</span>
-<span id="cb314-24"><a href="models-of-binary-outcomes.html#cb314-24" aria-hidden="true" tabindex="-1"></a><span class="co"># stan_opt &lt;- optimizing(hetprob_model, data = stan_data)  # keeps crashing</span></span>
-<span id="cb314-25"><a href="models-of-binary-outcomes.html#cb314-25" aria-hidden="true" tabindex="-1"></a>stan_samp <span class="ot">&lt;-</span> rstan<span class="sc">::</span><span class="fu">sampling</span>(hetprob_model, <span class="at">data =</span> stan_data,</span>
-<span id="cb314-26"><a href="models-of-binary-outcomes.html#cb314-26" aria-hidden="true" tabindex="-1"></a>                            <span class="at">pars =</span> <span class="fu">c</span>(<span class="st">&quot;beta&quot;</span>, <span class="st">&quot;gamma&quot;</span>),</span>
-<span id="cb314-27"><a href="models-of-binary-outcomes.html#cb314-27" aria-hidden="true" tabindex="-1"></a>                            <span class="at">cores =</span> <span class="dv">3</span>,</span>
-<span id="cb314-28"><a href="models-of-binary-outcomes.html#cb314-28" aria-hidden="true" tabindex="-1"></a>                            <span class="at">chains =</span> <span class="dv">3</span>,</span>
-<span id="cb314-29"><a href="models-of-binary-outcomes.html#cb314-29" aria-hidden="true" tabindex="-1"></a>                            <span class="at">iter =</span> <span class="dv">2000</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb310"><pre class="sourceCode stan"><code class="sourceCode stan"><span id="cb310-1"><a href="models-of-binary-outcomes.html#cb310-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> {</span>
+<span id="cb310-2"><a href="models-of-binary-outcomes.html#cb310-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span>&lt;<span class="kw">lower</span>=<span class="dv">0</span>&gt; N;     <span class="co">// number of data items in X and Z</span></span>
+<span id="cb310-3"><a href="models-of-binary-outcomes.html#cb310-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span>&lt;<span class="kw">lower</span>=<span class="dv">0</span>&gt; K_x;   <span class="co">// number of predictors in X</span></span>
+<span id="cb310-4"><a href="models-of-binary-outcomes.html#cb310-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span>&lt;<span class="kw">lower</span>=<span class="dv">0</span>&gt; K_z;   <span class="co">// number of predictors in Z</span></span>
+<span id="cb310-5"><a href="models-of-binary-outcomes.html#cb310-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">matrix</span>[N, K_x] X;   <span class="co">// predictor matrix Z</span></span>
+<span id="cb310-6"><a href="models-of-binary-outcomes.html#cb310-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">matrix</span>[N, K_z] Z;   <span class="co">// predictor matrix Z</span></span>
+<span id="cb310-7"><a href="models-of-binary-outcomes.html#cb310-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> y[N];           <span class="co">// outcome vector</span></span>
+<span id="cb310-8"><a href="models-of-binary-outcomes.html#cb310-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb310-9"><a href="models-of-binary-outcomes.html#cb310-9" aria-hidden="true" tabindex="-1"></a><span class="kw">parameters</span> {</span>
+<span id="cb310-10"><a href="models-of-binary-outcomes.html#cb310-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">vector</span>[K_x] beta;       <span class="co">// coefficients for X</span></span>
+<span id="cb310-11"><a href="models-of-binary-outcomes.html#cb310-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">vector</span>[K_z] gamma;       <span class="co">// coefficients for Z</span></span>
+<span id="cb310-12"><a href="models-of-binary-outcomes.html#cb310-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb310-13"><a href="models-of-binary-outcomes.html#cb310-13" aria-hidden="true" tabindex="-1"></a><span class="kw">transformed parameters</span> {</span>
+<span id="cb310-14"><a href="models-of-binary-outcomes.html#cb310-14" aria-hidden="true" tabindex="-1"></a>  <span class="dt">vector</span>[N] pi;</span>
+<span id="cb310-15"><a href="models-of-binary-outcomes.html#cb310-15" aria-hidden="true" tabindex="-1"></a>  <span class="dt">vector</span>[N] Xbeta;</span>
+<span id="cb310-16"><a href="models-of-binary-outcomes.html#cb310-16" aria-hidden="true" tabindex="-1"></a>  <span class="dt">vector</span>[N] Zgamma;</span>
+<span id="cb310-17"><a href="models-of-binary-outcomes.html#cb310-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span>:N) {</span>
+<span id="cb310-18"><a href="models-of-binary-outcomes.html#cb310-18" aria-hidden="true" tabindex="-1"></a>    Xbeta[i] = X[i, ]*beta;</span>
+<span id="cb310-19"><a href="models-of-binary-outcomes.html#cb310-19" aria-hidden="true" tabindex="-1"></a>    Zgamma[i] = Z[i, ]*gamma;</span>
+<span id="cb310-20"><a href="models-of-binary-outcomes.html#cb310-20" aria-hidden="true" tabindex="-1"></a>    pi[i] = Phi(Xbeta[i]/exp(Zgamma[i]));</span>
+<span id="cb310-21"><a href="models-of-binary-outcomes.html#cb310-21" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb310-22"><a href="models-of-binary-outcomes.html#cb310-22" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb310-23"><a href="models-of-binary-outcomes.html#cb310-23" aria-hidden="true" tabindex="-1"></a><span class="kw">model</span> {</span>
+<span id="cb310-24"><a href="models-of-binary-outcomes.html#cb310-24" aria-hidden="true" tabindex="-1"></a>  y ~ bernoulli(pi);  <span class="co">// likelihood</span></span>
+<span id="cb310-25"><a href="models-of-binary-outcomes.html#cb310-25" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb311"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb311-1"><a href="models-of-binary-outcomes.html#cb311-1" aria-hidden="true" tabindex="-1"></a><span class="co"># listwise delete missing values from all variables of interest</span></span>
+<span id="cb311-2"><a href="models-of-binary-outcomes.html#cb311-2" aria-hidden="true" tabindex="-1"></a>ab_stan <span class="ot">&lt;-</span> ab <span class="sc">%&gt;%</span></span>
+<span id="cb311-3"><a href="models-of-binary-outcomes.html#cb311-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(abhlth, black, male, cath, reliten, attend, erameans, era, </span>
+<span id="cb311-4"><a href="models-of-binary-outcomes.html#cb311-4" aria-hidden="true" tabindex="-1"></a>         abproct, abconct, abimp, abinfo, abfirm) <span class="sc">%&gt;%</span></span>
+<span id="cb311-5"><a href="models-of-binary-outcomes.html#cb311-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span>
+<span id="cb311-6"><a href="models-of-binary-outcomes.html#cb311-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb311-7"><a href="models-of-binary-outcomes.html#cb311-7" aria-hidden="true" tabindex="-1"></a><span class="co"># create X</span></span>
+<span id="cb311-8"><a href="models-of-binary-outcomes.html#cb311-8" aria-hidden="true" tabindex="-1"></a>fx <span class="ot">&lt;-</span> abhlth <span class="sc">~</span> black <span class="sc">+</span> male <span class="sc">+</span> cath <span class="sc">+</span> reliten <span class="sc">+</span> attend <span class="sc">+</span> erameans <span class="sc">+</span> era</span>
+<span id="cb311-9"><a href="models-of-binary-outcomes.html#cb311-9" aria-hidden="true" tabindex="-1"></a>mfx <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(fx, <span class="at">data =</span> ab_stan)  <span class="co"># model frame</span></span>
+<span id="cb311-10"><a href="models-of-binary-outcomes.html#cb311-10" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(fx, mfx)         <span class="co"># model matrix X</span></span>
+<span id="cb311-11"><a href="models-of-binary-outcomes.html#cb311-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb311-12"><a href="models-of-binary-outcomes.html#cb311-12" aria-hidden="true" tabindex="-1"></a><span class="co"># obtain the outcome variable y</span></span>
+<span id="cb311-13"><a href="models-of-binary-outcomes.html#cb311-13" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">model.response</span>(mfx)</span>
+<span id="cb311-14"><a href="models-of-binary-outcomes.html#cb311-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb311-15"><a href="models-of-binary-outcomes.html#cb311-15" aria-hidden="true" tabindex="-1"></a><span class="co"># create Z</span></span>
+<span id="cb311-16"><a href="models-of-binary-outcomes.html#cb311-16" aria-hidden="true" tabindex="-1"></a>fz <span class="ot">&lt;-</span> <span class="er">~</span> abproct<span class="sc">*</span>abconct <span class="sc">+</span> abimp <span class="sc">+</span> abinfo <span class="sc">+</span> abfirm <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb311-17"><a href="models-of-binary-outcomes.html#cb311-17" aria-hidden="true" tabindex="-1"></a>mfz <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(fz, <span class="at">data =</span> ab_stan)  <span class="co"># model frame</span></span>
+<span id="cb311-18"><a href="models-of-binary-outcomes.html#cb311-18" aria-hidden="true" tabindex="-1"></a>Z <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(fz, mfz)         <span class="co"># model matrix X</span></span>
+<span id="cb311-19"><a href="models-of-binary-outcomes.html#cb311-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb311-20"><a href="models-of-binary-outcomes.html#cb311-20" aria-hidden="true" tabindex="-1"></a><span class="co"># fit stan model</span></span>
+<span id="cb311-21"><a href="models-of-binary-outcomes.html#cb311-21" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstan); <span class="fu">options</span>(<span class="at">mc.cores =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span>
+<span id="cb311-22"><a href="models-of-binary-outcomes.html#cb311-22" aria-hidden="true" tabindex="-1"></a>stan_data <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y =</span> y, <span class="at">X =</span> X, <span class="at">Z =</span> Z,</span>
+<span id="cb311-23"><a href="models-of-binary-outcomes.html#cb311-23" aria-hidden="true" tabindex="-1"></a>                  <span class="at">N =</span> <span class="fu">nrow</span>(X), <span class="at">K_x =</span> <span class="fu">ncol</span>(X), <span class="at">K_z =</span> <span class="fu">ncol</span>(Z))</span>
+<span id="cb311-24"><a href="models-of-binary-outcomes.html#cb311-24" aria-hidden="true" tabindex="-1"></a><span class="co"># stan_opt &lt;- optimizing(hetprob_model, data = stan_data)  # keeps crashing</span></span>
+<span id="cb311-25"><a href="models-of-binary-outcomes.html#cb311-25" aria-hidden="true" tabindex="-1"></a>stan_samp <span class="ot">&lt;-</span> rstan<span class="sc">::</span><span class="fu">sampling</span>(hetprob_model, <span class="at">data =</span> stan_data,</span>
+<span id="cb311-26"><a href="models-of-binary-outcomes.html#cb311-26" aria-hidden="true" tabindex="-1"></a>                            <span class="at">pars =</span> <span class="fu">c</span>(<span class="st">&quot;beta&quot;</span>, <span class="st">&quot;gamma&quot;</span>),</span>
+<span id="cb311-27"><a href="models-of-binary-outcomes.html#cb311-27" aria-hidden="true" tabindex="-1"></a>                            <span class="at">cores =</span> <span class="dv">3</span>,</span>
+<span id="cb311-28"><a href="models-of-binary-outcomes.html#cb311-28" aria-hidden="true" tabindex="-1"></a>                            <span class="at">chains =</span> <span class="dv">3</span>,</span>
+<span id="cb311-29"><a href="models-of-binary-outcomes.html#cb311-29" aria-hidden="true" tabindex="-1"></a>                            <span class="at">iter =</span> <span class="dv">2000</span>)</span></code></pre></div>
 
 </div>
 </div>

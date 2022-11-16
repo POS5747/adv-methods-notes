@@ -121,7 +121,7 @@ gg_data <- bind_rows(sim_list) %>%
 ```
 ## Rows: 22,476
 ## Columns: 12
-## $ osvAll               <dbl> 324, 364, 1135, 275, 475, 216, 194, 222, 172, 192…
+## $ osvAll               <dbl> 305, 313, 1080, 284, 436, 198, 201, 209, 177, 192…
 ## $ troopLag             <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
 ## $ policeLag            <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
 ## $ militaryobserversLag <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
@@ -153,7 +153,7 @@ ggplot(gg_data, aes(x = troopLag, y = osvAll + 1)) +
 ```
 
 ```
-## `geom_smooth()` using method = 'gam' and formula 'y ~ s(x, bs = "cs")'
+## `geom_smooth()` using method = 'gam' and formula = 'y ~ s(x, bs = "cs")'
 ```
 
 <img src="03-03-poisson-model_files/figure-html/unnamed-chunk-4-2.png" width="672" />

@@ -96,3 +96,8 @@ berry-golder-and-milton-2012
 berry-demeritt-and-esarey-2010
 rainey-2016
 hanmer-and-kalkan-2013
+week-12-hierarchical-models
+example-contact-in-finland
+example-contact-in-the-uk
+hierarchical-models-in-general
+rainey-2015

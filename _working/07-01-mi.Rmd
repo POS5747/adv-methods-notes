@@ -1,0 +1,35 @@
+
+# Week 7: MI and Count Models
+
+This week, we discuss two topics:
+
+1. Multiple imputation to deal with missing values.
+1. Models of count data.
+
+```{r include=FALSE}
+library(tidyverse)
+```
+
+## Multiple Imputation
+
+```{r}
+# krup <- haven::read_dta("data/krup.dta") %>%
+#   filter(dummy2000 == 1) %>% 
+#   select(income, education, age, PIDStrength, black, turnout, married, interest, Church) %>%
+#   mutate(income = round(income*4),
+#          education = round(education*4),
+#          Church = round(Church*3),
+#          PIDStrength = round(PIDStrength*3)) %>% # amelia wants ordinal variables to be integers
+#   #na.omit() %>%
+#   glimpse()
+# 
+# skimr::skim(krup)
+# 
+# library(Amelia)
+# amelia(krup, noms = c("black", "turnout", "married"),
+#             ords = c("income", "education", "PIDStrength", "interest", "Church"),
+#        m = 20)
+# 
+# plot(mi)
+
+```

@@ -1,0 +1,201 @@
+
+
+```{r include=FALSE}
+library(tidyverse)
+```
+
+## Count Models
+
+### Poisson Regression
+
+```{r}
+# read data
+keep <- c("osvAll", "troopLag", "policeLag", "militaryobserversLag",
+          "brv_AllLag", "osvAllLagDum", "incomp", "epduration", "lntpop",
+          "conflict_id")
+hks <- read_csv("data/hks.csv") %>%
+  select(keep) %>%
+  na.omit() %>%
+  glimpse()
+
+# fit models
+f <- osvAll ~ troopLag + policeLag + militaryobserversLag + 
+  brv_AllLag + osvAllLagDum + incomp + epduration + 
+  lntpop
+
+# poisson model
+fit_pois <- glm(f, data = hks, family = poisson)
+
+# predictive distribution
+observed_data <- hks %>%
+  mutate(type = "observed", 
+         linpred_hat = predict(fit_pois, type = "link"))
+
+sim_list <- list()
+for (i in 1:5) {
+  sim_list[[i]] <- observed_data %>%
+    mutate(osvAll = rpois(nrow(observed_data), 
+                          lambda = exp(observed_data$linpred_hat)),
+           type = paste0("simulated #", i))
+}
+gg_data <- bind_rows(sim_list) %>%
+  bind_rows(observed_data) %>%
+  glimpse()
+
+gg1 <- ggplot(gg_data, aes(x = linpred_hat, y = osvAll + 1)) + 
+  geom_point(alpha = 0.1, shape = 21, size = 0.3) + 
+  facet_wrap(vars(type)) + 
+  scale_y_log10()
+
+gg2 <- ggplot(gg_data, aes(x = troopLag, y = osvAll + 1)) + 
+  geom_point(alpha = 0.3, shape = 21, size = 0.3) + 
+  facet_wrap(vars(type)) + 
+  scale_y_log10() + 
+  geom_smooth(se = FALSE)
+
+library(patchwork)
+gg1 + gg2
+```
+### Negative Binomial Regression
+
+```{r}
+# estimate negative binomial model
+fit_nb <- MASS::glm.nb(osvAll ~ troopLag + policeLag + militaryobserversLag + 
+              brv_AllLag + osvAllLagDum + incomp + epduration + 
+              lntpop, 
+            data = hks, init.theta = 5, control = glm.control(epsilon = 1e-12, maxit = 2500, trace = FALSE))
+
+# predictive distribution
+observed_data <- hks %>%
+  mutate(type = "observed", 
+         linpred_hat = predict(fit_nb, type = "link"))
+
+sim_list <- list()
+for (i in 1:5) {
+  sim_list[[i]] <- observed_data %>%
+    mutate(osvAll = rnbinom(nrow(observed_data), 
+                            mu = predict(fit_nb, type = "response"), 
+                            size = fit_nb$theta),
+           type = paste0("simulated #", i))
+}
+gg_data <- bind_rows(sim_list) %>%
+  bind_rows(observed_data) %>%
+  glimpse()
+
+gg1 <- ggplot(gg_data, aes(x = linpred_hat, y = osvAll + 1)) + 
+  geom_point(alpha = 0.1, shape = 21, size = 0.3) + 
+  facet_wrap(vars(type)) + 
+  scale_y_log10()
+
+gg2 <- ggplot(gg_data, aes(x = troopLag, y = osvAll + 1)) + 
+  geom_point(alpha = 0.3, shape = 21, size = 0.3) + 
+  facet_wrap(vars(type)) + 
+  scale_y_log10() + 
+  geom_smooth(se = FALSE)
+
+library(patchwork)
+gg1 + gg2
+```
+
+```{r}
+AIC(fit_pois, fit_nb)
+```
+
+### Zero-Inflated Negative Binomial Regression
+
+```{r}
+# estimate zero-inflated negative binomial model
+fit_zinb <- pscl::zeroinfl(osvAll ~ troopLag + policeLag + militaryobserversLag + 
+                        brv_AllLag + osvAllLagDum + incomp + epduration + 
+                        lntpop, 
+                      dist = "negbin",
+                      data = hks)
+
+predict(fit_zinb, type = "zero")
+
+# predictive distribution
+observed_data <- hks %>%
+  mutate(type = "observed", 
+         linpred_hat = predict(fit, type = "link"))
+
+sim_list <- list()
+for (i in 1:5) {
+  sim_list[[i]] <- observed_data %>%
+    mutate(count_star = rnbinom(nrow(observed_data), 
+                            mu = predict(fit_zinb, type = "count"), 
+                            size = fit_zinb$theta),
+           zero_star = rbinom(nrow(observed_data), 
+                              size = 1,
+                              prob = 1- predict(fit_zinb, type = "zero")), # prob of *zero*
+           osvAll = count_star*zero_star,
+           type = paste0("simulated #", i))
+}
+gg_data <- bind_rows(sim_list) %>%
+  bind_rows(observed_data) %>%
+  glimpse()
+
+gg1 <- ggplot(gg_data, aes(x = linpred_hat, y = osvAll + 1)) + 
+  geom_point(alpha = 0.1, shape = 21, size = 0.3) + 
+  facet_wrap(vars(type)) + 
+  scale_y_log10() + 
+  geom_smooth(se = FALSE)
+
+gg2 <- ggplot(gg_data, aes(x = troopLag, y = osvAll + 1)) + 
+  geom_point(alpha = 0.3, shape = 21, size = 0.3) + 
+  facet_wrap(vars(type)) + 
+  scale_y_log10() + 
+  geom_smooth(se = FALSE)
+
+library(patchwork)
+gg1 + gg2
+```
+
+```{r}
+gg1 <- ggplot(gg_data, aes(x = linpred_hat, y = 1*(osvAll > 0))) + 
+  geom_jitter(alpha = 0.1, shape = 21, size = 0.3, height = 0.1) + 
+  facet_wrap(vars(type)) + 
+  geom_smooth(se = FALSE)
+
+gg2 <- ggplot(gg_data, aes(x = troopLag, y = 1*(osvAll > 0))) + 
+  geom_jitter(alpha = 0.3, shape = 21, size = 0.3, height = 0.1) + 
+  facet_wrap(vars(type)) +
+  geom_smooth(se = FALSE)
+
+library(patchwork)
+gg1 + gg2
+```
+
+```{r}
+BIC(fit_pois, fit_nb, fit_zinb)
+```
+
+
+### with Stan!
+
+```{r}
+# load packages
+library(brms)
+
+# fit models with brms
+# note: rstanarm models are precompiled, but there aren't many models
+#       brms has many more possibilities, but will need to compile the stan code
+stan_pois <- brm(f, data = hks, family = poisson(), 
+                 chains = 4, cores = 4, iter = 2000)
+stan_nb <- brm(f, data = hks, family = negbinomial(), 
+                 chains = 4, cores = 4, iter = 2000)
+
+# this model is slooooooow....
+stan_zinb <- brm(f, data = hks, family = zero_inflated_negbinomial(), 
+                 chains = 4, cores = 4, iter = 2000)
+
+# compute loos for each model
+loo1 <- stan_pois %>%
+  add_criterion("loo")
+loo2 <- stan_nb %>%
+  add_criterion("loo")
+loo3 <- stan_zinb %>%
+  add_criterion("loo")
+loo_compare(loo1, loo2, loo3)
+```
+
+test
